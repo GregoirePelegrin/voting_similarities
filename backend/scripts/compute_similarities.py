@@ -90,7 +90,7 @@ async def run(config: SimilarityConfig):
         await session.flush()
 
         print("Storing person-group similarity...")
-        pg_records = compute_person_group_records(data, similarity, config)
+        pg_records = compute_person_group_records(data, similarity, cat_similarities, config)
         print(f"  {len(pg_records)} pairs")
         for i in range(0, len(pg_records), CHUNK_SIZE):
             await session.execute(insert(PersonGroupSim), pg_records[i : i + CHUNK_SIZE])

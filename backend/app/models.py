@@ -88,6 +88,7 @@ class PersonGroupSim(Base):
     similarity = Column(Float, nullable=False)
     shared_count = Column(Integer, nullable=False)
     confidence = Column(Float, nullable=False)
+    per_category = Column(JSON, nullable=True)
 
 
 class GroupGroupSim(Base):

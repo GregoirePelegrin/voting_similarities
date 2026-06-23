@@ -175,7 +175,7 @@ def _avg_intra_group(sim_matrix, indices):
     return float(np.mean(sub[np.triu_indices(n, k=1)]))
 
 
-def compute_person_group_records(data, similarity, config):
+def compute_person_group_records(data, similarity, cat_similarities, config):
     records = []
     group_ids = list(data.group_members.keys())
 
@@ -201,6 +201,13 @@ def compute_person_group_records(data, similarity, config):
 
             conf = shared / (shared + config.m) if shared + config.m > 0 else 0.0
 
+            per_category = {}
+            if cat_similarities and len(other_indices) > 0:
+                for cat_id, cat_sim in cat_similarities.items():
+                    per_category[str(cat_id)] = float(
+                        np.mean(cat_sim[p_idx, other_indices])
+                    )
+
             records.append(
                 {
                     "person_id": int(pid),
@@ -208,6 +215,7 @@ def compute_person_group_records(data, similarity, config):
                     "similarity": avg_sim,
                     "shared_count": shared,
                     "confidence": conf,
+                    "per_category": per_category if per_category else None,
                 }
             )
 

@@ -135,7 +135,7 @@ PYTHONPATH=. python scripts/compute_similarities.py --w-yes 1.0 --w-no 0.5 --w-m
 | Table | Rows | Description |
 |---|---|---|
 | `person_person_similarity` | ~245K | Pairwise similarity between all people, with per-category JSON breakdown |
-| `person_group_similarity` | ~8.4K | Person vs group (average of member similarities) |
+| `person_group_similarity` | ~8.4K | Person vs group with per-category JSON breakdown |
 | `group_group_similarity` | 66 | Group vs group with per-category JSON breakdown |
 | `group_cohesivity` | 12 | Intra-group cohesion with per-category JSON breakdown |
 
@@ -145,4 +145,5 @@ PYTHONPATH=. python scripts/compute_similarities.py --w-yes 1.0 --w-no 0.5 --w-m
 base → c74e546ec80d (initial schema)
      → 98847eb27900 (add per_category to person_person_similarity)
      → 1d9941e43959 (add description to questions)
+     → e41a6efd589b (add per_category to person_group_similarity)
 ```
