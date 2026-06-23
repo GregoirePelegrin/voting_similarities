@@ -1,0 +1,9 @@
+{
+  "short_name": "Groups",
+  "name": "Groups Comparison",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2D3A4A",
+  "background_color": "#1A1F2B"
+}
