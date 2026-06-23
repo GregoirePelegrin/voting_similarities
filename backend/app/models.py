@@ -21,6 +21,7 @@ class Group(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False, unique=True)
+    color = Column(String(7), nullable=False)
 
     members = relationship("Person", back_populates="group")
 

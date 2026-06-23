@@ -180,14 +180,17 @@ async def get_person(
     )
     pg_rows = group_result.scalars().all()
 
-    # Batch fetch group names
+    # Batch fetch group names and colors
     pg_group_ids = {pg.group_id for pg in pg_rows}
     group_map = {}
+    group_color_map = {}
     if pg_group_ids:
         g_result = await db.execute(
-            select(Group.id, Group.name).where(Group.id.in_(pg_group_ids))
+            select(Group.id, Group.name, Group.color).where(Group.id.in_(pg_group_ids))
         )
-        group_map = dict(g_result.all())
+        for gid, gname, gcolor in g_result.all():
+            group_map[gid] = gname
+            group_color_map[gid] = gcolor
 
     group_comparisons = []
     for pg in pg_rows:
@@ -199,6 +202,7 @@ async def get_person(
             GroupComparisonOut(
                 group_id=pg.group_id,
                 group_name=group_map.get(pg.group_id, "Unknown"),
+                group_color=group_color_map.get(pg.group_id, "#808080"),
                 similarity=sim,
                 confidence=pg.confidence,
                 shared_count=pg.shared_count,
@@ -217,7 +221,7 @@ async def get_person(
     return PersonDetailOut(
         id=person.id,
         name=person.name,
-        group=GroupSummaryOut(id=group.id, name=group.name, member_count=member_count),
+        group=GroupSummaryOut(id=group.id, name=group.name, color=group.color, member_count=member_count),
         answers=answers,
         similar_people=similar_people,
         dissimilar_people=dissimilar_people,
@@ -253,6 +257,7 @@ async def list_groups(db: AsyncSession = Depends(get_db)):
         GroupListOut(
             id=g.id,
             name=g.name,
+            color=g.color,
             member_count=member_counts.get(g.id, 0),
             cohesivity=coh_map.get(g.id),
         )
@@ -307,9 +312,13 @@ async def get_group(
     group_map = {}
     if other_gids:
         g_result = await db.execute(
-            select(Group.id, Group.name).where(Group.id.in_(other_gids))
+            select(Group.id, Group.name, Group.color).where(Group.id.in_(other_gids))
         )
-        group_map = dict(g_result.all())
+        group_map = {}
+        group_color_map = {}
+        for gid, gname, gcolor in g_result.all():
+            group_map[gid] = gname
+            group_color_map[gid] = gcolor
 
     similar_groups = []
     for row in gg_rows:
@@ -327,6 +336,7 @@ async def get_group(
             SimilarGroupOut(
                 id=other_gid,
                 name=group_map.get(other_gid, "Unknown"),
+                color=group_color_map.get(other_gid, "#808080"),
                 similarity=sim,
                 per_category=pc,
             )
@@ -337,6 +347,7 @@ async def get_group(
     return GroupDetailOut(
         id=group.id,
         name=group.name,
+        color=group.color,
         member_count=member_count,
         cohesivity=cohesivity,
         per_category=per_category,

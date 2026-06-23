@@ -146,4 +146,5 @@ base → c74e546ec80d (initial schema)
      → 98847eb27900 (add per_category to person_person_similarity)
      → 1d9941e43959 (add description to questions)
      → e41a6efd589b (add per_category to person_group_similarity)
+     → 351a0dfcbb5f (add color to groups)
 ```

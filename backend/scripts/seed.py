@@ -67,6 +67,21 @@ GROUP_NAMES = [
     "Mu Consortium",
 ]
 
+GROUP_COLORS = [
+    "#4E79A7",
+    "#F28E2B",
+    "#E15759",
+    "#76B7B2",
+    "#59A14F",
+    "#EDC948",
+    "#B07AA1",
+    "#FF9DA7",
+    "#9C755F",
+    "#BAB0AC",
+    "#86BCB6",
+    "#8CD17D",
+]
+
 QUESTION_TEMPLATES = [
     "Should {topic} be prioritized in the next strategic plan?",
     "Is the current approach to {topic} sufficient?",
@@ -104,7 +119,7 @@ async def seed_data():
         cat_by_name = {c.name: c for c in categories}
 
         # --- Groups ---
-        groups = [Group(name=name) for name in GROUP_NAMES]
+        groups = [Group(name=name, color=GROUP_COLORS[i]) for i, name in enumerate(GROUP_NAMES)]
         session.add_all(groups)
         await session.flush()
         group_by_name = {g.name: g for g in groups}

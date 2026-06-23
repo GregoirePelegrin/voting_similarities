@@ -23,12 +23,14 @@ class AnswerOut(BaseModel):
 class GroupSummaryOut(BaseModel):
     id: int
     name: str
+    color: str
     member_count: int
 
 
 class GroupListOut(BaseModel):
     id: int
     name: str
+    color: str
     member_count: int
     cohesivity: Optional[float] = None
 
@@ -44,6 +46,7 @@ class SimilarPersonOut(BaseModel):
 class GroupComparisonOut(BaseModel):
     group_id: int
     group_name: str
+    group_color: str
     similarity: float
     confidence: float
     shared_count: int
@@ -75,6 +78,7 @@ class PaginatedPeopleOut(BaseModel):
 class SimilarGroupOut(BaseModel):
     id: int
     name: str
+    color: str
     similarity: float
     per_category: Optional[dict[str, float]] = None
 
@@ -82,6 +86,7 @@ class SimilarGroupOut(BaseModel):
 class GroupDetailOut(BaseModel):
     id: int
     name: str
+    color: str
     member_count: int
     cohesivity: float
     per_category: Optional[dict[str, float]] = None
