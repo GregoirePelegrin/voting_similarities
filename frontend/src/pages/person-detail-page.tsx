@@ -8,6 +8,7 @@ import CategoryFilter from "../components/shared/category-filter";
 import SimilarPeopleCard from "../components/people/similar-people-card";
 import AnswerGrid from "../components/people/answer-grid";
 import GroupComparisonBars from "../components/people/group-comparison-bars";
+import CategoryAlignmentCard from "../components/people/category-alignment-card";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 
 const PersonDetailPage: React.FC = observer(() => {
@@ -20,6 +21,12 @@ const PersonDetailPage: React.FC = observer(() => {
       people.fetchPerson(personId, ui.selectedCategory);
     }
   }, [personId, ui.selectedCategory]);
+
+  useEffect(() => {
+    if (personId) {
+      people.fetchCategoryAlignment(personId);
+    }
+  }, [personId]);
 
   const person = people.selectedPerson;
 
@@ -69,6 +76,9 @@ const PersonDetailPage: React.FC = observer(() => {
         </Grid>
         <Grid item xs={12}>
           <GroupComparisonBars comparisons={person.group_comparisons} />
+        </Grid>
+        <Grid item xs={12}>
+          <CategoryAlignmentCard alignments={people.categoryAlignment} />
         </Grid>
       </Grid>
     </AnimatedPage>

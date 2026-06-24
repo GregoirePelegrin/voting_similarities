@@ -138,3 +138,13 @@ class GroupEmbedding(Base):
     x = Column(Float, nullable=False)
     y = Column(Float, nullable=False)
     stress = Column(Float, nullable=False)
+
+
+class CategoryDiscriminativeness(Base):
+    __tablename__ = "category_discriminativeness"
+
+    category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True)
+    info_gain = Column(Float, nullable=False)
+    normalized_ig = Column(Float, nullable=False)
+    variance_score = Column(Float, nullable=False)
+    per_group_breakdown = Column(JSON, nullable=True)

@@ -120,3 +120,39 @@ export interface GroupsEmbeddingOut {
   category_id: number | null;
   points: EmbeddingPointOut[];
 }
+
+export interface GroupBreakdownOut {
+  accuracy: number;
+  most_confused_with: number | null;
+  most_confused_similarity: number | null;
+  kl_divergence: number;
+}
+
+export interface CategoryDiscriminativenessOut {
+  category_id: number;
+  category_name: string;
+  info_gain: number;
+  normalized_ig: number;
+  variance_score: number;
+  per_group_breakdown: Record<string, GroupBreakdownOut> | null;
+}
+
+export interface DeterminantCategoryOut {
+  category_id: number;
+  category_name: string;
+  info_gain: number;
+  normalized_ig: number;
+  accuracy: number;
+  most_confused_with_id: number | null;
+  most_confused_with_name: string | null;
+  most_confused_similarity: number | null;
+  kl_divergence: number;
+}
+
+export interface CategoryAlignmentOut {
+  category_id: number;
+  category_name: string;
+  own_group_similarity: number;
+  avg_other_group_similarity: number;
+  alignment: number;
+}

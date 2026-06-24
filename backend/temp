@@ -1,0 +1,34 @@
+I have the following modifications to make:
+1/ category alignment - person tab:
+    The bars of alignment do not fit in the card.
+    We should allow space for the alignment to go from -100% to 100%.
+    Also the background color of the bar should be the same as the card.
+2/ per-category similarity - groups tab:
+    This table shouldn't change when changing the category selected.
+    Currently, when selecting a category, all the others are removed from the table, without it providing any additional information,
+    thus updating this table is not pertinent, it should always be populated by the whole information
+3/ people selection table - people tab:
+    This table is only 50% of the height of the screen, without anything below needing to be displayed.
+    Additionally, we display the group id, whereas it should display the group name
+4/ a new `has_passed` field for the questions, True if majority of votes are Yes, else False
+5/ new fields for the persons
+    `name` should be two fields: `firstname` and `lastname`
+    There should also be a `role` foreign key field, 4 values: "President", "Vice-president", "Secretaire" and "Membre"
+    There should also be a `commission` foreign key field, with values that should be added to the commissions table when injecting persons in the db
+    There should also be a `circonscription` string field
+    For now these fields would only have marginal effect on the project's behavior, but could end up becoming interesting filters later.
+6/ a question tab
+    Similar to people tab, a list of questions with their categories and whether its has passed or not
+7/ answers display - people tab:
+    Currently the answers are displayed as `Q2: Yes` (for instance). Assuming an answer rate of 50%, we could have 3500+ answers,
+    this method of display is not efficient enough. We should display a bar (like a progress bar) with as many segments as questions.
+    Each segment would then be colored with a 5 color scheme: grey (did not respond), green (yes, as group), blue (yes, different from group),
+    red (no, as group), purple (no, different from group)
+8/ answers display - people tab:
+    The segments should be hoverable, displaying the title of the vote, and its outcome.
+    Clicking on it should redirect to the question's page
+9/ least similar - people tab:
+    Currently the progress bars showing the dissimilarity are empty (I assume because the values are negative).
+    We need to use the absolute value for the progress bar, and display it red.
+10/ group comparisons - people tab
+    I'd like to have an info tooltip (like category alignment) to explain what is displayed

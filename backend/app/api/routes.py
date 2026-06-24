@@ -6,6 +6,7 @@ from app.database import get_db
 from app.models import (
     Answer,
     Category,
+    CategoryDiscriminativeness,
     Group,
     GroupCohesivity,
     GroupEmbedding,
@@ -20,7 +21,10 @@ from app.models import (
 from app.schemas import (
     AnswerOut,
     BarycenterOut,
+    CategoryAlignmentOut,
+    CategoryDiscriminativenessOut,
     CategoryOut,
+    DeterminantCategoryOut,
     EmbeddingPointOut,
     GroupComparisonOut,
     GroupDetailOut,
@@ -486,3 +490,153 @@ async def get_groups_embeddings(
         category_id=category,
         points=points,
     )
+
+
+@router.get("/categories/discriminativeness", response_model=list[CategoryDiscriminativenessOut])
+async def get_category_discriminativeness(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(CategoryDiscriminativeness).order_by(
+            CategoryDiscriminativeness.normalized_ig.desc()
+        )
+    )
+    cd_rows = result.scalars().all()
+
+    cat_ids = [cd.category_id for cd in cd_rows]
+    cat_result = await db.execute(select(Category).where(Category.id.in_(cat_ids)))
+    cat_map = {c.id: c.name for c in cat_result.scalars().all()}
+
+    out = []
+    for cd in cd_rows:
+        breakdown = None
+        if cd.per_group_breakdown:
+            breakdown = {
+                gid: {
+                    "accuracy": v["accuracy"],
+                    "most_confused_with": v.get("most_confused_with"),
+                    "most_confused_similarity": v.get("most_confused_similarity"),
+                    "kl_divergence": v["kl_divergence"],
+                }
+                for gid, v in cd.per_group_breakdown.items()
+            }
+        out.append(
+            CategoryDiscriminativenessOut(
+                category_id=cd.category_id,
+                category_name=cat_map.get(cd.category_id, "Unknown"),
+                info_gain=cd.info_gain,
+                normalized_ig=cd.normalized_ig,
+                variance_score=cd.variance_score,
+                per_group_breakdown=breakdown,
+            )
+        )
+    return out
+
+
+@router.get(
+    "/groups/{group_id}/determinant-categories",
+    response_model=list[DeterminantCategoryOut],
+)
+async def get_group_determinant_categories(
+    group_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    group = await db.get(Group, group_id)
+    if group is None:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    result = await db.execute(
+        select(CategoryDiscriminativeness).order_by(
+            CategoryDiscriminativeness.normalized_ig.desc()
+        )
+    )
+    cd_rows = result.scalars().all()
+
+    cat_ids = [cd.category_id for cd in cd_rows]
+    cat_result = await db.execute(select(Category).where(Category.id.in_(cat_ids)))
+    cat_map = {c.id: c.name for c in cat_result.scalars().all()}
+
+    group_map = {}
+    g_result = await db.execute(select(Group.id, Group.name))
+    group_map = dict(g_result.all())
+
+    out = []
+    for cd in cd_rows:
+        breakdown = cd.per_group_breakdown or {}
+        group_data = breakdown.get(str(group_id), {})
+        accuracy = group_data.get("accuracy", 0.0)
+        most_confused_id = group_data.get("most_confused_with")
+        most_confused_sim = group_data.get("most_confused_similarity")
+        kl = group_data.get("kl_divergence", 0.0)
+
+        out.append(
+            DeterminantCategoryOut(
+                category_id=cd.category_id,
+                category_name=cat_map.get(cd.category_id, "Unknown"),
+                info_gain=cd.info_gain,
+                normalized_ig=cd.normalized_ig,
+                accuracy=accuracy,
+                most_confused_with_id=most_confused_id,
+                most_confused_with_name=(
+                    group_map.get(most_confused_id) if most_confused_id else None
+                ),
+                most_confused_similarity=most_confused_sim,
+                kl_divergence=kl,
+            )
+        )
+    return out
+
+
+@router.get("/people/{person_id}/category-alignment", response_model=list[CategoryAlignmentOut])
+async def get_person_category_alignment(
+    person_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    person = await db.get(Person, person_id)
+    if person is None:
+        raise HTTPException(status_code=404, detail="Person not found")
+
+    pg_result = await db.execute(
+        select(PersonGroupSim).where(PersonGroupSim.person_id == person_id)
+    )
+    pg_rows = pg_result.scalars().all()
+
+    own_group_id = person.group_id
+
+    cat_result = await db.execute(select(Category).order_by(Category.id))
+    cat_map = {c.id: c.name for c in cat_result.scalars().all()}
+
+    out = []
+    all_cat_ids = sorted(cat_map.keys())
+    for cat_id in all_cat_ids:
+        cat_key = str(cat_id)
+        own_sim = None
+        other_sims = []
+
+        for pg in pg_rows:
+            sim = None
+            if pg.per_category and cat_key in pg.per_category:
+                sim = pg.per_category[cat_key]
+            elif pg.per_category is None:
+                continue
+            else:
+                continue
+
+            if pg.group_id == own_group_id:
+                own_sim = sim
+            else:
+                other_sims.append(sim)
+
+        if own_sim is not None and other_sims:
+            avg_other = sum(other_sims) / len(other_sims)
+            alignment = own_sim - avg_other
+            out.append(
+                CategoryAlignmentOut(
+                    category_id=cat_id,
+                    category_name=cat_map[cat_id],
+                    own_group_similarity=own_sim,
+                    avg_other_group_similarity=avg_other,
+                    alignment=alignment,
+                )
+            )
+
+    out.sort(key=lambda x: x.alignment, reverse=True)
+    return out

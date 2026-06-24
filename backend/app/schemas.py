@@ -123,3 +123,39 @@ class GroupsEmbeddingOut(BaseModel):
     stress: float
     category_id: int | None = None
     points: list[EmbeddingPointOut]
+
+
+class GroupBreakdownOut(BaseModel):
+    accuracy: float
+    most_confused_with: int | None = None
+    most_confused_similarity: float | None = None
+    kl_divergence: float
+
+
+class CategoryDiscriminativenessOut(BaseModel):
+    category_id: int
+    category_name: str
+    info_gain: float
+    normalized_ig: float
+    variance_score: float
+    per_group_breakdown: dict[str, GroupBreakdownOut] | None = None
+
+
+class DeterminantCategoryOut(BaseModel):
+    category_id: int
+    category_name: str
+    info_gain: float
+    normalized_ig: float
+    accuracy: float
+    most_confused_with_id: int | None = None
+    most_confused_with_name: str | None = None
+    most_confused_similarity: float | None = None
+    kl_divergence: float
+
+
+class CategoryAlignmentOut(BaseModel):
+    category_id: int
+    category_name: str
+    own_group_similarity: float
+    avg_other_group_similarity: float
+    alignment: float

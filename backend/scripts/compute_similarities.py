@@ -10,6 +10,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from app.config import settings
 from app.embedding import classical_mds
 from app.models import (
+    Category,
+    CategoryDiscriminativeness,
     GroupCohesivity,
     GroupEmbedding,
     GroupGroupSim,
@@ -28,7 +30,7 @@ from app.similarity import (
     compute_person_person_data,
     load_answer_data,
 )
-from sqlalchemy import delete, insert
+from sqlalchemy import delete, insert, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 CHUNK_SIZE = 5000
@@ -208,6 +210,146 @@ async def run(config: SimilarityConfig):
             ]
             await session.execute(insert(GroupEmbedding), cat_ge_rows)
             await session.flush()
+
+        # --- Category discriminativeness ---
+        print("Computing category discriminativeness...")
+        await session.execute(delete(CategoryDiscriminativeness))
+        await session.flush()
+
+        cat_names = {}
+        cat_result = await session.execute(select(Category).order_by(Category.id))
+        for cat in cat_result.scalars().all():
+            cat_names[cat.id] = cat.name
+
+        person_group_map = {}
+        for pid in data.person_ids:
+            for gid, members in data.group_members.items():
+                if pid in members:
+                    person_group_map[int(pid)] = int(gid)
+                    break
+
+        group_ids_int = [int(gid) for gid in group_ids]
+        n_groups = len(group_ids_int)
+        gid_to_pos = {gid: i for i, gid in enumerate(group_ids_int)}
+        group_sizes = np.array([len(data.group_members[gid]) for gid in group_ids])
+        p_group = group_sizes / group_sizes.sum()
+        h_group = -float(np.sum(p_group * np.log(p_group + 1e-15)))
+
+        cd_rows = []
+        for cat_id in sorted(cat_similarities.keys()):
+            cat_sim = cat_similarities[cat_id]
+
+            predictions = np.zeros(len(data.person_ids), dtype=int)
+            for p_local_idx in range(len(data.person_ids)):
+                pid = int(data.person_ids[p_local_idx])
+                best_gid = group_ids_int[0]
+                best_sim = -np.inf
+                for gid in group_ids_int:
+                    members = data.group_members[gid]
+                    member_indices = np.array(
+                        [data.person_id_to_idx[m] for m in members if m != pid]
+                    )
+                    if len(member_indices) > 0:
+                        sim = float(np.mean(cat_sim[p_local_idx, member_indices]))
+                    else:
+                        sim = -np.inf
+                    if sim > best_sim:
+                        best_sim = sim
+                        best_gid = gid
+                predictions[p_local_idx] = best_gid
+
+            contingency = np.zeros((n_groups, n_groups))
+            for p_local_idx in range(len(data.person_ids)):
+                pid = int(data.person_ids[p_local_idx])
+                actual_gid = person_group_map.get(pid)
+                predicted_gid = predictions[p_local_idx]
+                if actual_gid is not None and actual_gid in gid_to_pos:
+                    contingency[gid_to_pos[actual_gid], gid_to_pos[predicted_gid]] += 1
+
+            row_sums = contingency.sum(axis=1, keepdims=True)
+            col_sums = contingency.sum(axis=0, keepdims=True)
+            total = contingency.sum()
+
+            mi = 0.0
+            for i in range(n_groups):
+                for j in range(n_groups):
+                    p_joint = contingency[i, j] / total if total > 0 else 0
+                    p_row = row_sums[i, 0] / total if total > 0 else 0
+                    p_col = col_sums[0, j] / total if total > 0 else 0
+                    if p_joint > 0 and p_row > 0 and p_col > 0:
+                        mi += p_joint * np.log(p_joint / (p_row * p_col))
+
+            normalized_ig = mi / h_group if h_group > 0 else 0.0
+
+            cat_gg_sims = []
+            for rec in gg_records:
+                if rec["per_category"] and str(cat_id) in rec["per_category"]:
+                    cat_gg_sims.append(rec["per_category"][str(cat_id)])
+            variance_score = float(np.var(cat_gg_sims)) if cat_gg_sims else 0.0
+
+            per_group_breakdown = {}
+            for i, gid in enumerate(group_ids_int):
+                n_actual = row_sums[i, 0]
+                if n_actual > 0:
+                    accuracy = float(contingency[i, i] / n_actual)
+                else:
+                    accuracy = 0.0
+
+                non_diag = np.delete(contingency[i], i)
+                most_confused_pos = int(np.argmax(non_diag))
+                if most_confused_pos >= i:
+                    most_confused_pos += 1
+                most_confused_gid = group_ids_int[most_confused_pos] if n_groups > 1 else None
+
+                if n_actual > 0:
+                    p_pred_given = contingency[i] / n_actual
+                else:
+                    p_pred_given = np.ones(n_groups) / n_groups
+                if total > 0:
+                    p_pred_overall = col_sums[0] / total
+                else:
+                    p_pred_overall = np.ones(n_groups) / n_groups
+                mask = p_pred_given > 0
+                kl = float(np.sum(
+                    p_pred_given[mask] * np.log(
+                        p_pred_given[mask] / p_pred_overall[mask]
+                    )
+                )) if mask.any() else 0.0
+
+                most_confused_sim = None
+                if most_confused_gid is not None:
+                    for rec in gg_records:
+                        a, b = rec["group_a_id"], rec["group_b_id"]
+                        pair_match = (
+                            (a == gid and b == most_confused_gid)
+                            or (b == gid and a == most_confused_gid)
+                        )
+                        if pair_match:
+                            pc = rec.get("per_category")
+                            most_confused_sim = (
+                                pc.get(str(cat_id)) if pc else None
+                            )
+                            break
+
+                per_group_breakdown[str(gid)] = {
+                    "accuracy": accuracy,
+                    "most_confused_with": most_confused_gid,
+                    "most_confused_similarity": most_confused_sim,
+                    "kl_divergence": kl,
+                }
+
+            cd_rows.append({
+                "category_id": int(cat_id),
+                "info_gain": float(mi),
+                "normalized_ig": float(normalized_ig),
+                "variance_score": float(variance_score),
+                "per_group_breakdown": per_group_breakdown,
+            })
+
+        if cd_rows:
+            await session.execute(insert(CategoryDiscriminativeness), cd_rows)
+            await session.flush()
+        print(f"  {len(cd_rows)} categories processed")
 
         await session.commit()
         print("Done!")

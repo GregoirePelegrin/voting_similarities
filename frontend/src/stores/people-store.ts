@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { PersonOut, PersonDetailOut } from "../api/types";
-import { getPeople, getPerson } from "../api/people";
+import { PersonOut, PersonDetailOut, CategoryAlignmentOut } from "../api/types";
+import { getPeople, getPerson, getCategoryAlignment } from "../api/people";
 import UiStore from "./ui-store";
 
 class PeopleStore {
@@ -10,6 +10,7 @@ class PeopleStore {
   pageSize = 50;
   groupId: number | null = null;
   selectedPerson: PersonDetailOut | null = null;
+  categoryAlignment: CategoryAlignmentOut[] = [];
   private ui: UiStore;
 
   constructor(ui: UiStore) {
@@ -36,6 +37,17 @@ class PeopleStore {
       const data = await getPerson(id, category ?? undefined);
       runInAction(() => {
         this.selectedPerson = data;
+      });
+    } catch {
+      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+    }
+  }
+
+  async fetchCategoryAlignment(personId: number) {
+    try {
+      const data = await getCategoryAlignment(personId);
+      runInAction(() => {
+        this.categoryAlignment = data;
       });
     } catch {
       this.ui.setError("Could not connect to the API. Please ensure the backend is running.");

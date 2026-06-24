@@ -8,6 +8,7 @@ import CategoryFilter from "../components/shared/category-filter";
 import CohesivityGauge from "../components/groups/cohesivity-gauge";
 import SimilarGroupsList from "../components/groups/similar-groups-list";
 import CategoryHeatmap from "../components/groups/category-heatmap";
+import DeterminantCategoriesCard from "../components/groups/determinant-categories-card";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 
 const GroupDetailPage: React.FC = observer(() => {
@@ -20,6 +21,12 @@ const GroupDetailPage: React.FC = observer(() => {
       groups.fetchGroup(groupId, ui.selectedCategory);
     }
   }, [groupId, ui.selectedCategory]);
+
+  useEffect(() => {
+    if (groupId) {
+      groups.fetchDeterminantCategories(groupId);
+    }
+  }, [groupId]);
 
   const group = groups.selectedGroup;
 
@@ -55,6 +62,9 @@ const GroupDetailPage: React.FC = observer(() => {
         </Grid>
         <Grid item xs={12}>
           <CategoryHeatmap similarGroups={group.similar_groups} groupColor={group.color} />
+        </Grid>
+        <Grid item xs={12}>
+          <DeterminantCategoriesCard categories={groups.determinantCategories} />
         </Grid>
       </Grid>
     </AnimatedPage>

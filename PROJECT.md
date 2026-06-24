@@ -30,6 +30,12 @@ A web application for analyzing and comparing how individuals and groups vote on
   - Cohesivity score (how internally similar the members are)
   - All other groups ranked by similarity
   - Per-category breakdown of similarity
+  - Determinant categories: which categories best predict this group's identity (information gain)
+
+**4. Explainability**
+- Per-category information gain: measures how much knowing answers in a category reduces uncertainty about group membership
+- Per-group breakdown: for each category, classification accuracy and most-confused-with group
+- Per-person category alignment: how well each category aligns a person with their own group vs. others
 
 ---
 
@@ -123,6 +129,38 @@ Group-level similarity is computed by averaging member similarity scores (or usi
 
 ---
 
+## Explainability: Category Discriminativeness
+
+### Information gain (primary metric)
+
+For each category, we measure how well it predicts group membership using **mutual information** (information gain):
+
+1. For each person, find the group they are most similar to in that category (using per-category PersonGroupSim data)
+2. Build a contingency table: `actual_group × predicted_group_from_category`
+3. Compute mutual information I(Group; PredictedGroup | category)
+4. Normalize by H(Group) to get a fraction: "what % of group uncertainty does this category resolve?"
+
+### Per-group breakdown
+
+For each group in each category:
+- **Accuracy**: fraction of members correctly predicted to belong to their group
+- **Most confused with**: the group most commonly mis-assigned to this group's members
+- **KL divergence**: how the predicted-group distribution for this group's members differs from the overall prediction distribution
+
+### Variance-based discriminativeness (supplementary)
+
+From GroupGroupSim.per_category: for each category, compute the variance of inter-group similarities. High variance = some groups are very similar, some very different = more discriminative. This complements IG by showing descriptive polarization alongside predictive power.
+
+### Per-person category alignment
+
+For a given person p in group g, per-category alignment is:
+```
+alignment_c = similarity_to_own_group_c - mean(similarity_to_other_groups_c)
+```
+Positive = this category makes the person fit their group. Negative = this category makes them unusual. Computed on-the-fly from existing PersonGroupSim.per_category data — no additional batch computation needed.
+
+---
+
 ## Architecture
 
 ```
@@ -140,6 +178,9 @@ Group-level similarity is computed by averaging member similarity scores (or usi
 │  Backend (FastAPI + SQLAlchemy)              │
 │  - /health                                   │
 │  - /categories, /questions                   │
+│  - /categories/discriminativeness            │
+│  - /groups/{id}/determinant-categories       │
+│  - /people/{id}/category-alignment           │
 │  - /people, /people/{id}                     │
 │  - /groups, /groups/{id}                     │
 │  - /embeddings/people, /embeddings/groups    │
@@ -155,6 +196,7 @@ Group-level similarity is computed by averaging member similarity scores (or usi
 │  - group_cohesivity (pre-computed)           │
 │  - person_embedding (pre-computed MDS)       │
 │  - group_embedding (pre-computed MDS)        │
+│  - category_discriminativeness (pre-computed)│
 └─────────────────────────────────────────────┘
 ```
 
@@ -170,6 +212,7 @@ Group-level similarity is computed by averaging member similarity scores (or usi
 | `group_cohesivity` | **12** | Mean intra-group similarity |
 | `person_embedding` | 700 × 13 ≈ **9,100** | MDS 2D coordinates per category |
 | `group_embedding` | 12 × 13 ≈ **156** | MDS 2D coordinates per category |
+| `category_discriminativeness` | **12** | Information gain + variance per category |
 
 All computed via a **batch job** (CLI command) that:
 1. Loads all answers into a sparse matrix (people × questions)
@@ -193,6 +236,7 @@ GroupGroupSim    group_a_id, group_b_id, similarity, per_category (JSON)
 GroupCohesivity  group_id, cohesivity, per_category (JSON)
 PersonEmbedding  person_id, category_id (nullable), x, y, stress
 GroupEmbedding   group_id, category_id (nullable), x, y, stress
+CategoryDiscriminativeness  category_id, info_gain, normalized_ig, variance_score, per_group_breakdown (JSON)
 ```
 
 ---
@@ -249,8 +293,11 @@ The frontend reads:
 - `GET /groups/{id}` (cohesivity + similar groups + per-category breakdown)
 - `GET /categories`
 - `GET /questions`
+- `GET /categories/discriminativeness`
 - `GET /embeddings/people?category=` (MDS coordinates + stress + barycenters)
 - `GET /embeddings/groups?category=` (MDS coordinates + stress)
+- `GET /groups/{id}/determinant-categories`
+- `GET /people/{id}/category-alignment`
 - **Deliverable:** complete REST API
 
 ### Phase 4 — Frontend: Similarity Map (landing page)
@@ -272,6 +319,9 @@ The frontend reads:
   - Cohesivity gauge/score
   - Ranked list of other groups by similarity
   - Per-category similarity heatmap
+  - Determinant categories card (information gain + accuracy + confusion)
+- Person detail page:
+  - Category alignment card (per-category alignment with own group vs others)
 - **Deliverable:** browsable People & Groups Views
 
 ### Phase 6 — Polish & deployment

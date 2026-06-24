@@ -1,5 +1,5 @@
 import { apiFetch } from "./client";
-import { PaginatedPeopleOut, PersonDetailOut } from "./types";
+import { PaginatedPeopleOut, PersonDetailOut, CategoryAlignmentOut } from "./types";
 
 export function getPeople(
   page: number,
@@ -22,4 +22,10 @@ export function getPerson(
   if (category != null) params.set("category", String(category));
   const qs = params.toString();
   return apiFetch(`/people/${id}${qs ? "?" + qs : ""}`);
+}
+
+export function getCategoryAlignment(
+  personId: number
+): Promise<CategoryAlignmentOut[]> {
+  return apiFetch(`/people/${personId}/category-alignment`);
 }
