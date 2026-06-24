@@ -57,7 +57,7 @@ def _pp_data_to_rows(pp_data, offset, size):
 
 
 async def run(config: SimilarityConfig):
-    engine = create_async_engine(settings.DATABASE_URL, echo=False)
+    engine = create_async_engine(settings.DATABASE_URL, echo=settings.DB_ECHO)
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
 
     async with session_factory() as session:
@@ -220,16 +220,20 @@ def main():
         description="Compute pairwise and group similarity scores"
     )
     parser.add_argument(
-        "--w-yes", type=float, default=1.0, help="Weight for Yes-Yes agreement"
+        "--w-yes", type=float, default=settings.SIMILARITY_W_YES,
+        help="Weight for Yes-Yes agreement"
     )
     parser.add_argument(
-        "--w-no", type=float, default=0.2, help="Weight for No-No agreement"
+        "--w-no", type=float, default=settings.SIMILARITY_W_NO,
+        help="Weight for No-No agreement"
     )
     parser.add_argument(
-        "--w-mismatch", type=float, default=0.5, help="Penalty for disagreement"
+        "--w-mismatch", type=float, default=settings.SIMILARITY_W_MISMATCH,
+        help="Penalty for disagreement"
     )
     parser.add_argument(
-        "--m", type=int, default=10, help="Bayesian shrinkage parameter"
+        "--m", type=int, default=settings.SIMILARITY_BAYESIAN_M,
+        help="Bayesian shrinkage parameter"
     )
     args = parser.parse_args()
 

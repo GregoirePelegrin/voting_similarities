@@ -127,20 +127,22 @@ Group-level similarity is computed by averaging member similarity scores (or usi
 
 ```
 ┌─────────────────────────────────────────────┐
-│  Frontend (React + MUI + Recharts)          │
+│  Frontend (React + MUI + MobX + Recharts)   │
 │  - Similarity map (MDS scatter plots)       │
 │  - People table / detail views              │
 │  - Groups table / detail views              │
 │  - Category filtering                       │
 │  - Similarity bar charts / heatmaps         │
+│  - Error dialog on API unavailability       │
 └──────────────────┬──────────────────────────┘
                    │ REST API
 ┌──────────────────▼──────────────────────────┐
 │  Backend (FastAPI + SQLAlchemy)              │
-│  - /embeddings/people, /embeddings/groups    │
+│  - /health                                   │
+│  - /categories, /questions                   │
 │  - /people, /people/{id}                     │
 │  - /groups, /groups/{id}                     │
-│  - /categories                               │
+│  - /embeddings/people, /embeddings/groups    │
 │  - Serves pre-computed similarity + MDS data │
 └──────────────────┬──────────────────────────┘
                    │
@@ -180,18 +182,46 @@ All computed via a **batch job** (CLI command) that:
 ## Data Model
 
 ```
-Group          id, name
+Group          id, name, color
 Person         id, name, group_id (FK → Group)
-Question       id, text, category_ids (M2M → Category)
+Question       id, text, description (nullable), category_ids (M2M → Category)
 Category       id, name
 Answer         person_id, question_id, value (bool), answered_at
-PersonPersonSim  person_a_id, person_b_id, similarity, raw_similarity, shared_count, confidence (float)
-PersonGroupSim   person_id, group_id, similarity, shared_count, confidence (float)
-GroupGroupSim    group_a_id, group_b_id, similarity, per_category_json
-GroupCohesivity  group_id, cohesivity, per_category_json
-PersonEmbedding  person_id, category_id (nullable), x, y
-GroupEmbedding   group_id, category_id (nullable), x, y
+PersonPersonSim  person_a_id, person_b_id, similarity, raw_similarity, shared_count, confidence, per_category (JSON)
+PersonGroupSim   person_id, group_id, similarity, shared_count, confidence, per_category (JSON)
+GroupGroupSim    group_a_id, group_b_id, similarity, per_category (JSON)
+GroupCohesivity  group_id, cohesivity, per_category (JSON)
+PersonEmbedding  person_id, category_id (nullable), x, y, stress
+GroupEmbedding   group_id, category_id (nullable), x, y, stress
 ```
+
+---
+
+## Configuration
+
+The backend uses `pydantic-settings` and reads from environment variables or a `.env` file in the project root. Copy `.env.example` to `.env` and customize as needed:
+
+| Variable | Default | Description |
+|---|---|---|
+| `DATABASE_URL` | `sqlite+aiosqlite:///data/dev.db` | Database connection string |
+| `API_PORT` | `8000` | Port for the uvicorn server |
+| `API_HOST` | `0.0.0.0` | Host for the uvicorn server |
+| `RELOAD` | `True` | Enable uvicorn auto-reload (disable in production) |
+| `CORS_ORIGINS` | `["*"]` | Allowed CORS origins (JSON list) |
+| `DB_ECHO` | `False` | Echo SQL statements to logs |
+| `DB_POOL_SIZE` | `5` | SQLAlchemy connection pool size (PostgreSQL only) |
+| `LOG_LEVEL` | `INFO` | Python logging level (DEBUG, INFO, WARNING, ERROR) |
+| `SIMILARITY_W_YES` | `1.0` | Weight for Yes-Yes agreement in similarity metric |
+| `SIMILARITY_W_NO` | `0.2` | Weight for No-No agreement in similarity metric |
+| `SIMILARITY_W_MISMATCH` | `0.5` | Penalty for disagreement in similarity metric |
+| `SIMILARITY_BAYESIAN_M` | `10` | Bayesian shrinkage strength (shared questions needed to trust pair data) |
+
+The similarity parameters (`SIMILARITY_*`) serve as defaults for the batch computation CLI, which also accepts `--w-yes`, `--w-no`, `--w-mismatch`, and `--m` as command-line overrides.
+
+The frontend reads:
+| Variable | Default | Description |
+|---|---|---|
+| `REACT_APP_API_URL` | `http://localhost:8000` | Backend API base URL |
 
 ---
 
@@ -212,11 +242,13 @@ GroupEmbedding   group_id, category_id (nullable), x, y
 - **Deliverable:** `compute-similarities` CLI command, all tables populated
 
 ### Phase 3 — API endpoints
+- `GET /health`
 - `GET /people` (list, filterable by group)
 - `GET /people/{id}` (answers + similar/dissimilar persons + group comparisons)
 - `GET /groups` (list with aggregate stats)
 - `GET /groups/{id}` (cohesivity + similar groups + per-category breakdown)
 - `GET /categories`
+- `GET /questions`
 - `GET /embeddings/people?category=` (MDS coordinates + stress + barycenters)
 - `GET /embeddings/groups?category=` (MDS coordinates + stress)
 - **Deliverable:** complete REST API
@@ -246,6 +278,7 @@ GroupEmbedding   group_id, category_id (nullable), x, y
 - Category filtering on all views
 - Page transitions, loading skeletons, responsive layout
 - Methodology panel accessible from map page
+- Error dialog for API unavailability (with retry/dismiss)
 - Dockerfile + docker-compose (API + DB)
 - Performance tuning (pagination, indexing)
 - **Deliverable:** production-ready deployable app
