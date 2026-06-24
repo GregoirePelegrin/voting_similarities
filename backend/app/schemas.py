@@ -19,6 +19,16 @@ class AnswerOut(BaseModel):
     value: bool
 
 
+class RoleOut(BaseModel):
+    id: int
+    name: str
+
+
+class CommissionOut(BaseModel):
+    id: int
+    name: str
+
+
 class GroupSummaryOut(BaseModel):
     id: int
     name: str
@@ -36,7 +46,8 @@ class GroupListOut(BaseModel):
 
 class SimilarPersonOut(BaseModel):
     id: int
-    name: str
+    firstname: str
+    lastname: str
     similarity: float
     confidence: float
     shared_count: int
@@ -53,14 +64,24 @@ class GroupComparisonOut(BaseModel):
 
 class PersonOut(BaseModel):
     id: int
-    name: str
+    firstname: str
+    lastname: str
     group_id: int
+    group_name: str
+    group_color: str
+    role: str | None = None
+    commission: str | None = None
+    circonscription: str | None = None
 
 
 class PersonDetailOut(BaseModel):
     id: int
-    name: str
+    firstname: str
+    lastname: str
     group: GroupSummaryOut
+    role: str | None = None
+    commission: str | None = None
+    circonscription: str | None = None
     answers: list[AnswerOut]
     similar_people: list[SimilarPersonOut]
     dissimilar_people: list[SimilarPersonOut]

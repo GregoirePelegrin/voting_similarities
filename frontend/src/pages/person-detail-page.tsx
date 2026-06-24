@@ -42,7 +42,7 @@ const PersonDetailPage: React.FC = observer(() => {
     <AnimatedPage>
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Typography variant="h4">{person.name}</Typography>
+          <Typography variant="h4">{person.firstname} {person.lastname}</Typography>
           <Chip
             label={person.group.name}
             size="small"

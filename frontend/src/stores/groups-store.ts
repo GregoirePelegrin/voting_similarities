@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { GroupListOut, GroupDetailOut, DeterminantCategoryOut } from "../api/types";
+import { GroupListOut, GroupDetailOut, DeterminantCategoryOut, SimilarGroupOut } from "../api/types";
 import { getGroups, getGroup, getDeterminantCategories } from "../api/groups";
 import UiStore from "./ui-store";
 
@@ -7,6 +7,7 @@ class GroupsStore {
   groups: GroupListOut[] = [];
   selectedGroup: GroupDetailOut | null = null;
   determinantCategories: DeterminantCategoryOut[] = [];
+  heatmapSimilarGroups: SimilarGroupOut[] = [];
   private ui: UiStore;
 
   constructor(ui: UiStore) {
@@ -30,6 +31,9 @@ class GroupsStore {
       const data = await getGroup(id, category ?? undefined);
       runInAction(() => {
         this.selectedGroup = data;
+        if (category == null) {
+          this.heatmapSimilarGroups = data.similar_groups;
+        }
       });
     } catch {
       this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
@@ -45,6 +49,12 @@ class GroupsStore {
     } catch {
       this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
     }
+  }
+
+  clearGroupDetail() {
+    this.selectedGroup = null;
+    this.heatmapSimilarGroups = [];
+    this.determinantCategories = [];
   }
 }
 

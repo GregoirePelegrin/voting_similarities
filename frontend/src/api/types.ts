@@ -32,7 +32,8 @@ export interface GroupListOut {
 
 export interface SimilarPersonOut {
   id: number;
-  name: string;
+  firstname: string;
+  lastname: string;
   similarity: number;
   confidence: number;
   shared_count: number;
@@ -49,14 +50,24 @@ export interface GroupComparisonOut {
 
 export interface PersonOut {
   id: number;
-  name: string;
+  firstname: string;
+  lastname: string;
   group_id: number;
+  group_name: string;
+  group_color: string;
+  role: string | null;
+  commission: string | null;
+  circonscription: string | null;
 }
 
 export interface PersonDetailOut {
   id: number;
-  name: string;
+  firstname: string;
+  lastname: string;
   group: GroupSummaryOut;
+  role: string | null;
+  commission: string | null;
+  circonscription: string | null;
   answers: AnswerOut[];
   similar_people: SimilarPersonOut[];
   dissimilar_people: SimilarPersonOut[];

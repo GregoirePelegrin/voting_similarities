@@ -7,6 +7,7 @@ from app.models import (
     Answer,
     Category,
     CategoryDiscriminativeness,
+    Commission,
     Group,
     GroupCohesivity,
     GroupEmbedding,
@@ -16,6 +17,7 @@ from app.models import (
     PersonGroupSim,
     PersonPersonSim,
     Question,
+    Role,
     question_category,
 )
 from app.schemas import (
@@ -94,8 +96,42 @@ async def list_people(
     result = await db.execute(query.order_by(Person.id).offset(offset).limit(page_size))
     people = result.scalars().all()
 
+    group_ids = {p.group_id for p in people}
+    role_ids = {p.role_id for p in people if p.role_id}
+    comm_ids = {p.commission_id for p in people if p.commission_id}
+
+    g_result = await db.execute(
+        select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
+    )
+    group_map = {r[0]: (r[1], r[2]) for r in g_result.all()}
+
+    role_map = {}
+    if role_ids:
+        r_result = await db.execute(select(Role.id, Role.name).where(Role.id.in_(role_ids)))
+        role_map = dict(r_result.all())
+
+    comm_map = {}
+    if comm_ids:
+        c_result = await db.execute(
+            select(Commission.id, Commission.name).where(Commission.id.in_(comm_ids))
+        )
+        comm_map = dict(c_result.all())
+
     return PaginatedPeopleOut(
-        items=[PersonOut(id=p.id, name=p.name, group_id=p.group_id) for p in people],
+        items=[
+            PersonOut(
+                id=p.id,
+                firstname=p.firstname,
+                lastname=p.lastname,
+                group_id=p.group_id,
+                group_name=group_map.get(p.group_id, ("Unknown", "#808080"))[0],
+                group_color=group_map.get(p.group_id, ("Unknown", "#808080"))[1],
+                role=role_map.get(p.role_id) if p.role_id else None,
+                commission=comm_map.get(p.commission_id) if p.commission_id else None,
+                circonscription=p.circonscription,
+            )
+            for p in people
+        ],
         total=total,
         page=page,
         page_size=page_size,
@@ -163,20 +199,32 @@ async def get_person(
     person_map = {}
     if all_sim_ids:
         p_result = await db.execute(
-            select(Person.id, Person.name).where(Person.id.in_(all_sim_ids))
+            select(Person.id, Person.firstname, Person.lastname).where(
+                Person.id.in_(all_sim_ids)
+            )
         )
-        person_map = dict(p_result.all())
+        person_map = {r[0]: (r[1], r[2]) for r in p_result.all()}
 
     similar_people = [
         SimilarPersonOut(
-            id=oid, name=person_map[oid], similarity=sim, confidence=conf, shared_count=sc
+            id=oid,
+            firstname=person_map[oid][0],
+            lastname=person_map[oid][1],
+            similarity=sim,
+            confidence=conf,
+            shared_count=sc,
         )
         for oid, sim, conf, sc in similar
         if oid in person_map
     ]
     dissimilar_people = [
         SimilarPersonOut(
-            id=oid, name=person_map[oid], similarity=sim, confidence=conf, shared_count=sc
+            id=oid,
+            firstname=person_map[oid][0],
+            lastname=person_map[oid][1],
+            similarity=sim,
+            confidence=conf,
+            shared_count=sc,
         )
         for oid, sim, conf, sc in dissimilar
         if oid in person_map
@@ -228,12 +276,28 @@ async def get_person(
         )
     ).scalar()
 
+    role_name = None
+    if person.role_id:
+        role = await db.get(Role, person.role_id)
+        if role:
+            role_name = role.name
+
+    commission_name = None
+    if person.commission_id:
+        comm = await db.get(Commission, person.commission_id)
+        if comm:
+            commission_name = comm.name
+
     return PersonDetailOut(
         id=person.id,
-        name=person.name,
+        firstname=person.firstname,
+        lastname=person.lastname,
         group=GroupSummaryOut(
             id=group.id, name=group.name, color=group.color, member_count=member_count
         ),
+        role=role_name,
+        commission=commission_name,
+        circonscription=person.circonscription,
         answers=answers,
         similar_people=similar_people,
         dissimilar_people=dissimilar_people,
@@ -382,11 +446,13 @@ async def get_people_embeddings(
     person_ids = [e.person_id for e in emb_rows]
 
     p_result = await db.execute(
-        select(Person.id, Person.name, Person.group_id).where(Person.id.in_(person_ids))
+        select(Person.id, Person.firstname, Person.lastname, Person.group_id).where(
+            Person.id.in_(person_ids)
+        )
     )
-    person_map = {r[0]: (r[1], r[2]) for r in p_result.all()}
+    person_map = {r[0]: (r[1], r[2], r[3]) for r in p_result.all()}
 
-    group_ids = {v[1] for v in person_map.values()}
+    group_ids = {v[2] for v in person_map.values()}
     g_result = await db.execute(
         select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
     )
@@ -397,7 +463,10 @@ async def get_people_embeddings(
     bary_count: dict[int, int] = {}
 
     for e in emb_rows:
-        pname, gid = person_map.get(e.person_id, ("Unknown", None))
+        fname, lname, gid = person_map.get(
+            e.person_id, ("Unknown", "", None)
+        )
+        pname = f"{fname} {lname}".strip()
         if gid:
             gname, gcolor = group_map.get(gid, ("Unknown", "#808080"))
         else:

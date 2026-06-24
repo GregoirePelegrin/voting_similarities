@@ -11,6 +11,7 @@ and answers with realistic correlated voting patterns.
 
 import asyncio
 from datetime import datetime, timedelta
+from pathlib import Path
 from random import Random
 
 import numpy as np
@@ -20,9 +21,11 @@ from app.config import settings
 from app.models import (
     Answer,
     Category,
+    Commission,
     Group,
     Person,
     Question,
+    Role,
 )
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -95,8 +98,13 @@ QUESTION_TEMPLATES = [
 
 
 def reset_schema():
-    alembic_cfg = AlembicConfig("alembic.ini")
+    backend_dir = Path(__file__).resolve().parent.parent
+    ini_path = backend_dir / "alembic.ini"
+    alembic_cfg = AlembicConfig(str(ini_path))
     alembic_cfg.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+    alembic_cfg.set_main_option(
+        "script_location", str(backend_dir / "migrations")
+    )
     command.downgrade(alembic_cfg, "base")
     command.upgrade(alembic_cfg, "head")
 
@@ -118,6 +126,25 @@ async def seed_data():
         # --- Groups ---
         groups = [Group(name=name, color=GROUP_COLORS[i]) for i, name in enumerate(GROUP_NAMES)]
         session.add_all(groups)
+        await session.flush()
+
+        # --- Roles ---
+        role_names = ["President", "Vice-president", "Secretaire", "Membre"]
+        roles = [Role(name=name) for name in role_names]
+        session.add_all(roles)
+        await session.flush()
+
+        # --- Commissions ---
+        commission_names = [
+            "Finance",
+            "Ethics",
+            "Security",
+            "Education",
+            "Health",
+            "Infrastructure",
+        ]
+        commissions = [Commission(name=name) for name in commission_names]
+        session.add_all(commissions)
         await session.flush()
 
         # --- Questions ---
@@ -162,14 +189,40 @@ async def seed_data():
             )
 
         # --- People ---
+        first_names = [
+            "Jean", "Marie", "Pierre", "Sophie", "Luc", "Claire", "Thomas",
+            "Isabelle", "Nicolas", "Anne", "Philippe", "Catherine", "Antoine",
+            "Julie", "Marc", "Nathalie", "Laurent", "Veronique", "David",
+            "Christine", "Francois", "Sandrine", "Michel", "Stephanie",
+            "Alexandre", "Emilie", "Bruno", "Helene", "Olivier", "Caroline",
+        ]
+        last_names = [
+            "Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard",
+            "Petit", "Durand", "Leroy", "Moreau", "Simon", "Laurent",
+            "Lefebvre", "Michel", "Garcia", "David", "Bertrand", "Roux",
+            "Vincent", "Fournier", "Morel", "Girard", "Andre", "Lefevre",
+            "Mercier", "Dupont", "Lambert", "Bonnet", "Francois", "Martinez",
+        ]
+
         people = []
         group_sizes = np_rng.multinomial(
             NUM_PEOPLE, [1 / NUM_GROUPS] * NUM_GROUPS
         )
         for g_idx, _group in enumerate(groups):
             for _p_idx in range(group_sizes[g_idx]):
-                name = f"Person_{_group.name.split()[0]}_{_p_idx + 1:03d}"
-                person = Person(name=name, group_id=_group.id)
+                firstname = rng.choice(first_names)
+                lastname = rng.choice(last_names)
+                role = rng.choices(roles, weights=[1, 2, 3, 14])[0]
+                commission = rng.choice(commissions)
+                circonscription = f"Circonscription {rng.randint(1, 20):02d}"
+                person = Person(
+                    firstname=firstname,
+                    lastname=lastname,
+                    group_id=_group.id,
+                    role_id=role.id,
+                    commission_id=commission.id,
+                    circonscription=circonscription,
+                )
                 people.append(person)
 
         session.add_all(people)

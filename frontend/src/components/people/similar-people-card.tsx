@@ -21,7 +21,7 @@ const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, p
           {peopleList.map((p) => (
             <Box key={p.id} sx={{ mb: 1.5 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                <Typography variant="body2">{p.name}</Typography>
+                <Typography variant="body2">{p.firstname} {p.lastname}</Typography>
                 <Typography variant="caption" color="text.secondary">
                   {p.shared_count} shared
                 </Typography>

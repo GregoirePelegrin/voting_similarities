@@ -37,14 +37,38 @@ class Group(Base):
     members = relationship("Person", back_populates="group")
 
 
+class Role(Base):
+    __tablename__ = "roles"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False, unique=True)
+
+    members = relationship("Person", back_populates="role")
+
+
+class Commission(Base):
+    __tablename__ = "commissions"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(200), nullable=False, unique=True)
+
+    members = relationship("Person", back_populates="commission")
+
+
 class Person(Base):
     __tablename__ = "people"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(200), nullable=False)
+    firstname = Column(String(100), nullable=False)
+    lastname = Column(String(100), nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    role_id = Column(Integer, ForeignKey("roles.id"), nullable=True)
+    commission_id = Column(Integer, ForeignKey("commissions.id"), nullable=True)
+    circonscription = Column(String(200), nullable=True)
 
     group = relationship("Group", back_populates="members")
+    role = relationship("Role", back_populates="members")
+    commission = relationship("Commission", back_populates="members")
     answers = relationship("Answer", back_populates="person")
 
 

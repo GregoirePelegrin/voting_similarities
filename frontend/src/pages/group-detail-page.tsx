@@ -18,6 +18,13 @@ const GroupDetailPage: React.FC = observer(() => {
 
   useEffect(() => {
     if (groupId) {
+      ui.setCategory(null);
+      groups.clearGroupDetail();
+    }
+  }, [groupId]);
+
+  useEffect(() => {
+    if (groupId) {
       groups.fetchGroup(groupId, ui.selectedCategory);
     }
   }, [groupId, ui.selectedCategory]);
@@ -61,7 +68,7 @@ const GroupDetailPage: React.FC = observer(() => {
           <SimilarGroupsList groups={group.similar_groups} />
         </Grid>
         <Grid item xs={12}>
-          <CategoryHeatmap similarGroups={group.similar_groups} groupColor={group.color} />
+          <CategoryHeatmap similarGroups={groups.heatmapSimilarGroups} groupColor={group.color} />
         </Grid>
         <Grid item xs={12}>
           <DeterminantCategoriesCard categories={groups.determinantCategories} />
