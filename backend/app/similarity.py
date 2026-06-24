@@ -142,7 +142,9 @@ class PersonPersonData:
     cat_similarities: dict
 
 
-def compute_person_person_data(data, raw_sim, similarity, shared_count, confidence, cat_similarities):
+def compute_person_person_data(
+    data, raw_sim, similarity, shared_count, confidence, cat_similarities
+):
     n = len(data.person_ids)
     i_idx, j_idx = np.triu_indices(n, k=1)
 

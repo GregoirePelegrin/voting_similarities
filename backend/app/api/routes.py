@@ -8,8 +8,10 @@ from app.models import (
     Category,
     Group,
     GroupCohesivity,
+    GroupEmbedding,
     GroupGroupSim,
     Person,
+    PersonEmbedding,
     PersonGroupSim,
     PersonPersonSim,
     Question,
@@ -17,12 +19,16 @@ from app.models import (
 )
 from app.schemas import (
     AnswerOut,
+    BarycenterOut,
     CategoryOut,
+    EmbeddingPointOut,
     GroupComparisonOut,
     GroupDetailOut,
     GroupListOut,
+    GroupsEmbeddingOut,
     GroupSummaryOut,
     PaginatedPeopleOut,
+    PeopleEmbeddingOut,
     PersonDetailOut,
     PersonOut,
     QuestionOut,
@@ -221,7 +227,9 @@ async def get_person(
     return PersonDetailOut(
         id=person.id,
         name=person.name,
-        group=GroupSummaryOut(id=group.id, name=group.name, color=group.color, member_count=member_count),
+        group=GroupSummaryOut(
+            id=group.id, name=group.name, color=group.color, member_count=member_count
+        ),
         answers=answers,
         similar_people=similar_people,
         dissimilar_people=dissimilar_people,
@@ -352,4 +360,129 @@ async def get_group(
         cohesivity=cohesivity,
         per_category=per_category,
         similar_groups=similar_groups,
+    )
+
+
+@router.get("/embeddings/people", response_model=PeopleEmbeddingOut)
+async def get_people_embeddings(
+    category: int | None = None,
+    db: AsyncSession = Depends(get_db),
+):
+    emb_query = select(PersonEmbedding).where(PersonEmbedding.category_id == category)
+    emb_result = await db.execute(emb_query.order_by(PersonEmbedding.person_id))
+    emb_rows = emb_result.scalars().all()
+
+    if not emb_rows:
+        raise HTTPException(status_code=404, detail="No embeddings found for this category")
+
+    person_ids = [e.person_id for e in emb_rows]
+
+    p_result = await db.execute(
+        select(Person.id, Person.name, Person.group_id).where(Person.id.in_(person_ids))
+    )
+    person_map = {r[0]: (r[1], r[2]) for r in p_result.all()}
+
+    group_ids = {v[1] for v in person_map.values()}
+    g_result = await db.execute(
+        select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
+    )
+    group_map = {r[0]: (r[1], r[2]) for r in g_result.all()}
+
+    points = []
+    bary_sum: dict[int, list[float]] = {}
+    bary_count: dict[int, int] = {}
+
+    for e in emb_rows:
+        pname, gid = person_map.get(e.person_id, ("Unknown", None))
+        if gid:
+            gname, gcolor = group_map.get(gid, ("Unknown", "#808080"))
+        else:
+            gname, gcolor = "Unknown", "#808080"
+
+        points.append(
+            EmbeddingPointOut(
+                id=e.person_id,
+                name=pname,
+                group_id=gid,
+                group_name=gname,
+                group_color=gcolor,
+                color=gcolor,
+                x=e.x,
+                y=e.y,
+            )
+        )
+
+        if gid is not None:
+            bary_sum.setdefault(gid, [0.0, 0.0])
+            bary_sum[gid][0] += e.x
+            bary_sum[gid][1] += e.y
+            bary_count[gid] = bary_count.get(gid, 0) + 1
+
+    barycenters = []
+    for gid, (sx, sy) in bary_sum.items():
+        n = bary_count[gid]
+        gname, gcolor = group_map.get(gid, ("Unknown", "#808080"))
+        mc_result = await db.execute(
+            select(func.count()).select_from(Person).where(Person.group_id == gid)
+        )
+        mc = mc_result.scalar() or 0
+        barycenters.append(
+            BarycenterOut(
+                group_id=gid,
+                name=gname,
+                color=gcolor,
+                member_count=mc,
+                x=sx / n,
+                y=sy / n,
+            )
+        )
+
+    stress = emb_rows[0].stress if emb_rows else 0.0
+
+    return PeopleEmbeddingOut(
+        stress=stress,
+        category_id=category,
+        points=points,
+        barycenters=barycenters,
+    )
+
+
+@router.get("/embeddings/groups", response_model=GroupsEmbeddingOut)
+async def get_groups_embeddings(
+    category: int | None = None,
+    db: AsyncSession = Depends(get_db),
+):
+    emb_query = select(GroupEmbedding).where(GroupEmbedding.category_id == category)
+    emb_result = await db.execute(emb_query.order_by(GroupEmbedding.group_id))
+    emb_rows = emb_result.scalars().all()
+
+    if not emb_rows:
+        raise HTTPException(status_code=404, detail="No embeddings found for this category")
+
+    group_ids = [e.group_id for e in emb_rows]
+
+    g_result = await db.execute(
+        select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
+    )
+    group_map = {r[0]: (r[1], r[2]) for r in g_result.all()}
+
+    points = []
+    for e in emb_rows:
+        gname, gcolor = group_map.get(e.group_id, ("Unknown", "#808080"))
+        points.append(
+            EmbeddingPointOut(
+                id=e.group_id,
+                name=gname,
+                color=gcolor,
+                x=e.x,
+                y=e.y,
+            )
+        )
+
+    stress = emb_rows[0].stress if emb_rows else 0.0
+
+    return GroupsEmbeddingOut(
+        stress=stress,
+        category_id=category,
+        points=points,
     )

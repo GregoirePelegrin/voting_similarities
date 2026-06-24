@@ -1,4 +1,3 @@
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -11,7 +10,7 @@ class CategoryOut(BaseModel):
 class QuestionOut(BaseModel):
     id: int
     text: str
-    description: Optional[str] = None
+    description: str | None = None
     category_ids: list[int]
 
 
@@ -32,7 +31,7 @@ class GroupListOut(BaseModel):
     name: str
     color: str
     member_count: int
-    cohesivity: Optional[float] = None
+    cohesivity: float | None = None
 
 
 class SimilarPersonOut(BaseModel):
@@ -80,7 +79,7 @@ class SimilarGroupOut(BaseModel):
     name: str
     color: str
     similarity: float
-    per_category: Optional[dict[str, float]] = None
+    per_category: dict[str, float] | None = None
 
 
 class GroupDetailOut(BaseModel):
@@ -89,5 +88,38 @@ class GroupDetailOut(BaseModel):
     color: str
     member_count: int
     cohesivity: float
-    per_category: Optional[dict[str, float]] = None
+    per_category: dict[str, float] | None = None
     similar_groups: list[SimilarGroupOut]
+
+
+class EmbeddingPointOut(BaseModel):
+    id: int
+    name: str
+    group_id: int | None = None
+    group_name: str | None = None
+    group_color: str | None = None
+    color: str
+    x: float
+    y: float
+
+
+class BarycenterOut(BaseModel):
+    group_id: int
+    name: str
+    color: str
+    member_count: int
+    x: float
+    y: float
+
+
+class PeopleEmbeddingOut(BaseModel):
+    stress: float
+    category_id: int | None = None
+    points: list[EmbeddingPointOut]
+    barycenters: list[BarycenterOut]
+
+
+class GroupsEmbeddingOut(BaseModel):
+    stress: float
+    category_id: int | None = None
+    points: list[EmbeddingPointOut]

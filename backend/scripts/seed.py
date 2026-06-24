@@ -16,9 +16,6 @@ from random import Random
 import numpy as np
 from alembic import command
 from alembic.config import Config as AlembicConfig
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-
 from app.config import settings
 from app.models import (
     Answer,
@@ -26,8 +23,9 @@ from app.models import (
     Group,
     Person,
     Question,
-    question_category,
 )
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 SEED = 42
 NUM_GROUPS = 12
@@ -116,18 +114,16 @@ async def seed_data():
         categories = [Category(name=name) for name in CATEGORY_NAMES]
         session.add_all(categories)
         await session.flush()
-        cat_by_name = {c.name: c for c in categories}
 
         # --- Groups ---
         groups = [Group(name=name, color=GROUP_COLORS[i]) for i, name in enumerate(GROUP_NAMES)]
         session.add_all(groups)
         await session.flush()
-        group_by_name = {g.name: g for g in groups}
 
         # --- Questions ---
         # Each question belongs to 1-3 categories
         questions = []
-        for i in range(NUM_QUESTIONS):
+        for _i in range(NUM_QUESTIONS):
             template = rng.choice(QUESTION_TEMPLATES)
             num_cats = rng.choices([1, 2, 3], weights=[5, 3, 1])[0]
             chosen_cats = rng.sample(categories, num_cats)
@@ -170,10 +166,10 @@ async def seed_data():
         group_sizes = np_rng.multinomial(
             NUM_PEOPLE, [1 / NUM_GROUPS] * NUM_GROUPS
         )
-        for g_idx, group in enumerate(groups):
-            for p_idx in range(group_sizes[g_idx]):
-                name = f"Person_{group.name.split()[0]}_{p_idx + 1:03d}"
-                person = Person(name=name, group_id=group.id)
+        for g_idx, _group in enumerate(groups):
+            for _p_idx in range(group_sizes[g_idx]):
+                name = f"Person_{_group.name.split()[0]}_{_p_idx + 1:03d}"
+                person = Person(name=name, group_id=_group.id)
                 people.append(person)
 
         session.add_all(people)
@@ -186,8 +182,8 @@ async def seed_data():
         all_answers = []
         base_date = datetime(2025, 1, 1)
 
-        for g_idx, group in enumerate(groups):
-            for p_idx in range(group_sizes[g_idx]):
+        for g_idx, _group in enumerate(groups):
+            for _p_idx in range(group_sizes[g_idx]):
                 person = people[person_idx]
                 person_idx += 1
 
@@ -232,7 +228,7 @@ async def seed_data():
         result = await session.execute(select(func.count()).select_from(Answer))
         n_answers = result.scalar()
 
-        print(f"Seeded database with:")
+        print("Seeded database with:")
         print(f"  Groups:    {n_groups}")
         print(f"  People:    {n_people}")
         print(f"  Questions: {n_questions}")

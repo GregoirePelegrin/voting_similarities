@@ -1,6 +1,17 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Table, Text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Text,
+)
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -63,7 +74,7 @@ class Answer(Base):
     person_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
     question_id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
     value = Column(Boolean, nullable=False)
-    answered_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    answered_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     person = relationship("Person", back_populates="answers")
     question = relationship("Question", back_populates="answers")
@@ -107,3 +118,23 @@ class GroupCohesivity(Base):
     group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     cohesivity = Column(Float, nullable=False)
     per_category = Column(JSON, nullable=True)
+
+
+class PersonEmbedding(Base):
+    __tablename__ = "person_embedding"
+
+    person_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
+    category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True, nullable=True)
+    x = Column(Float, nullable=False)
+    y = Column(Float, nullable=False)
+    stress = Column(Float, nullable=False)
+
+
+class GroupEmbedding(Base):
+    __tablename__ = "group_embedding"
+
+    group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
+    category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True, nullable=True)
+    x = Column(Float, nullable=False)
+    y = Column(Float, nullable=False)
+    stress = Column(Float, nullable=False)
