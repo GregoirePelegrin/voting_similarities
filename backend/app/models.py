@@ -87,6 +87,7 @@ class Question(Base):
     id = Column(Integer, primary_key=True)
     text = Column(Text, nullable=False)
     description = Column(Text, nullable=True)
+    has_passed = Column(Boolean, nullable=False, default=False)
 
     categories = relationship("Category", secondary=question_category, back_populates="questions")
     answers = relationship("Answer", back_populates="question")

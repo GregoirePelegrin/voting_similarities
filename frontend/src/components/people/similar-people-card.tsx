@@ -8,9 +8,10 @@ interface SimilarPeopleCardProps {
   title: string;
   people: SimilarPersonOut[];
   color: string;
+  showSign?: boolean;
 }
 
-const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, people: peopleList, color }) => {
+const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, people: peopleList, color, showSign }) => {
   return (
     <Card sx={{ bgcolor: "background.paper", height: "100%" }}>
       <CardContent>
@@ -26,7 +27,7 @@ const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, p
                   {p.shared_count} shared
                 </Typography>
               </Box>
-              <SimilarityBar value={p.similarity} color={color} />
+              <SimilarityBar value={p.similarity} color={showSign && p.similarity < 0 ? "#E15759" : color} showSign={showSign} />
             </Box>
           ))}
         </Box>

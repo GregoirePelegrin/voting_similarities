@@ -6,8 +6,6 @@ import UiStore from "./ui-store";
 class PeopleStore {
   people: PersonOut[] = [];
   total = 0;
-  page = 1;
-  pageSize = 50;
   groupId: number | null = null;
   selectedPerson: PersonDetailOut | null = null;
   categoryAlignment: CategoryAlignmentOut[] = [];
@@ -18,11 +16,10 @@ class PeopleStore {
     makeAutoObservable(this);
   }
 
-  async fetchPeople(page?: number, groupId?: number | null) {
+  async fetchPeople(groupId?: number | null) {
     try {
-      if (page !== undefined) this.page = page;
       if (groupId !== undefined) this.groupId = groupId;
-      const data = await getPeople(this.page, this.pageSize, this.groupId ?? undefined);
+      const data = await getPeople(1, 2000, this.groupId ?? undefined);
       runInAction(() => {
         this.people = data.items;
         this.total = data.total;

@@ -265,6 +265,28 @@ async def seed_data():
                     )
 
         session.add_all(all_answers)
+        await session.flush()
+
+        # --- Compute has_passed for each question ---
+        from sqlalchemy import func as sa_func
+
+        for q in questions:
+            yes_count = (
+                await session.execute(
+                    select(sa_func.count())
+                    .select_from(Answer)
+                    .where(Answer.question_id == q.id, Answer.value)
+                )
+            ).scalar()
+            no_count = (
+                await session.execute(
+                    select(sa_func.count())
+                    .select_from(Answer)
+                    .where(Answer.question_id == q.id, ~Answer.value)
+                )
+            ).scalar()
+            q.has_passed = (yes_count or 0) > (no_count or 0)
+
         await session.commit()
 
         # --- Summary ---

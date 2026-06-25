@@ -10,6 +10,8 @@ import PeopleListPage from "./pages/people-list-page";
 import PersonDetailPage from "./pages/person-detail-page";
 import GroupsListPage from "./pages/groups-list-page";
 import GroupDetailPage from "./pages/group-detail-page";
+import QuestionsListPage from "./pages/questions-list-page";
+import QuestionDetailPage from "./pages/question-detail-page";
 
 const App = observer(() => {
   useEffect(() => {
@@ -27,6 +29,8 @@ const App = observer(() => {
             <Route path="/people/:id" element={<PersonDetailPage />} />
             <Route path="/groups" element={<GroupsListPage />} />
             <Route path="/groups/:id" element={<GroupDetailPage />} />
+            <Route path="/questions" element={<QuestionsListPage />} />
+            <Route path="/questions/:id" element={<QuestionDetailPage />} />
           </Routes>
         </AppShell>
       </BrowserRouter>

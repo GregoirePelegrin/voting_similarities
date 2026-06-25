@@ -11,12 +11,39 @@ class QuestionOut(BaseModel):
     id: int
     text: str
     description: str | None = None
+    has_passed: bool
     category_ids: list[int]
+
+
+class GroupAnswerStatsOut(BaseModel):
+    group_id: int
+    group_name: str
+    group_color: str
+    yes_count: int
+    no_count: int
+    missing_count: int
+    yes_rate: float
+
+
+class QuestionDetailOut(BaseModel):
+    id: int
+    text: str
+    description: str | None = None
+    has_passed: bool
+    category_ids: list[int]
+    category_names: list[str]
+    total_yes: int
+    total_no: int
+    total_missing: int
+    group_stats: list[GroupAnswerStatsOut]
 
 
 class AnswerOut(BaseModel):
     question_id: int
     value: bool
+    answered: bool = True
+    question_text: str | None = None
+    has_passed: bool | None = None
 
 
 class RoleOut(BaseModel):
@@ -83,6 +110,7 @@ class PersonDetailOut(BaseModel):
     commission: str | None = None
     circonscription: str | None = None
     answers: list[AnswerOut]
+    group_yes_rates: dict[str, float] | None = None
     similar_people: list[SimilarPersonOut]
     dissimilar_people: list[SimilarPersonOut]
     group_comparisons: list[GroupComparisonOut]

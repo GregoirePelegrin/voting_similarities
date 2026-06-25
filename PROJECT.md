@@ -16,13 +16,15 @@ A web application for analyzing and comparing how individuals and groups vote on
 - Methodology explanation panel describing MDS, stress, and interpretation
 
 **2. People View**
-- Table/list of all people with their answer history
+- Table/list of all people with group, role, commission, circonscription columns
 - Click on a person → detail page showing:
-  - Their individual answers (filterable by category)
-  - Comparison to their own group's aggregate votes
-  - Comparison to every other group's aggregate votes
+  - Collapsible info card (role, commission, circonscription)
+  - Segmented answer bar (5-color scheme: grey=no answer, green=yes same as group, blue=yes different from group, red=no same as group, purple=no different from group)
+  - Hoverable segments showing question text + outcome; clickable → question detail
+  - Comparison to every other group's aggregate votes (with info tooltip)
   - Top 5 most similar persons (with similarity score)
-  - Top 5 most dissimilar persons (with similarity score)
+  - Top 5 most dissimilar persons (with similarity score, negative values shown in red)
+  - Category alignment card (fixed -1/+1 scale)
 
 **3. Groups View**
 - Table of all groups with aggregate answer rates per question
@@ -36,6 +38,13 @@ A web application for analyzing and comparing how individuals and groups vote on
 - Per-category information gain: measures how much knowing answers in a category reduces uncertainty about group membership
 - Per-group breakdown: for each category, classification accuracy and most-confused-with group
 - Per-person category alignment: how well each category aligns a person with their own group vs. others
+
+**5. Questions View**
+- Table of all questions with ID, text, has_passed status, and categories
+- Click on a question → detail page showing:
+  - Question text, description, passed/not passed badge, categories
+  - Total yes/no/missing counts
+  - Per-group breakdown: yes rate, yes/no/missing counts, colored bar
 
 ---
 
@@ -177,7 +186,7 @@ Positive = this category makes the person fit their group. Negative = this categ
 ┌──────────────────▼──────────────────────────┐
 │  Backend (FastAPI + SQLAlchemy)              │
 │  - /health                                   │
-│  - /categories, /questions                   │
+│  - /categories, /questions, /questions/{id}  │
 │  - /categories/discriminativeness            │
 │  - /groups/{id}/determinant-categories       │
 │  - /people/{id}/category-alignment           │
@@ -226,8 +235,10 @@ All computed via a **batch job** (CLI command) that:
 
 ```
 Group          id, name, color
-Person         id, name, group_id (FK → Group)
-Question       id, text, description (nullable), category_ids (M2M → Category)
+Role           id, name
+Commission     id, name
+Person         id, firstname, lastname, group_id (FK → Group), role_id (FK → Role, nullable), commission_id (FK → Commission, nullable), circonscription (nullable)
+Question       id, text, description (nullable), has_passed (bool), category_ids (M2M → Category)
 Category       id, name
 Answer         person_id, question_id, value (bool), answered_at
 PersonPersonSim  person_a_id, person_b_id, similarity, raw_similarity, shared_count, confidence, per_category (JSON)

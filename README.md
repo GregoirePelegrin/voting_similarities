@@ -150,7 +150,8 @@ The database must contain data in the following tables: `groups`, `categories`, 
 |---|---|---|
 | GET | `/health` | Health check |
 | GET | `/categories` | List all categories |
-| GET | `/questions` | List all questions with their categories |
+| GET | `/questions` | List all questions with their categories and has_passed |
+| GET | `/questions/{id}` | Question detail with per-group answer stats |
 | GET | `/people?page=&page_size=&group_id=` | Paginated people list |
 | GET | `/people/{id}?category=` | Person detail with similar/dissimilar people, group comparisons |
 | GET | `/people/{id}/category-alignment` | Per-category alignment of a person with their group vs others |

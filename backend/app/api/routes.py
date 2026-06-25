@@ -28,6 +28,7 @@ from app.schemas import (
     CategoryOut,
     DeterminantCategoryOut,
     EmbeddingPointOut,
+    GroupAnswerStatsOut,
     GroupComparisonOut,
     GroupDetailOut,
     GroupListOut,
@@ -37,6 +38,7 @@ from app.schemas import (
     PeopleEmbeddingOut,
     PersonDetailOut,
     PersonOut,
+    QuestionDetailOut,
     QuestionOut,
     SimilarGroupOut,
     SimilarPersonOut,
@@ -71,16 +73,123 @@ async def list_questions(db: AsyncSession = Depends(get_db)):
             id=q.id,
             text=q.text,
             description=q.description,
+            has_passed=q.has_passed,
             category_ids=qid_to_cats.get(q.id, []),
         )
         for q in questions
     ]
 
 
+@router.get("/questions/{question_id}", response_model=QuestionDetailOut)
+async def get_question(
+    question_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    question = await db.get(Question, question_id)
+    if question is None:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    qc_result = await db.execute(
+        select(question_category.c.category_id).where(
+            question_category.c.question_id == question_id
+        )
+    )
+    cat_ids = [r[0] for r in qc_result.all()]
+
+    cat_result = await db.execute(select(Category).where(Category.id.in_(cat_ids)))
+    cat_names = [c.name for c in cat_result.scalars().all()]
+
+    total_yes = (
+        await db.execute(
+            select(func.count())
+            .select_from(Answer)
+            .where(Answer.question_id == question_id, Answer.value)
+        )
+    ).scalar() or 0
+    total_no = (
+        await db.execute(
+            select(func.count())
+            .select_from(Answer)
+            .where(Answer.question_id == question_id, ~Answer.value)
+        )
+    ).scalar() or 0
+
+    total_people = (
+        await db.execute(select(func.count()).select_from(Person))
+    ).scalar() or 0
+    total_missing = total_people - total_yes - total_no
+
+    all_groups = (
+        await db.execute(select(Group).order_by(Group.id))
+    ).scalars().all()
+
+    group_stats = []
+    for g in all_groups:
+        member_ids_result = await db.execute(
+            select(Person.id).where(Person.group_id == g.id)
+        )
+        member_ids = [r[0] for r in member_ids_result.all()]
+        n_members = len(member_ids)
+
+        g_yes = 0
+        g_no = 0
+        if member_ids:
+            g_yes = (
+                await db.execute(
+                    select(func.count())
+                    .select_from(Answer)
+                    .where(
+                        Answer.question_id == question_id,
+                        Answer.value,
+                        Answer.person_id.in_(member_ids),
+                    )
+                )
+            ).scalar() or 0
+            g_no = (
+                await db.execute(
+                    select(func.count())
+                    .select_from(Answer)
+                    .where(
+                        Answer.question_id == question_id,
+                        ~Answer.value,
+                        Answer.person_id.in_(member_ids),
+                    )
+                )
+            ).scalar() or 0
+
+        g_missing = n_members - g_yes - g_no
+        yes_rate = g_yes / (g_yes + g_no) if (g_yes + g_no) > 0 else 0.0
+
+        group_stats.append(
+            GroupAnswerStatsOut(
+                group_id=g.id,
+                group_name=g.name,
+                group_color=g.color,
+                yes_count=g_yes,
+                no_count=g_no,
+                missing_count=g_missing,
+                yes_rate=yes_rate,
+            )
+        )
+
+    return QuestionDetailOut(
+        id=question.id,
+        text=question.text,
+        description=question.description,
+        has_passed=question.has_passed,
+        category_ids=cat_ids,
+        category_names=cat_names,
+        total_yes=total_yes,
+        total_no=total_no,
+        total_missing=total_missing,
+        group_stats=group_stats,
+    )
+
+
 @router.get("/people", response_model=PaginatedPeopleOut)
 async def list_people(
     page: int = Query(1, ge=1),
-    page_size: int = Query(50, ge=1, le=200),
+    page_size: int = Query(50, ge=1, le=2000),
     group_id: int | None = None,
     db: AsyncSession = Depends(get_db),
 ):
@@ -151,11 +260,7 @@ async def get_person(
     group = await db.get(Group, person.group_id)
 
     # Answers
-    answer_query = (
-        select(Answer.question_id, Answer.value)
-        .where(Answer.person_id == person_id)
-        .order_by(Answer.question_id)
-    )
+    all_qid_query = select(Question.id).order_by(Question.id)
     if category is not None:
         cat_qids = (
             await db.execute(
@@ -164,11 +269,48 @@ async def get_person(
                 )
             )
         )
-        qids = [r[0] for r in cat_qids.all()]
-        answer_query = answer_query.where(Answer.question_id.in_(qids))
+        qids_in_cat = [r[0] for r in cat_qids.all()]
+        all_qid_query = select(Question.id).where(
+            Question.id.in_(qids_in_cat)
+        ).order_by(Question.id)
+
+    all_qid_result = await db.execute(all_qid_query)
+    all_qids = [r[0] for r in all_qid_result.all()]
+
+    answer_query = (
+        select(Answer.question_id, Answer.value)
+        .where(Answer.person_id == person_id)
+        .order_by(Answer.question_id)
+    )
+    if category is not None:
+        answer_query = answer_query.where(Answer.question_id.in_(qids_in_cat))
 
     answer_result = await db.execute(answer_query)
-    answers = [AnswerOut(question_id=r[0], value=r[1]) for r in answer_result.all()]
+    answer_rows = answer_result.all()
+    answer_map = {r[0]: r[1] for r in answer_rows}
+
+    q_text_map = {}
+    q_passed_map = {}
+    if all_qids:
+        q_result = await db.execute(
+            select(Question.id, Question.text, Question.has_passed).where(
+                Question.id.in_(all_qids)
+            )
+        )
+        for qid, qtext, qpassed in q_result.all():
+            q_text_map[qid] = qtext
+            q_passed_map[qid] = qpassed
+
+    answers = [
+        AnswerOut(
+            question_id=qid,
+            value=answer_map.get(qid, False),
+            answered=qid in answer_map,
+            question_text=q_text_map.get(qid),
+            has_passed=q_passed_map.get(qid),
+        )
+        for qid in all_qids
+    ]
 
     # Person-person similarity
     sim_result = await db.execute(
@@ -288,6 +430,38 @@ async def get_person(
         if comm:
             commission_name = comm.name
 
+    group_yes_rates = {}
+    own_member_ids_result = await db.execute(
+        select(Person.id).where(Person.group_id == group.id)
+    )
+    own_member_ids = [r[0] for r in own_member_ids_result.all()]
+    if own_member_ids and all_qids:
+        for qid in all_qids:
+            yes_count = (
+                await db.execute(
+                    select(func.count())
+                    .select_from(Answer)
+                    .where(
+                        Answer.question_id == qid,
+                        Answer.value,
+                        Answer.person_id.in_(own_member_ids),
+                    )
+                )
+            ).scalar() or 0
+            total_count = (
+                await db.execute(
+                    select(func.count())
+                    .select_from(Answer)
+                    .where(
+                        Answer.question_id == qid,
+                        Answer.person_id.in_(own_member_ids),
+                    )
+                )
+            ).scalar() or 0
+            group_yes_rates[str(qid)] = (
+                yes_count / total_count if total_count > 0 else 0.0
+            )
+
     return PersonDetailOut(
         id=person.id,
         firstname=person.firstname,
@@ -299,6 +473,7 @@ async def get_person(
         commission=commission_name,
         circonscription=person.circonscription,
         answers=answers,
+        group_yes_rates=group_yes_rates if group_yes_rates else None,
         similar_people=similar_people,
         dissimilar_people=dissimilar_people,
         group_comparisons=group_comparisons,

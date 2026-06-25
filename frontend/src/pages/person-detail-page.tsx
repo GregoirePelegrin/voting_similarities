@@ -9,6 +9,7 @@ import SimilarPeopleCard from "../components/people/similar-people-card";
 import AnswerGrid from "../components/people/answer-grid";
 import GroupComparisonBars from "../components/people/group-comparison-bars";
 import CategoryAlignmentCard from "../components/people/category-alignment-card";
+import PersonInfoCard from "../components/people/person-info-card";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 
 const PersonDetailPage: React.FC = observer(() => {
@@ -56,6 +57,12 @@ const PersonDetailPage: React.FC = observer(() => {
         <CategoryFilter />
       </Box>
 
+      <PersonInfoCard
+        role={person.role}
+        commission={person.commission}
+        circonscription={person.circonscription}
+      />
+
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <AnswerGrid answers={person.answers} />
@@ -72,6 +79,7 @@ const PersonDetailPage: React.FC = observer(() => {
             title="Least Similar"
             people={person.dissimilar_people}
             color="#E15759"
+            showSign
           />
         </Grid>
         <Grid item xs={12}>

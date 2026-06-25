@@ -1,8 +1,9 @@
 import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, Cell } from "recharts";
 import { observer } from "mobx-react-lite";
 import { GroupComparisonOut } from "../../api/types";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 interface GroupComparisonBarsProps {
   comparisons: GroupComparisonOut[];
@@ -27,7 +28,12 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = observer(({ comp
   return (
     <Card sx={{ bgcolor: "background.paper" }}>
       <CardContent>
-        <Typography variant="h6" sx={{ mb: 2 }}>Group Comparisons</Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+          <Typography variant="h6">Group Comparisons</Typography>
+          <Tooltip title="How similar this person's voting pattern is to each group. Similarity is based on weighted asymmetric overlap with Bayesian shrinkage. Confidence reflects the number of shared questions answered.">
+            <InfoOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
+          </Tooltip>
+        </Box>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{ left: 100, right: 40 }}>
             <XAxis type="number" domain={[0, "auto"]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} />

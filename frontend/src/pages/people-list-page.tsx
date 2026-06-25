@@ -9,7 +9,7 @@ const PeopleListPage: React.FC = observer(() => {
   const { people, ui } = rootStore;
 
   useEffect(() => {
-    people.fetchPeople(1);
+    people.fetchPeople();
   }, []);
 
   if (ui.loading && people.people.length === 0) {

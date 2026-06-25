@@ -5,10 +5,14 @@ interface SimilarityBarProps {
   value: number;
   color?: string;
   label?: string;
+  showSign?: boolean;
 }
 
-const SimilarityBar: React.FC<SimilarityBarProps> = ({ value, color = "#4A90D9", label }) => {
-  const pct = Math.max(0, Math.min(1, value)) * 100;
+const SimilarityBar: React.FC<SimilarityBarProps> = ({ value, color = "#4A90D9", label, showSign }) => {
+  const pct = Math.max(0, Math.min(1, Math.abs(value))) * 100;
+  const displayValue = showSign && value < 0
+    ? `${(value * 100).toFixed(1)}%`
+    : `${(Math.abs(value) * 100).toFixed(1)}%`;
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
@@ -28,8 +32,8 @@ const SimilarityBar: React.FC<SimilarityBarProps> = ({ value, color = "#4A90D9",
           }}
         />
       </Box>
-      <Typography variant="body2" sx={{ minWidth: 45, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-        {(value * 100).toFixed(1)}%
+      <Typography variant="body2" sx={{ minWidth: 50, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+        {displayValue}
       </Typography>
     </Box>
   );

@@ -17,6 +17,7 @@ import {
 import MapIcon from "@mui/icons-material/Map";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PeopleIcon from "@mui/icons-material/People";
+import QuizIcon from "@mui/icons-material/Quiz";
 import MenuIcon from "@mui/icons-material/Menu";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
@@ -28,6 +29,7 @@ const navItems = [
   { label: "Map", icon: <MapIcon />, path: "/" },
   { label: "People", icon: <PeopleIcon />, path: "/people" },
   { label: "Groups", icon: <GroupsIcon />, path: "/groups" },
+  { label: "Questions", icon: <QuizIcon />, path: "/questions" },
 ];
 
 const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {

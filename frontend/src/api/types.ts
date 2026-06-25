@@ -7,12 +7,39 @@ export interface QuestionOut {
   id: number;
   text: string;
   description: string | null;
+  has_passed: boolean;
   category_ids: number[];
+}
+
+export interface GroupAnswerStatsOut {
+  group_id: number;
+  group_name: string;
+  group_color: string;
+  yes_count: number;
+  no_count: number;
+  missing_count: number;
+  yes_rate: number;
+}
+
+export interface QuestionDetailOut {
+  id: number;
+  text: string;
+  description: string | null;
+  has_passed: boolean;
+  category_ids: number[];
+  category_names: string[];
+  total_yes: number;
+  total_no: number;
+  total_missing: number;
+  group_stats: GroupAnswerStatsOut[];
 }
 
 export interface AnswerOut {
   question_id: number;
   value: boolean;
+  answered: boolean;
+  question_text: string | null;
+  has_passed: boolean | null;
 }
 
 export interface GroupSummaryOut {
@@ -69,6 +96,7 @@ export interface PersonDetailOut {
   commission: string | null;
   circonscription: string | null;
   answers: AnswerOut[];
+  group_yes_rates: Record<string, number> | null;
   similar_people: SimilarPersonOut[];
   dissimilar_people: SimilarPersonOut[];
   group_comparisons: GroupComparisonOut[];

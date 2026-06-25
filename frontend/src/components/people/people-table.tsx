@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
@@ -35,12 +35,9 @@ const PeopleTable: React.FC = observer(() => {
       <DataGrid
         rows={rows}
         columns={columns}
-        paginationMode="server"
-        rowCount={people.total}
         pageSizeOptions={[25, 50, 100]}
-        paginationModel={{ page: people.page - 1, pageSize: people.pageSize }}
-        onPaginationModelChange={(model: GridPaginationModel) => {
-          people.fetchPeople(model.page + 1, people.groupId);
+        initialState={{
+          pagination: { paginationModel: { page: 0, pageSize: 50 } },
         }}
         onRowClick={(params) => navigate(`/people/${params.id}`)}
         sx={{
