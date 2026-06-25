@@ -8,8 +8,3 @@ It seems some items weren't properly implemented:
     into a vertical "category" box, which displays a list of the names,
     and another vertical "alignment" box, taking the rest of the space in the parent.
     In this "alignment" box, the alignment bars range is -1 to +1, fixed.
-- questions/people selection tables:
-    When arriving on this panel, we should get all the questions or all the people data.
-    This would allow us to sort across the entire data instead of simply the current page.
-- questions detail view:
-    I do not see any "No" votes in any of the sampled questions I've tried. Is it normal?

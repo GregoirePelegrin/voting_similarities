@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { AnswerOut } from "../../api/types";
@@ -32,13 +32,21 @@ function getSegmentLabel(answer: AnswerOut): string {
   return answer.has_passed ? "No — different from group" : "No — same as group";
 }
 
+function getSegmentTitle(answer: AnswerOut): string {
+  const label = getSegmentLabel(answer);
+  const outcome = answer.has_passed ? "Passed" : "Not passed";
+  return answer.question_text
+    ? `${answer.question_text} — ${label}${answer.answered ? ` · ${outcome}` : ""}`
+    : `Q${answer.question_id}: ${label}`;
+}
+
 const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
   const navigate = useNavigate();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   if (!answers || answers.length === 0) return null;
 
-  const segmentWidth = 100 / answers.length;
+  const hovered = hoveredIdx !== null ? answers[hoveredIdx] : null;
 
   return (
     <Card sx={{ bgcolor: "background.paper" }}>
@@ -59,33 +67,29 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
             cursor: "pointer",
           }}
         >
-          {answers.map((a, idx) => {
-            const color = getSegmentColor(a);
-            const label = getSegmentLabel(a);
-            const outcome = a.has_passed ? "Passed" : "Not passed";
-            const title = a.question_text
-              ? `${a.question_text} — ${label}${a.answered ? ` · ${outcome}` : ""}`
-              : `Q${a.question_id}: ${label}`;
-
-            return (
-              <Tooltip key={a.question_id} title={title} arrow placement="top">
-                <Box
-                  sx={{
-                    width: `${segmentWidth}%`,
-                    minWidth: 1,
-                    bgcolor: color,
-                    opacity: hoveredIdx === idx ? 1 : 0.85,
-                    transition: "opacity 0.15s",
-                    "&:hover": { opacity: 1 },
-                  }}
-                  onMouseEnter={() => setHoveredIdx(idx)}
-                  onMouseLeave={() => setHoveredIdx(null)}
-                  onClick={() => navigate(`/questions/${a.question_id}`)}
-                />
-              </Tooltip>
-            );
-          })}
+          {answers.map((a, idx) => (
+            <Box
+              key={a.question_id}
+              sx={{
+                flex: 1,
+                minWidth: 1,
+                bgcolor: getSegmentColor(a),
+                opacity: hoveredIdx === idx ? 1 : 0.85,
+                transition: "opacity 0.15s",
+                "&:hover": { opacity: 1 },
+              }}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+              onClick={() => navigate(`/questions/${a.question_id}`)}
+            />
+          ))}
         </Box>
+
+        {hovered && (
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
+            {getSegmentTitle(hovered)}
+          </Typography>
+        )}
 
         <Box sx={{ display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap" }}>
           {[
