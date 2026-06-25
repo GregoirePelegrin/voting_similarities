@@ -70,9 +70,10 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
           {answers.map((a, idx) => (
             <Box
               key={a.question_id}
+              style={{ flex: "1 1 0%" }}
+              borderRight={"1px solid rgba(0,0,0,0.3)"}
               sx={{
-                flex: 1,
-                minWidth: 1,
+                minWidth: "1px",
                 bgcolor: getSegmentColor(a),
                 opacity: hoveredIdx === idx ? 1 : 0.85,
                 transition: "opacity 0.15s",
