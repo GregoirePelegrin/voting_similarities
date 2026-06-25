@@ -64,9 +64,6 @@ const PersonDetailPage: React.FC = observer(() => {
       />
 
       <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <AnswerGrid answers={person.answers} />
-        </Grid>
         <Grid item xs={12} md={6}>
           <SimilarPeopleCard
             title="Most Similar"
@@ -87,6 +84,9 @@ const PersonDetailPage: React.FC = observer(() => {
         </Grid>
         <Grid item xs={12}>
           <CategoryAlignmentCard alignments={people.categoryAlignment} />
+        </Grid>
+        <Grid item xs={12}>
+          <AnswerGrid answers={person.answers} />
         </Grid>
       </Grid>
     </AnimatedPage>

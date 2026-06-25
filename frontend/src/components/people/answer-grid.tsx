@@ -60,20 +60,18 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
 
         <Box
           sx={{
-            display: "flex",
-            height: 24,
-            borderRadius: 1,
-            overflow: "hidden",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, 15px)",
+            gap: "1px",
             cursor: "pointer",
           }}
         >
           {answers.map((a, idx) => (
             <Box
               key={a.question_id}
-              style={{ flex: "1 1 0%" }}
-              borderRight={"1px solid rgba(0,0,0,0.3)"}
               sx={{
-                minWidth: "1px",
+                width: 15,
+                height: 15,
                 bgcolor: getSegmentColor(a),
                 opacity: hoveredIdx === idx ? 1 : 0.85,
                 transition: "opacity 0.15s",
@@ -86,11 +84,9 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
           ))}
         </Box>
 
-        {hovered && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
-            {getSegmentTitle(hovered)}
-          </Typography>
-        )}
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block", minHeight: "1.5em" }}>
+          {hovered ? getSegmentTitle(hovered) : "\u00A0"}
+        </Typography>
 
         <Box sx={{ display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap" }}>
           {[
