@@ -24,7 +24,7 @@ alembic upgrade head
 ```bash
 # The seed script resets the database through Alembic migrations and fills it with sample data
 # WARNING: this destroys any existing data
-python scripts/seed.py
+PYTHONPATH=. python scripts/seed.py
 ```
 
 ## Migrations
@@ -96,7 +96,7 @@ alembic downgrade base
 alembic upgrade head
 
 # Option B: Re-seed with sample data (destroys everything, uses Alembic internally)
-python scripts/seed.py
+PYTHONPATH=. python scripts/seed.py
 ```
 
 ## Computing Similarity Scores

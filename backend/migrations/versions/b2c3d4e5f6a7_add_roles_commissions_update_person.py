@@ -60,12 +60,14 @@ def downgrade() -> None:
         batch_op.add_column(
             sa.Column("name", sa.String(200), nullable=True)
         )
+
+    op.execute("UPDATE people SET name = firstname || ' ' || lastname")
+
+    with op.batch_alter_table("people") as batch_op:
         batch_op.drop_column("circonscription")
         batch_op.drop_column("commission_id")
         batch_op.drop_column("role_id")
         batch_op.drop_column("lastname")
         batch_op.drop_column("firstname")
-
-    op.execute("UPDATE people SET name = firstname || ' ' || lastname")
     op.drop_table("commissions")
     op.drop_table("roles")

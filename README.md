@@ -11,10 +11,10 @@ pip install fastapi uvicorn[standard] sqlalchemy[asyncio] aiosqlite alembic nump
 cp .env.example .env                          # customize if needed
 
 # 2. Initialize the database with sample data
-python backend/scripts/seed.py
+PYTHONPATH=backend python backend/scripts/seed.py
 
 # 3. Compute similarities, embeddings, and category discriminativeness
-python backend/scripts/compute_similarities.py
+PYTHONPATH=backend python backend/scripts/compute_similarities.py
 
 # 4. Start the backend
 python -m backend
@@ -78,7 +78,7 @@ Key variables (see [Configuration](#configuration) for the full list):
 The seed script creates the schema (via Alembic migrations) and populates it with realistic sample data (~12 groups, ~12 categories, ~100 questions, ~700 people):
 
 ```bash
-python backend/scripts/seed.py
+PYTHONPATH=backend python backend/scripts/seed.py
 ```
 
 This creates `data/dev.db` in the project root.
@@ -88,7 +88,7 @@ This creates `data/dev.db` in the project root.
 The batch job computes all pairwise similarities (person-person, person-group, group-group), group cohesivity, MDS embeddings, and category discriminativeness:
 
 ```bash
-python backend/scripts/compute_similarities.py
+PYTHONPATH=backend python backend/scripts/compute_similarities.py
 ```
 
 This takes a few seconds for the sample data. With the full dataset (~7500 questions, ~700 people) it may take several minutes.
@@ -96,7 +96,7 @@ This takes a few seconds for the sample data. With the full dataset (~7500 quest
 Optional flags to override similarity metric parameters:
 
 ```bash
-python backend/scripts/compute_similarities.py --w-yes 1.0 --w-no 0.2 --w-mismatch 0.5 --m 10
+PYTHONPATH=backend python backend/scripts/compute_similarities.py --w-yes 1.0 --w-no 0.2 --w-mismatch 0.5 --m 10
 ```
 
 #### Start the server
@@ -137,7 +137,7 @@ If you already have a `data/dev.db` (or any populated SQLite/PostgreSQL database
 
 1. Set `DATABASE_URL` in `.env` to point to your database
 2. Run migrations if needed: `cd backend && alembic upgrade head`
-3. Compute similarities: `python backend/scripts/compute_similarities.py`
+3. Compute similarities: `PYTHONPATH=backend python backend/scripts/compute_similarities.py`
 4. Start the backend and frontend as above
 
 The database must contain data in the following tables: `groups`, `categories`, `questions`, `people`, `answers`, and the `question_category` association table. The seed script is only for generating sample data — in production you would populate these tables from your own data source.
