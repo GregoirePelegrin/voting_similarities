@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Chip, Grid } from "@mui/material";
+import { Box, Typography, Chip, Grid, Card } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
@@ -10,6 +10,7 @@ import AnswerGrid from "../components/people/answer-grid";
 import GroupComparisonBars from "../components/people/group-comparison-bars";
 import CategoryAlignmentCard from "../components/people/category-alignment-card";
 import PersonInfoCard from "../components/people/person-info-card";
+import CohesivityGauge from "../components/groups/cohesivity-gauge";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 
 const PersonDetailPage: React.FC = observer(() => {
@@ -57,11 +58,19 @@ const PersonDetailPage: React.FC = observer(() => {
         <CategoryFilter />
       </Box>
 
-      <PersonInfoCard
-        role={person.role}
-        commission={person.commission}
-        circonscription={person.circonscription}
-      />
+      <Box sx={{ display: "flex", gap: 3, mb: 3 }}>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <PersonInfoCard
+            role={person.role}
+            commission={person.commission}
+            circonscription={person.circonscription}
+          />
+        </Box>
+        <Card sx={{ bgcolor: "background.paper", p: 2, display: "flex", gap: 3, alignItems: "center" }}>
+          <CohesivityGauge value={person.answer_rate} color={person.group.color} size={90} label="Answer Rate" />
+          <CohesivityGauge value={person.group_avg_answer_rate} color={person.group.color} size={90} label="Group Avg" />
+        </Card>
+      </Box>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>

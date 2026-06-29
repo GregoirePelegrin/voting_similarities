@@ -1,6 +1,6 @@
 {
-  "short_name": "Groups",
-  "name": "Groups Comparison",
+  "short_name": "Voting",
+  "name": "Voting Similarities",
   "icons": [],
   "start_url": ".",
   "display": "standalone",

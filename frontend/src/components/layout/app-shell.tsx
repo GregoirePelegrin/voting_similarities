@@ -94,7 +94,7 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({ children }
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" sx={{ fontWeight: 500, letterSpacing: "-0.01em" }}>
-            Groups Comparison
+            Voting Similarities
           </Typography>
         </Toolbar>
       </AppBar>

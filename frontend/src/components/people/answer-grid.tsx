@@ -54,7 +54,7 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
           <Typography variant="h6">Answers</Typography>
           <Typography variant="caption" color="text.secondary">
-            ({answers.length} questions)
+            ({answers.filter((a) => a.answered).length} answers / {answers.length} questions)
           </Typography>
         </Box>
 

@@ -97,6 +97,8 @@ export interface PersonDetailOut {
   circonscription: string | null;
   answers: AnswerOut[];
   group_yes_rates: Record<string, number> | null;
+  answer_rate: number;
+  group_avg_answer_rate: number;
   similar_people: SimilarPersonOut[];
   dissimilar_people: SimilarPersonOut[];
   group_comparisons: GroupComparisonOut[];
@@ -123,6 +125,7 @@ export interface GroupDetailOut {
   color: string;
   member_count: number;
   cohesivity: number;
+  answer_rate: number;
   per_category: Record<string, number> | null;
   similar_groups: SimilarGroupOut[];
 }

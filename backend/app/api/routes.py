@@ -435,6 +435,24 @@ async def get_person(
         select(Person.id).where(Person.group_id == group.id)
     )
     own_member_ids = [r[0] for r in own_member_ids_result.all()]
+
+    answer_rate = len(answer_map) / len(all_qids) if all_qids else 0.0
+
+    group_avg_answer_rate = 0.0
+    if own_member_ids and all_qids:
+        member_answer_counts = (
+            await db.execute(
+                select(Answer.person_id, func.count())
+                .where(Answer.person_id.in_(own_member_ids))
+                .group_by(Answer.person_id)
+            )
+        ).all()
+        rates = [cnt / len(all_qids) for _, cnt in member_answer_counts]
+        unanswered_members = len(own_member_ids) - len(rates)
+        if unanswered_members > 0:
+            rates.extend([0.0] * unanswered_members)
+        group_avg_answer_rate = sum(rates) / len(rates) if rates else 0.0
+
     if own_member_ids and all_qids:
         for qid in all_qids:
             yes_count = (
@@ -474,6 +492,8 @@ async def get_person(
         circonscription=person.circonscription,
         answers=answers,
         group_yes_rates=group_yes_rates if group_yes_rates else None,
+        answer_rate=answer_rate,
+        group_avg_answer_rate=group_avg_answer_rate,
         similar_people=similar_people,
         dissimilar_people=dissimilar_people,
         group_comparisons=group_comparisons,
@@ -595,12 +615,37 @@ async def get_group(
 
     similar_groups.sort(key=lambda x: x.similarity, reverse=True)
 
+    total_questions = (
+        await db.execute(select(func.count()).select_from(Question))
+    ).scalar() or 1
+
+    group_answer_rate = 0.0
+    if member_count and member_count > 0:
+        member_ids_result = await db.execute(
+            select(Person.id).where(Person.group_id == group_id)
+        )
+        member_ids = [r[0] for r in member_ids_result.all()]
+        if member_ids:
+            member_answer_counts = (
+                await db.execute(
+                    select(Answer.person_id, func.count())
+                    .where(Answer.person_id.in_(member_ids))
+                    .group_by(Answer.person_id)
+                )
+            ).all()
+            rates = [cnt / total_questions for _, cnt in member_answer_counts]
+            unanswered_members = len(member_ids) - len(rates)
+            if unanswered_members > 0:
+                rates.extend([0.0] * unanswered_members)
+            group_answer_rate = sum(rates) / len(rates) if rates else 0.0
+
     return GroupDetailOut(
         id=group.id,
         name=group.name,
         color=group.color,
         member_count=member_count,
         cohesivity=cohesivity,
+        answer_rate=group_answer_rate,
         per_category=per_category,
         similar_groups=similar_groups,
     )

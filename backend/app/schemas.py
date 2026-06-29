@@ -111,6 +111,8 @@ class PersonDetailOut(BaseModel):
     circonscription: str | None = None
     answers: list[AnswerOut]
     group_yes_rates: dict[str, float] | None = None
+    answer_rate: float = 0.0
+    group_avg_answer_rate: float = 0.0
     similar_people: list[SimilarPersonOut]
     dissimilar_people: list[SimilarPersonOut]
     group_comparisons: list[GroupComparisonOut]
@@ -137,6 +139,7 @@ class GroupDetailOut(BaseModel):
     color: str
     member_count: int
     cohesivity: float
+    answer_rate: float = 0.0
     per_category: dict[str, float] | None = None
     similar_groups: list[SimilarGroupOut]
 

@@ -10,7 +10,7 @@ from app.config import settings
 
 logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO))
 
-app = FastAPI(title="Groups Comparison", version="0.1.0")
+app = FastAPI(title="Voting Similarities", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,

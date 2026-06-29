@@ -1,4 +1,4 @@
-# Groups Comparison
+# Voting Similarities
 
 A web application for analyzing and comparing how individuals and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with Bayesian shrinkage, Classical MDS for 2D visualization, and information gain for explainability.
 
@@ -41,7 +41,7 @@ Then open http://localhost:3000 in your browser. The backend API runs on http://
 
 ```bash
 git clone <repo-url>
-cd groups-comparison
+cd voting_similarities
 ```
 
 ### 2. Backend
@@ -153,10 +153,10 @@ The database must contain data in the following tables: `groups`, `categories`, 
 | GET | `/questions` | List all questions with their categories and has_passed |
 | GET | `/questions/{id}` | Question detail with per-group answer stats |
 | GET | `/people?page=&page_size=&group_id=` | Paginated people list |
-| GET | `/people/{id}?category=` | Person detail with similar/dissimilar people, group comparisons |
+| GET | `/people/{id}?category=` | Person detail with similar/dissimilar people, group comparisons, answer rate, group avg answer rate |
 | GET | `/people/{id}/category-alignment` | Per-category alignment of a person with their group vs others |
 | GET | `/groups` | List all groups with cohesivity |
-| GET | `/groups/{id}?category=` | Group detail with cohesivity, similar groups, per-category breakdown |
+| GET | `/groups/{id}?category=` | Group detail with cohesivity, answer rate, similar groups, per-category breakdown |
 | GET | `/groups/{id}/determinant-categories` | Categories ranked by information gain for this group |
 | GET | `/categories/discriminativeness` | All categories ranked by discriminative power |
 | GET | `/embeddings/people?category=` | MDS 2D coordinates + barycenters for people |

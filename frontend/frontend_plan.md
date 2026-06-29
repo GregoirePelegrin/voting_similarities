@@ -8,7 +8,7 @@ A single-page React application for exploring and comparing how individuals and 
 
 - Remove irrelevant dependencies from `package.json` (deck.gl, mapbox, keycloak, turf, redux, react-redux, country-flag-icons, etc.)
 - Keep: `react`, `react-dom`, `react-router-dom`, `@mui/material`, `@mui/icons-material`, `@emotion/react`, `@emotion/styled`, `mobx`, `mobx-react-lite`, `recharts`, `@mui/x-data-grid`
-- Update `public/index.html` title to "Groups Comparison"
+- Update `public/index.html` title to "Voting Similarities"
 - Update `public/manifest.json` accordingly
 
 ## Directory Structure
@@ -52,13 +52,16 @@ src/
     people/
       people-table.tsx      # DataGrid with pagination + group filter
       similar-people-card.tsx  # Top 5 similar/dissimilar list
-      answer-grid.tsx       # Person's answers (filterable by category)
+      answer-grid.tsx       # Person's answers as colored square grid (filterable by category)
       group-comparison-bars.tsx  # Horizontal bars: person vs each group
+      category-alignment-card.tsx  # Horizontal bar chart: per-category alignment (%)
+      person-info-card.tsx  # Collapsible info card (role, commission, circonscription)
     groups/
       groups-table.tsx      # Table with member count, cohesivity
-      cohesivity-gauge.tsx  # Visual gauge for cohesivity score
+      cohesivity-gauge.tsx  # Visual gauge (reusable, with configurable label)
       similar-groups-list.tsx  # Ranked list of similar groups
       category-heatmap.tsx  # Per-category similarity heatmap
+      determinant-categories-card.tsx  # Information gain per category
     shared/
       category-filter.tsx   # Dropdown to filter by category
       similarity-bar.tsx    # Reusable horizontal bar for similarity scores
@@ -148,6 +151,8 @@ Composes all stores, passed via React context.
 /people/:id        → PersonDetailPage
 /groups            → GroupsListPage
 /groups/:id        → GroupDetailPage
+/questions         → QuestionsListPage
+/questions/:id     → QuestionDetailPage
 ```
 
 ## Pages
@@ -181,19 +186,32 @@ Composes all stores, passed via React context.
 ### PersonDetailPage
 - **Header card**: Name, Group badge (colored), member count
 - **Category filter** dropdown
-- **Answer grid**: Compact chips of question_id + Yes/No
+- **Info card + gauges**: Collapsible info card (role, commission, circonscription) beside two circular gauges (personal answer rate, group average answer rate)
+- **Answer grid**: Grid of colored squares (10×10px, 5-color scheme), showing answer count / total questions. Hover shows question text; click navigates to question detail.
 - **Similar/Dissimilar cards** side by side
 - **Group comparisons**: Horizontal bar chart with group colors
+- **Category alignment**: Horizontal bar chart (Recharts), percentage scale, green=positive/red=negative
 
 ### GroupsListPage
 - `<Table>` with columns: Name (with color dot), Members, Cohesivity (mini bar)
 - Click row → `/groups/:id`
 
 ### GroupDetailPage
-- **Header card**: Name (with color), Member count, Cohesivity gauge
+- **Header card**: Name (with color), Member count
 - **Category filter** dropdown
+- **Gauges**: Cohesivity gauge + answer rate gauge (stacked)
 - **Similar groups list**: Ranked with similarity bars
 - **Category heatmap**: Per-category similarity across groups
+- **Determinant categories**: Information gain per category
+
+### QuestionsListPage
+- `<DataGrid>` with columns: ID, Text, Has Passed, Categories
+- Click row → navigate to `/questions/:id`
+
+### QuestionDetailPage
+- **Header**: Question text, description, passed/not passed badge, category chips
+- **Totals**: Yes / No / Missing counts
+- **Group breakdown**: Per-group yes rate with colored bars
 
 ## Methodology Panel Content
 

@@ -1,4 +1,4 @@
-# Groups Comparison — Project Description & Plan
+# Voting Similarities — Project Description & Plan
 
 ## Project Description
 
@@ -19,17 +19,19 @@ A web application for analyzing and comparing how individuals and groups vote on
 - Table/list of all people with group, role, commission, circonscription columns
 - Click on a person → detail page showing:
   - Collapsible info card (role, commission, circonscription)
-  - Segmented answer bar (5-color scheme: grey=no answer, green=yes same as group, blue=yes different from group, red=no same as group, purple=no different from group)
-  - Hoverable segments showing question text + outcome; clickable → question detail
+  - Answer rate gauge (personal) and group average answer rate gauge, displayed beside the info card
+  - Answer grid: colored squares in a grid layout (5-color scheme: grey=no answer, green=yes same as group, blue=yes different from group, red=no same as group, purple=no different from group), showing answer count / total questions
+  - Hoverable squares showing question text + outcome; clickable → question detail
   - Comparison to every other group's aggregate votes (with info tooltip)
   - Top 5 most similar persons (with similarity score)
   - Top 5 most dissimilar persons (with similarity score, negative values shown in red)
-  - Category alignment card (fixed -1/+1 scale)
+  - Category alignment card (horizontal bar chart, percentage scale, positive=green/negative=red)
 
 **3. Groups View**
 - Table of all groups with aggregate answer rates per question
 - Click on a group → detail page showing:
   - Cohesivity score (how internally similar the members are)
+  - Answer rate gauge (average of member answer rates)
   - All other groups ranked by similarity
   - Per-category breakdown of similarity
   - Determinant categories: which categories best predict this group's identity (information gain)
@@ -180,6 +182,8 @@ Positive = this category makes the person fit their group. Negative = this categ
 │  - Groups table / detail views              │
 │  - Category filtering                       │
 │  - Similarity bar charts / heatmaps         │
+│  - Answer rate gauges                        │
+│  - Category alignment charts                 │
 │  - Error dialog on API unavailability       │
 └──────────────────┬──────────────────────────┘
                    │ REST API
@@ -190,8 +194,8 @@ Positive = this category makes the person fit their group. Negative = this categ
 │  - /categories/discriminativeness            │
 │  - /groups/{id}/determinant-categories       │
 │  - /people/{id}/category-alignment           │
-│  - /people, /people/{id}                     │
-│  - /groups, /groups/{id}                     │
+│  - /people, /people/{id} (answer_rate, group_avg_answer_rate)   │
+│  - /groups, /groups/{id} (answer_rate)                          │
 │  - /embeddings/people, /embeddings/groups    │
 │  - Serves pre-computed similarity + MDS data │
 └──────────────────┬──────────────────────────┘
@@ -249,6 +253,13 @@ PersonEmbedding  person_id, category_id (nullable), x, y, stress
 GroupEmbedding   group_id, category_id (nullable), x, y, stress
 CategoryDiscriminativeness  category_id, info_gain, normalized_ig, variance_score, per_group_breakdown (JSON)
 ```
+
+### Computed API fields (on-the-fly, not stored)
+
+| Field | Endpoint | Description |
+|---|---|---|
+| `answer_rate` | `/people/{id}`, `/groups/{id}` | Fraction of questions answered (person), or average of members' answer rates (group) |
+| `group_avg_answer_rate` | `/people/{id}` | Average answer rate across all members of the person's group |
 
 ---
 
