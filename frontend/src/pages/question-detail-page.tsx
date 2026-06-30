@@ -62,7 +62,7 @@ const QuestionDetailPage: React.FC = observer(() => {
         </Typography>
       </Box>
 
-      <Card sx={{bgcolor: "background.paper", p: 3}}>
+      <Card sx={{p: 3}}>
         <CardContent>
           <Typography variant="h6" sx={{mb: 2}}>{QUESTION_DETAIL.GROUP_BREAKDOWN}</Typography>
           {q.group_stats.map((gs) => (

@@ -21,7 +21,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = ({role, commission, circon
   const summary = [role, commission, circonscription].filter(Boolean).join(" · ");
 
   return (
-    <Card sx={{bgcolor: "background.paper", mb: 3}}>
+    <Card sx={{mb: 3}}>
       <Box
         sx={{
           display: "flex",

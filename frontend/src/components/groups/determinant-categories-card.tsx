@@ -15,7 +15,7 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
   const maxIg = Math.max(...categories.map((c) => c.info_gain));
 
   return (
-    <Card sx={{bgcolor: "background.paper"}}>
+    <Card>
       <CardContent>
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{DETERMINANT_CATEGORIES.HEADING}</Typography>

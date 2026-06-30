@@ -29,20 +29,28 @@ const MapPage: React.FC = observer(() => {
         <CardSkeleton/>
       ) : (
         <>
-          {embeddings.peopleEmbedding && (
-            <PeopleScatter
-              points={embeddings.peopleEmbedding.points}
-              barycenters={embeddings.peopleEmbedding.barycenters}
-              stress={embeddings.peopleEmbedding.stress}
-            />
-          )}
+          {
+            embeddings.peopleEmbedding ? (
+              <PeopleScatter
+                points={embeddings.peopleEmbedding.points}
+                barycenters={embeddings.peopleEmbedding.barycenters}
+                stress={embeddings.peopleEmbedding.stress}
+              />
+            ) : (
+              <CardSkeleton/>
+            )
+          }
           <Box sx={{mt: 3}}/>
-          {embeddings.groupsEmbedding && (
-            <GroupsScatter
-              points={embeddings.groupsEmbedding.points}
-              stress={embeddings.groupsEmbedding.stress}
-            />
-          )}
+          {
+            embeddings.groupsEmbedding ? (
+              <GroupsScatter
+                points={embeddings.groupsEmbedding.points}
+                stress={embeddings.groupsEmbedding.stress}
+              />
+            ) : (
+              <CardSkeleton/>
+            )
+          }
         </>
       )}
     </AnimatedPage>

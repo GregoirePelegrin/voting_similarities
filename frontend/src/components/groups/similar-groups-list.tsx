@@ -11,7 +11,7 @@ interface SimilarGroupsListProps {
 const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({groups}) => {
   if (!groups || groups.length === 0) return null;
   return (
-    <Card sx={{bgcolor: "background.paper"}}>
+    <Card>
       <CardContent>
         <Typography variant="h6" sx={{mb: 2}}>{SIMILAR_GROUPS.HEADING}</Typography>
         <Box>

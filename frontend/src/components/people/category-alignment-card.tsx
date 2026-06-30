@@ -31,7 +31,7 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments
     .sort((a, b) => b.alignment_pct - a.alignment_pct);
 
   return (
-    <Card sx={{bgcolor: "background.paper"}}>
+    <Card>
       <CardContent>
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{CATEGORY_ALIGNMENT.HEADING}</Typography>

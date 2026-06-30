@@ -14,7 +14,7 @@ interface SimilarPeopleCardProps {
 const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = ({title, people: peopleList, color, showSign}) => {
   if (!peopleList || peopleList.length === 0) return null;
   return (
-    <Card sx={{bgcolor: "background.paper", height: "100%"}}>
+    <Card sx={{height: "100%"}}>
       <CardContent>
         <Typography variant="h6" sx={{mb: 2, color}}>
           {title}

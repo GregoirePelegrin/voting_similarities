@@ -30,7 +30,7 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
   const catNames = Object.keys(rows[0]).filter((k) => k !== "name" && k !== "color");
 
   return (
-    <Card sx={{bgcolor: "background.paper"}}>
+    <Card>
       <CardContent>
         <Typography variant="h6" sx={{mb: 2}}>{CATEGORY_HEATMAP.HEADING}</Typography>
         <Box sx={{overflowX: "auto"}}>

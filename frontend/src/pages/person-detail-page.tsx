@@ -75,7 +75,7 @@ const PersonDetailPage: React.FC = observer(() => {
             circonscription={person.circonscription}
           />
         </Box>
-        <Card sx={{bgcolor: "background.paper"}}>
+        <Card>
           <CardContent sx={{display: "flex", gap: 3, alignItems: "center"}}>
             <CohesivityGauge value={person.answer_rate} color={person.group.color} size={90}
                              label={PERSON_DETAIL.ANSWER_RATE}/>

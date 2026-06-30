@@ -9,14 +9,6 @@ interface AnswerGridProps {
   answers: AnswerOut[];
 }
 
-const SEGMENT_COLORS = {
-  missing: "#555555",
-  yesSame: "#59A14F",
-  yesDifferent: "#4A90D9",
-  noSame: "#E15759",
-  noDifferent: "#B07AA1",
-};
-
 function getSegmentColor(answer: AnswerOut): string {
   if (!answer.answered) return DATA_COLORS.missing;
   if (answer.value) {
@@ -50,7 +42,7 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
   const hovered = hoveredIdx !== null ? answers[hoveredIdx] : null;
 
   return (
-    <Card sx={{bgcolor: "background.paper"}}>
+    <Card>
       <CardContent>
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{ANSWER_GRID.HEADING}</Typography>

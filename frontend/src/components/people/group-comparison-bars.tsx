@@ -28,7 +28,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons}) 
   const data = [...comparisons].sort((a, b) => b.similarity - a.similarity);
 
   return (
-    <Card sx={{bgcolor: "background.paper"}}>
+    <Card>
       <CardContent>
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{GROUP_COMPARISON.HEADING}</Typography>
