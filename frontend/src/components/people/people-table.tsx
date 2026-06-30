@@ -4,15 +4,16 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
+import { PEOPLE_TABLE } from "../../constants/fr";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 80 },
-  { field: "firstname", headerName: "First Name", flex: 1 },
-  { field: "lastname", headerName: "Last Name", flex: 1 },
-  { field: "group_name", headerName: "Group", flex: 1 },
-  { field: "role", headerName: "Role", width: 130 },
-  { field: "commission", headerName: "Commission", width: 140 },
-  { field: "circonscription", headerName: "Circonscription", width: 160 },
+  { field: "id", headerName: PEOPLE_TABLE.ID, width: 80 },
+  { field: "firstname", headerName: PEOPLE_TABLE.FIRST_NAME, flex: 1 },
+  { field: "lastname", headerName: PEOPLE_TABLE.LAST_NAME, flex: 1 },
+  { field: "group_name", headerName: PEOPLE_TABLE.GROUP, flex: 1 },
+  { field: "role", headerName: PEOPLE_TABLE.ROLE, width: 130 },
+  { field: "commission", headerName: PEOPLE_TABLE.COMMISSION, width: 140 },
+  { field: "circonscription", headerName: PEOPLE_TABLE.CIRCONSCRIPTION, width: 160 },
 ];
 
 const PeopleTable: React.FC = observer(() => {

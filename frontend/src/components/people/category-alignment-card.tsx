@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, 
 import { observer } from "mobx-react-lite";
 import { CategoryAlignmentOut } from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { CATEGORY_ALIGNMENT } from "../../constants/fr";
 
 interface CategoryAlignmentCardProps {
   alignments: CategoryAlignmentOut[];
@@ -34,8 +35,8 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = observer(
       <Card sx={{ bgcolor: "background.paper" }}>
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <Typography variant="h6">Category Alignment</Typography>
-            <Tooltip title="How well each category aligns this person with their own group versus other groups. Positive = fits their group, negative = differs from their group.">
+            <Typography variant="h6">{CATEGORY_ALIGNMENT.HEADING}</Typography>
+            <Tooltip title={CATEGORY_ALIGNMENT.TOOLTIP}>
               <InfoOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
             </Tooltip>
           </Box>

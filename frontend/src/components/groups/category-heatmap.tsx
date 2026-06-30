@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { SimilarGroupOut } from "../../api/types";
 import rootStore from "../../stores/root-store";
+import { CATEGORY_HEATMAP } from "../../constants/fr";
 
 interface CategoryHeatmapProps {
   similarGroups: SimilarGroupOut[];
@@ -30,13 +31,13 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({ similarGroup
   return (
     <Card sx={{ bgcolor: "background.paper" }}>
       <CardContent>
-        <Typography variant="h6" sx={{ mb: 2 }}>Per-Category Similarity</Typography>
+        <Typography variant="h6" sx={{ mb: 2 }}>{CATEGORY_HEATMAP.HEADING}</Typography>
         <Box sx={{ overflowX: "auto" }}>
           <Box sx={{ minWidth: Math.max(600, catNames.length * 60) }}>
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#9EAAB8", fontSize: 12 }}>Group</th>
+                  <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#9EAAB8", fontSize: 12 }}>{CATEGORY_HEATMAP.GROUP}</th>
                   {catNames.map((cn) => (
                     <th key={cn} style={{ textAlign: "center", padding: "8px 4px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#9EAAB8", fontSize: 11, writingMode: "vertical-rl", textOrientation: "mixed", maxWidth: 40 }}>
                       {cn}
@@ -58,7 +59,7 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({ similarGroup
                       const intensity = val != null ? Math.max(0, Math.min(1, val * 3)) : 0;
                       return (
                         <td key={cn} style={{ textAlign: "center", padding: "4px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                          <Tooltip title={val != null ? `${(val * 100).toFixed(1)}%` : "N/A"}>
+                          <Tooltip title={val != null ? `${(val * 100).toFixed(1)}%` : CATEGORY_HEATMAP.NA}>
                             <Box
                               sx={{
                                 width: 28,

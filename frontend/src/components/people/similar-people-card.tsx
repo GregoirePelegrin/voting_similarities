@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { SimilarPersonOut } from "../../api/types";
 import SimilarityBar from "../shared/similarity-bar";
+import { SIMILAR_PEOPLE } from "../../constants/fr";
 
 interface SimilarPeopleCardProps {
   title: string;
@@ -24,7 +25,7 @@ const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, p
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
                 <Typography variant="body2">{p.firstname} {p.lastname}</Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {p.shared_count} shared
+                  {p.shared_count} {SIMILAR_PEOPLE.SHARED}
                 </Typography>
               </Box>
               <SimilarityBar value={p.similarity} color={showSign && p.similarity < 0 ? "#E15759" : color} showSign={showSign} />

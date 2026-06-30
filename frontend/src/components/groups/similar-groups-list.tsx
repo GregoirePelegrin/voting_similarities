@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { SimilarGroupOut } from "../../api/types";
 import SimilarityBar from "../shared/similarity-bar";
+import { SIMILAR_GROUPS } from "../../constants/fr";
 
 interface SimilarGroupsListProps {
   groups: SimilarGroupOut[];
@@ -12,7 +13,7 @@ const SimilarGroupsList: React.FC<SimilarGroupsListProps> = observer(({ groups }
   return (
     <Card sx={{ bgcolor: "background.paper" }}>
       <CardContent>
-        <Typography variant="h6" sx={{ mb: 2 }}>Similar Groups</Typography>
+        <Typography variant="h6" sx={{ mb: 2 }}>{SIMILAR_GROUPS.HEADING}</Typography>
         <Box>
           {groups.map((g) => (
             <Box key={g.id} sx={{ mb: 1.5 }}>

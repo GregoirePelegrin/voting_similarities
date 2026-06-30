@@ -6,6 +6,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import BusinessIcon from "@mui/icons-material/Business";
 import PersonIcon from "@mui/icons-material/Person";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { PERSON_INFO } from "../../constants/fr";
 
 interface PersonInfoCardProps {
   role: string | null;
@@ -46,7 +47,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = observer(
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <PersonIcon sx={{ fontSize: 18, color: "text.secondary" }} />
                 <Typography variant="body2">
-                  <strong>Role:</strong> {role}
+                  <strong>{PERSON_INFO.ROLE}</strong> {role}
                 </Typography>
               </Box>
             )}
@@ -54,7 +55,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = observer(
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <BusinessIcon sx={{ fontSize: 18, color: "text.secondary" }} />
                 <Typography variant="body2">
-                  <strong>Commission:</strong> {commission}
+                  <strong>{PERSON_INFO.COMMISSION}</strong> {commission}
                 </Typography>
               </Box>
             )}
@@ -62,7 +63,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = observer(
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <LocationOnIcon sx={{ fontSize: 18, color: "text.secondary" }} />
                 <Typography variant="body2">
-                  <strong>Circonscription:</strong> {circonscription}
+                  <strong>{PERSON_INFO.CIRCONSCRIPTION}</strong> {circonscription}
                 </Typography>
               </Box>
             )}

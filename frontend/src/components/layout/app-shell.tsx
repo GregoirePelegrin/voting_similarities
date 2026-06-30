@@ -22,14 +22,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import ErrorDialog from "../shared/error-dialog";
+import { NAV } from "../../constants/fr";
 
 const DRAWER_WIDTH = 220;
 
 const navItems = [
-  { label: "Map", icon: <MapIcon />, path: "/" },
-  { label: "People", icon: <PeopleIcon />, path: "/people" },
-  { label: "Groups", icon: <GroupsIcon />, path: "/groups" },
-  { label: "Questions", icon: <QuizIcon />, path: "/questions" },
+  { label: NAV.MAP, icon: <MapIcon />, path: "/" },
+  { label: NAV.PEOPLE, icon: <PeopleIcon />, path: "/people" },
+  { label: NAV.GROUPS, icon: <GroupsIcon />, path: "/groups" },
+  { label: NAV.QUESTIONS, icon: <QuizIcon />, path: "/questions" },
 ];
 
 const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
@@ -94,7 +95,7 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({ children }
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" sx={{ fontWeight: 500, letterSpacing: "-0.01em" }}>
-            Voting Similarities
+            {NAV.TITLE}
           </Typography>
         </Toolbar>
       </AppBar>

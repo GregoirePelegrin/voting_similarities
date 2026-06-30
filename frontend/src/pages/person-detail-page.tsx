@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Chip, Grid, Card } from "@mui/material";
+import { Box, Typography, Chip, Grid, Card, CardContent } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
@@ -12,6 +12,7 @@ import CategoryAlignmentCard from "../components/people/category-alignment-card"
 import PersonInfoCard from "../components/people/person-info-card";
 import CohesivityGauge from "../components/groups/cohesivity-gauge";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
+import { PERSON_DETAIL } from "../constants/fr";
 
 const PersonDetailPage: React.FC = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +53,7 @@ const PersonDetailPage: React.FC = observer(() => {
             variant="outlined"
           />
           <Typography variant="body2" color="text.secondary">
-            {person.group.member_count} members
+            {person.group.member_count} {PERSON_DETAIL.MEMBERS}
           </Typography>
         </Box>
         <CategoryFilter />
@@ -66,23 +67,25 @@ const PersonDetailPage: React.FC = observer(() => {
             circonscription={person.circonscription}
           />
         </Box>
-        <Card sx={{ bgcolor: "background.paper", p: 2, display: "flex", gap: 3, alignItems: "center" }}>
-          <CohesivityGauge value={person.answer_rate} color={person.group.color} size={90} label="Answer Rate" />
-          <CohesivityGauge value={person.group_avg_answer_rate} color={person.group.color} size={90} label="Group Avg" />
+        <Card sx={{ bgcolor: "background.paper" }}>
+          <CardContent sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+            <CohesivityGauge value={person.answer_rate} color={person.group.color} size={90} label={PERSON_DETAIL.ANSWER_RATE} />
+            <CohesivityGauge value={person.group_avg_answer_rate} color={person.group.color} size={90} label={PERSON_DETAIL.GROUP_AVG} />
+          </CardContent>
         </Card>
       </Box>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <SimilarPeopleCard
-            title="Most Similar"
+            title={PERSON_DETAIL.MOST_SIMILAR}
             people={person.similar_people}
             color="#4A90D9"
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <SimilarPeopleCard
-            title="Least Similar"
+            title={PERSON_DETAIL.LEAST_SIMILAR}
             people={person.dissimilar_people}
             color="#E15759"
             showSign

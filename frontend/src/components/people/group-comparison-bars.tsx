@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, 
 import { observer } from "mobx-react-lite";
 import { GroupComparisonOut } from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { GROUP_COMPARISON } from "../../constants/fr";
 
 interface GroupComparisonBarsProps {
   comparisons: GroupComparisonOut[];
@@ -29,8 +30,8 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = observer(({ comp
     <Card sx={{ bgcolor: "background.paper" }}>
       <CardContent>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-          <Typography variant="h6">Group Comparisons</Typography>
-          <Tooltip title="How similar this person's voting pattern is to each group. Similarity is based on weighted asymmetric overlap with Bayesian shrinkage. Confidence reflects the number of shared questions answered.">
+          <Typography variant="h6">{GROUP_COMPARISON.HEADING}</Typography>
+          <Tooltip title={GROUP_COMPARISON.TOOLTIP}>
             <InfoOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
           </Tooltip>
         </Box>

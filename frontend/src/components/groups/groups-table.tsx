@@ -1,62 +1,72 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Box,
-  Typography,
-} from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Box, Typography, } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import SimilarityBar from "../shared/similarity-bar";
+import { GROUPS_TABLE } from "../../constants/fr";
+
+const columns: GridColDef[] = [
+  {
+      field: "name",
+      headerName: GROUPS_TABLE.NAME,
+      minWidth: 200,
+      flex: 1,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: params.row.color }}/>
+          <Typography variant="body2">{params.value}</Typography>
+        </Box>
+      ),
+  },
+  {field: "member_count", headerName: GROUPS_TABLE.MEMBERS, width: 120},
+  {
+      field: "cohesivity",
+      headerName: GROUPS_TABLE.COHESIVITY,
+      minWidth: 200,
+      flex: 1,
+      renderCell: (params) =>
+        params.value != null ? (
+            <SimilarityBar value={params.value} color={params.row.color} />
+        ) : (
+            <Typography variant="body2" color="text.secondary">-</Typography>
+        ),
+  },
+];
 
 const GroupsTable: React.FC = observer(() => {
-  const { groups } = rootStore;
-  const navigate = useNavigate();
+    const {groups, ui} = rootStore;
+    const navigate = useNavigate();
 
-  return (
-    <TableContainer component={Paper} sx={{ bgcolor: "background.paper", border: "1px solid rgba(255,255,255,0.08)" }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Members</TableCell>
-            <TableCell>Cohesivity</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {groups.groups.map((g) => (
-            <TableRow
-              key={g.id}
-              hover
-              onClick={() => navigate(`/groups/${g.id}`)}
-              sx={{ cursor: "pointer", "&:hover": { bgcolor: "rgba(74,144,217,0.08)" } }}
-            >
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Box sx={{ width: 12, height: 12, borderRadius: "50%", bgcolor: g.color }} />
-                  <Typography variant="body2">{g.name}</Typography>
-                </Box>
-              </TableCell>
-              <TableCell>{g.member_count}</TableCell>
-              <TableCell sx={{ minWidth: 200 }}>
-                {g.cohesivity != null ? (
-                  <SimilarityBar value={g.cohesivity} color={g.color} />
-                ) : (
-                  <Typography variant="body2" color="text.secondary">—</Typography>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+    const rows = groups.groups.map((g) => ({
+        id: g.id,
+        name: g.name,
+        color: g.color,
+        member_count: g.member_count,
+        cohesivity: g.cohesivity,
+    }));
+
+    return (
+        <Box sx={{ height: "calc(100vh - 160px)", width: "100%"}}>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSizeOptions={[25, 50, 100]}
+                initialState={{
+                  pagination: { paginationModel: { page: 0, pageSize: 50 } },
+                }}
+                onRowClick={(params) => navigate(`/groups/${params.id}`)}
+                sx={{
+                  cursor: "pointer",
+                  "& .MuiDataGrid-row:hover": { bgcolor: "rgba(74,144,217,0.08)" },
+                  bgcolor: "background.paper",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+                loading={ui.loading}
+            />
+        </Box>
+    );
 });
 
 export default GroupsTable;

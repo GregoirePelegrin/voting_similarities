@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Card, Typography, Grid } from "@mui/material";
+import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
@@ -10,6 +10,7 @@ import SimilarGroupsList from "../components/groups/similar-groups-list";
 import CategoryHeatmap from "../components/groups/category-heatmap";
 import DeterminantCategoriesCard from "../components/groups/determinant-categories-card";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
+import { GROUP_DETAIL } from "../constants/fr";
 
 const GroupDetailPage: React.FC = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +53,7 @@ const GroupDetailPage: React.FC = observer(() => {
           <Box sx={{ width: 16, height: 16, borderRadius: "50%", bgcolor: group.color }} />
           <Typography variant="h4">{group.name}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {group.member_count} members
+            {group.member_count} {GROUP_DETAIL.MEMBERS}
           </Typography>
         </Box>
         <CategoryFilter />
@@ -60,9 +61,11 @@ const GroupDetailPage: React.FC = observer(() => {
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ bgcolor: "background.paper", p: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-            <CohesivityGauge value={group.cohesivity} color={group.color} />
-            <CohesivityGauge value={group.answer_rate} color={group.color} label="Answer Rate" />
+          <Card sx={{ bgcolor: "background.paper" }}>
+            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+              <CohesivityGauge value={group.cohesivity} color={group.color} />
+              <CohesivityGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE} />
+            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} md={8}>

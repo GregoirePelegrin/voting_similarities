@@ -13,6 +13,7 @@ import { Box, Typography, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { EmbeddingPointOut } from "../../api/types";
+import { GROUPS_SCATTER } from "../../constants/fr";
 
 interface GroupsScatterProps {
   points: EmbeddingPointOut[];
@@ -40,7 +41,7 @@ const GroupsScatter: React.FC<GroupsScatterProps> = observer(({ points, stress }
   return (
     <Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-        <Typography variant="h6">Groups</Typography>
+        <Typography variant="h6">{GROUPS_SCATTER.HEADING}</Typography>
         <Chip
           size="small"
           label={`Stress: ${(stress * 100).toFixed(1)}%`}

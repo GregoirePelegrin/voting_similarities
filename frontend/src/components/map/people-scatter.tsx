@@ -13,6 +13,7 @@ import { Box, Typography, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { EmbeddingPointOut, BarycenterOut } from "../../api/types";
+import { PEOPLE_SCATTER } from "../../constants/fr";
 
 interface PeopleScatterProps {
   points: EmbeddingPointOut[];
@@ -32,7 +33,7 @@ const UnifiedTooltip: React.FC<any> = ({ active, payload }) => {
       </Box>
       {isBarycenter ? (
         <Typography variant="caption" color="text.secondary">
-          {d.member_count} members (barycenter)
+          {d.member_count} {PEOPLE_SCATTER.MEMBERS_BC}
         </Typography>
       ) : (
         d.group_name && (
@@ -53,7 +54,7 @@ const PeopleScatter: React.FC<PeopleScatterProps> = observer(({ points, barycent
   return (
     <Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-        <Typography variant="h6">People</Typography>
+        <Typography variant="h6">{PEOPLE_SCATTER.HEADING}</Typography>
         <Chip
           size="small"
           label={`Stress: ${(stress * 100).toFixed(1)}%`}

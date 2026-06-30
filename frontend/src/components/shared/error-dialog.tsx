@@ -3,6 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography }
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
+import { ERROR_DIALOG } from "../../constants/fr";
 
 const ErrorDialog: React.FC = observer(() => {
   const { ui } = rootStore;
@@ -20,7 +21,7 @@ const ErrorDialog: React.FC = observer(() => {
     <Dialog open={ui.error !== null} onClose={handleDismiss}>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <ErrorOutlineIcon color="error" />
-        Connection Error
+        {ERROR_DIALOG.TITLE}
       </DialogTitle>
       <DialogContent>
         <Typography>
@@ -28,9 +29,9 @@ const ErrorDialog: React.FC = observer(() => {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleDismiss}>Dismiss</Button>
+        <Button onClick={handleDismiss}>{ERROR_DIALOG.DISMISS}</Button>
         <Button onClick={handleRetry} variant="contained" color="primary">
-          Retry
+          {ERROR_DIALOG.RETRY}
         </Button>
       </DialogActions>
     </Dialog>

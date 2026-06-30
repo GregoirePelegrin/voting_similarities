@@ -2,85 +2,84 @@ import React from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Box, Chip } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import { METHODOLOGY } from "../../constants/fr";
+
 const MethodologyPanel: React.FC = () => {
   return (
     <Accordion sx={{ bgcolor: "background.paper", mb: 2 }}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-          Methodology
+          {METHODOLOGY.ACCORDION_LABEL}
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ "& p": { mb: 2 }, "& h6": { mt: 1, mb: 0.5 } }}>
-        <Typography variant="h6">What you're seeing</Typography>
+        <Typography variant="h6">{METHODOLOGY.WHAT_YOU_SEE_HEADING}</Typography>
         <Typography variant="body2">
-          This map uses <strong>Classical Multidimensional Scaling (MDS)</strong> to project
-          the full similarity structure into two dimensions. Each point represents a person (or
-          group), and the distance between points reflects how dissimilar they are according to
-          the custom weighted asymmetric similarity metric.
+          {METHODOLOGY.WHAT_YOU_SEE_BODY.split("**").map((part, i) =>
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+          )}
         </Typography>
 
-        <Typography variant="h6">Why MDS, not PCA?</Typography>
+        <Typography variant="h6">{METHODOLOGY.WHY_MDS_HEADING}</Typography>
         <Typography variant="body2">
-          PCA operates on the raw answer matrix and would ignore the asymmetric weighting that
-          makes Yes-Yes agreement more meaningful than No-No agreement. MDS works directly on
-          the similarity matrix, so the 2D layout faithfully reflects <em>your</em> metric.
+          {METHODOLOGY.WHY_MDS_BODY.split("**").map((part, i) =>
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+          )}
         </Typography>
 
-        <Typography variant="h6">The similarity metric</Typography>
+        <Typography variant="h6">{METHODOLOGY.METRIC_HEADING}</Typography>
         <Typography variant="body2">
-          The underlying similarity between two people is a weighted asymmetric overlap:
+          {METHODOLOGY.METRIC_INTRO}
         </Typography>
         <Box sx={{ pl: 2, mb: 2 }}>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label="Yes-Yes" size="small" sx={{ mr: 0.5, bgcolor: "rgba(74,144,217,0.2)", color: "#4A90D9" }} />
-            agreement: weight 1.0 (strong signal of shared conviction)
+            <Chip label={METHODOLOGY.YES_YES_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(74,144,217,0.2)", color: "#4A90D9" }} />
+            {METHODOLOGY.YES_YES_DESC}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label="No-No" size="small" sx={{ mr: 0.5, bgcolor: "rgba(255,255,255,0.08)", color: "#9EAAB8" }} />
-            agreement: weight 0.2 (weaker signal — may agree for different reasons)
+            <Chip label={METHODOLOGY.NO_NO_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(255,255,255,0.08)", color: "#9EAAB8" }} />
+            {METHODOLOGY.NO_NO_DESC}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label="Disagree" size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: "#E15759" }} />
-            penalty: −0.5
+            <Chip label={METHODOLOGY.DISAGREE_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: "#E15759" }} />
+            {METHODOLOGY.DISAGREE_DESC}
           </Box>
         </Box>
         <Typography variant="body2">
-          Bayesian shrinkage blends each pair's raw score with the global mean, weighted by how
-          many questions they share (parameter m=10). This prevents spurious high/low scores
-          between people who barely overlap.
+          {METHODOLOGY.SHRINKAGE_BODY}
         </Typography>
 
-        <Typography variant="h6">Stress</Typography>
+        <Typography variant="h6">{METHODOLOGY.STRESS_HEADING}</Typography>
         <Typography variant="body2">
-          The <strong>stress</strong> value measures how much information is lost in the 2D projection:
+          {METHODOLOGY.STRESS_INTRO.split("**").map((part, i) =>
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+          )}
         </Typography>
         <Box sx={{ pl: 2, mb: 2 }}>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
             <Chip label="< 10%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(89,161,79,0.2)", color: "#59A14F" }} />
-            Good fit — the dominant structure is well captured
+            {METHODOLOGY.STRESS_GOOD}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
             <Chip label="10–20%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(237,201,72,0.2)", color: "#EDC948" }} />
-            Fair fit — main patterns visible, some distortion
+            {METHODOLOGY.STRESS_FAIR}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
             <Chip label="≥ 20%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: "#E15759" }} />
-            Poor fit — 2D is a significant reduction; interpret with caution
+            {METHODOLOGY.STRESS_POOR}
           </Box>
         </Box>
 
-        <Typography variant="h6">Group barycenters</Typography>
+        <Typography variant="h6">{METHODOLOGY.BARYCENTER_HEADING}</Typography>
         <Typography variant="body2">
-          The larger diamond markers on the people map show each group's <strong>barycenter</strong>{" "}
-          — the mean (x, y) position of all members. This is not a separate analysis; it's
-          simply the center of gravity of the group's points.
+          {METHODOLOGY.BARYCENTER_BODY.split("**").map((part, i) =>
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+          )}
         </Typography>
 
-        <Typography variant="h6">Per-category views</Typography>
+        <Typography variant="h6">{METHODOLOGY.PER_CATEGORY_HEADING}</Typography>
         <Typography variant="body2">
-          When you select a category, a separate MDS is computed using only the similarity from
-          questions in that category. The layout may change significantly across categories —
-          people who cluster together on one topic may spread apart on another.
+          {METHODOLOGY.PER_CATEGORY_BODY}
         </Typography>
       </AccordionDetails>
     </Accordion>

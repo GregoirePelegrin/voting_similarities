@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { AnswerOut } from "../../api/types";
+import { ANSWER_GRID } from "../../constants/fr";
 
 interface AnswerGridProps {
   answers: AnswerOut[];
@@ -25,16 +26,16 @@ function getSegmentColor(answer: AnswerOut): string {
 }
 
 function getSegmentLabel(answer: AnswerOut): string {
-  if (!answer.answered) return "No answer";
+  if (!answer.answered) return ANSWER_GRID.NO_ANSWER;
   if (answer.value) {
-    return answer.has_passed ? "Yes — same as group" : "Yes — different from group";
+    return answer.has_passed ? ANSWER_GRID.YES_SAME_GROUP : ANSWER_GRID.YES_DIFF_GROUP;
   }
-  return answer.has_passed ? "No — different from group" : "No — same as group";
+  return answer.has_passed ? ANSWER_GRID.NO_DIFF_GROUP : ANSWER_GRID.NO_SAME_GROUP;
 }
 
 function getSegmentTitle(answer: AnswerOut): string {
   const label = getSegmentLabel(answer);
-  const outcome = answer.has_passed ? "Passed" : "Not passed";
+  const outcome = answer.has_passed ? ANSWER_GRID.PASSED : ANSWER_GRID.NOT_PASSED;
   return answer.question_text
     ? `${answer.question_text} — ${label}${answer.answered ? ` · ${outcome}` : ""}`
     : `Q${answer.question_id}: ${label}`;
@@ -52,9 +53,9 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
     <Card sx={{ bgcolor: "background.paper" }}>
       <CardContent>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-          <Typography variant="h6">Answers</Typography>
+          <Typography variant="h6">{ANSWER_GRID.HEADING}</Typography>
           <Typography variant="caption" color="text.secondary">
-            ({answers.filter((a) => a.answered).length} answers / {answers.length} questions)
+            ({answers.filter((a) => a.answered).length} / {answers.length})
           </Typography>
         </Box>
 
@@ -90,11 +91,11 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
 
         <Box sx={{ display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap" }}>
           {[
-            { color: SEGMENT_COLORS.yesSame, label: "Yes, same as group" },
-            { color: SEGMENT_COLORS.noSame, label: "No, same as group" },
-            { color: SEGMENT_COLORS.yesDifferent, label: "Yes, different" },
-            { color: SEGMENT_COLORS.noDifferent, label: "No, different" },
-            { color: SEGMENT_COLORS.missing, label: "No answer" },
+            { color: SEGMENT_COLORS.yesSame, label: ANSWER_GRID.YES_SAME },
+            { color: SEGMENT_COLORS.noSame, label: ANSWER_GRID.NO_SAME },
+            { color: SEGMENT_COLORS.yesDifferent, label: ANSWER_GRID.YES_DIFF },
+            { color: SEGMENT_COLORS.noDifferent, label: ANSWER_GRID.NO_DIFF },
+            { color: SEGMENT_COLORS.missing, label: ANSWER_GRID.NO_ANSWER },
           ].map((item) => (
             <Box key={item.label} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <Box sx={{ width: 10, height: 10, borderRadius: 0.5, bgcolor: item.color }} />

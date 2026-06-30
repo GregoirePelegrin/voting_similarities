@@ -4,17 +4,18 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Box, Chip } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
+import { QUESTIONS_TABLE } from "../../constants/fr";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 80 },
-  { field: "text", headerName: "Question", flex: 2 },
+  { field: "id", headerName: QUESTIONS_TABLE.ID, width: 80 },
+  { field: "text", headerName: QUESTIONS_TABLE.QUESTION, flex: 2 },
   {
     field: "has_passed",
-    headerName: "Passed",
+    headerName: QUESTIONS_TABLE.PASSED,
     width: 110,
     renderCell: (params) => (
       <Chip
-        label={params.value ? "Passed" : "Not Passed"}
+        label={params.value ? QUESTIONS_TABLE.PASSED : QUESTIONS_TABLE.NOT_PASSED}
         size="small"
         sx={{
           bgcolor: params.value ? "rgba(89,161,79,0.2)" : "rgba(225,87,89,0.2)",
@@ -27,7 +28,7 @@ const columns: GridColDef[] = [
   },
   {
     field: "categories",
-    headerName: "Categories",
+    headerName: QUESTIONS_TABLE.CATEGORIES,
     flex: 1,
     renderCell: (params) => (
       <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
