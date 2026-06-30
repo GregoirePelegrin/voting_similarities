@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
+import React, {useEffect} from "react";
+import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import PeopleTable from "../components/people/people-table";
-import { CardSkeleton } from "../components/shared/loading-skeleton";
+import {CardSkeleton} from "../components/shared/loading-skeleton";
 
 const PeopleListPage: React.FC = observer(() => {
-  const { people, ui } = rootStore;
+  const {people, ui} = rootStore;
 
   useEffect(() => {
     people.fetchPeople();
@@ -15,14 +15,14 @@ const PeopleListPage: React.FC = observer(() => {
   if (ui.loading && people.people.length === 0) {
     return (
       <AnimatedPage>
-        <CardSkeleton />
+        <CardSkeleton/>
       </AnimatedPage>
     );
   }
 
   return (
     <AnimatedPage>
-      <PeopleTable />
+      <PeopleTable/>
     </AnimatedPage>
   );
 });

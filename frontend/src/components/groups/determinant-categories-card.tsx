@@ -1,15 +1,15 @@
 import React from "react";
-import { Card, CardContent, Typography, Box, LinearProgress, Tooltip } from "@mui/material";
-import { DeterminantCategoryOut } from "../../api/types";
+import {Card, CardContent, Typography, Box, LinearProgress, Tooltip} from "@mui/material";
+import {DeterminantCategoryOut} from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { DETERMINANT_CATEGORIES } from "../../constants/fr";
-import { DATA_COLORS } from "../../theme";
+import {DETERMINANT_CATEGORIES} from "../../constants/fr";
+import {DATA_COLORS} from "../../theme";
 
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
 }
 
-const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ categories }) => {
+const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories}) => {
   if (!categories || categories.length === 0) return null;
 
   const maxIg = Math.max(...categories.map((c) => c.info_gain));
@@ -17,17 +17,17 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ c
   return (
     <Card sx={{bgcolor: "background.paper"}}>
       <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{DETERMINANT_CATEGORIES.HEADING}</Typography>
           <Tooltip title={DETERMINANT_CATEGORIES.TOOLTIP}>
-            <InfoOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
+            <InfoOutlinedIcon sx={{fontSize: 18, color: "text.secondary"}}/>
           </Tooltip>
         </Box>
 
         {categories.map((cat) => (
-          <Box key={cat.category_id} sx={{ mb: 2 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+          <Box key={cat.category_id} sx={{mb: 2}}>
+            <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
+              <Typography variant="body2" sx={{fontWeight: 500}}>
                 {cat.category_name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -47,7 +47,7 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ c
                 },
               }}
             />
-            <Box sx={{ display: "flex", gap: 2, mt: 0.5 }}>
+            <Box sx={{display: "flex", gap: 2, mt: 0.5}}>
               <Typography variant="caption" color="text.secondary">
                 {DETERMINANT_CATEGORIES.ACCURACY} {(cat.accuracy * 100).toFixed(0)}%
               </Typography>

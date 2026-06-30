@@ -1,5 +1,5 @@
-import { apiFetch } from "./client";
-import { GroupListOut, GroupDetailOut, DeterminantCategoryOut } from "./types";
+import {apiFetch} from "./client";
+import {GroupListOut, GroupDetailOut, DeterminantCategoryOut} from "./types";
 
 export function getGroups(): Promise<GroupListOut[]> {
   return apiFetch("/groups");

@@ -1,5 +1,5 @@
-import { apiFetch } from "./client";
-import { PeopleEmbeddingOut, GroupsEmbeddingOut } from "./types";
+import {apiFetch} from "./client";
+import {PeopleEmbeddingOut, GroupsEmbeddingOut} from "./types";
 
 export function getPeopleEmbeddings(
   category?: number | null

@@ -1,14 +1,14 @@
 import React from "react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { observer } from "mobx-react-lite";
+import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
-import { CATEGORY_FILTER } from "../../constants/fr";
+import {CATEGORY_FILTER} from "../../constants/fr";
 
 const CategoryFilter: React.FC = observer(() => {
-  const { categories, ui } = rootStore;
+  const {categories, ui} = rootStore;
 
   return (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
+    <FormControl size="small" sx={{minWidth: 200}}>
       <InputLabel>{CATEGORY_FILTER.LABEL}</InputLabel>
       <Select
         value={ui.selectedCategory ?? ""}

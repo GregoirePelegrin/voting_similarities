@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { AnswerOut } from "../../api/types";
-import { ANSWER_GRID } from "../../constants/fr";
-import { DATA_COLORS } from "../../theme";
+import React, {useState} from "react";
+import {Card, CardContent, Typography, Box} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {AnswerOut} from "../../api/types";
+import {ANSWER_GRID} from "../../constants/fr";
+import {DATA_COLORS} from "../../theme";
 
 interface AnswerGridProps {
   answers: AnswerOut[];
@@ -41,7 +41,7 @@ function getSegmentTitle(answer: AnswerOut): string {
     : `Q${answer.question_id}: ${label}`;
 }
 
-const AnswerGrid: React.FC<AnswerGridProps> = ({ answers }) => {
+const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
   const navigate = useNavigate();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
@@ -50,9 +50,9 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({ answers }) => {
   const hovered = hoveredIdx !== null ? answers[hoveredIdx] : null;
 
   return (
-    <Card sx={{ bgcolor: "background.paper" }}>
+    <Card sx={{bgcolor: "background.paper"}}>
       <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{ANSWER_GRID.HEADING}</Typography>
           <Typography variant="caption" color="text.secondary">
             ({answers.filter((a) => a.answered).length} / {answers.length})
@@ -76,7 +76,7 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({ answers }) => {
                 bgcolor: getSegmentColor(a),
                 opacity: hoveredIdx === idx ? 1 : 0.85,
                 transition: "opacity 0.15s",
-                "&:hover": { opacity: 1 },
+                "&:hover": {opacity: 1},
               }}
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
@@ -85,20 +85,20 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({ answers }) => {
           ))}
         </Box>
 
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block", minHeight: "1.5em" }}>
+        <Typography variant="caption" color="text.secondary" sx={{mt: 0.5, display: "block", minHeight: "1.5em"}}>
           {hovered ? getSegmentTitle(hovered) : "\u00A0"}
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap" }}>
+        <Box sx={{display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap"}}>
           {[
-            { color: DATA_COLORS.yesSame, label: ANSWER_GRID.YES_SAME },
-            { color: DATA_COLORS.noSame, label: ANSWER_GRID.NO_SAME },
-            { color: DATA_COLORS.yesDifferent, label: ANSWER_GRID.YES_DIFF },
-            { color: DATA_COLORS.noDifferent, label: ANSWER_GRID.NO_DIFF },
-            { color: DATA_COLORS.missing, label: ANSWER_GRID.NO_ANSWER },
+            {color: DATA_COLORS.yesSame, label: ANSWER_GRID.YES_SAME},
+            {color: DATA_COLORS.noSame, label: ANSWER_GRID.NO_SAME},
+            {color: DATA_COLORS.yesDifferent, label: ANSWER_GRID.YES_DIFF},
+            {color: DATA_COLORS.noDifferent, label: ANSWER_GRID.NO_DIFF},
+            {color: DATA_COLORS.missing, label: ANSWER_GRID.NO_ANSWER},
           ].map((item) => (
-            <Box key={item.label} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Box sx={{ width: 10, height: 10, borderRadius: 0.5, bgcolor: item.color }} />
+            <Box key={item.label} sx={{display: "flex", alignItems: "center", gap: 0.5}}>
+              <Box sx={{width: 10, height: 10, borderRadius: 0.5, bgcolor: item.color}}/>
               <Typography variant="caption" color="text.secondary">
                 {item.label}
               </Typography>

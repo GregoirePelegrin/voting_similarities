@@ -4,7 +4,7 @@ import QuestionsStore from "./questions-store";
 import PeopleStore from "./people-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
-import { ERROR_DIALOG } from "../constants/fr";
+import {ERROR_DIALOG} from "../constants/fr";
 
 class RootStore {
   ui: UiStore;

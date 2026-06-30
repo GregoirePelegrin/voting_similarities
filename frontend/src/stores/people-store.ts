@@ -1,8 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { PersonOut, PersonDetailOut, CategoryAlignmentOut } from "../api/types";
-import { getPeople, getPerson, getCategoryAlignment } from "../api/people";
+import {makeAutoObservable, runInAction} from "mobx";
+import {PersonOut, PersonDetailOut, CategoryAlignmentOut} from "../api/types";
+import {getPeople, getPerson, getCategoryAlignment} from "../api/people";
 import UiStore from "./ui-store";
-import { ERROR_DIALOG } from "../constants/fr";
+import {ERROR_DIALOG} from "../constants/fr";
 
 class PeopleStore {
   people: PersonOut[] = [];
@@ -53,8 +53,8 @@ class PeopleStore {
   }
 
   clearPersonDetail() {
-      this.selectedPerson = null;
-      this.categoryAlignment = [];
+    this.selectedPerson = null;
+    this.categoryAlignment = [];
   }
 }
 

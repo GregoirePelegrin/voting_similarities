@@ -10,43 +10,43 @@ import GroupsScatter from "../components/map/groups-scatter";
 import MethodologyPanel from "../components/map/methodology-panel";
 
 const MapPage: React.FC = observer(() => {
-    const {embeddings, ui} = rootStore;
+  const {embeddings, ui} = rootStore;
 
-    useEffect(() => {
-        embeddings.fetchPeopleEmbedding(ui.selectedCategory);
-        embeddings.fetchGroupsEmbedding(ui.selectedCategory);
-    }, [ui.selectedCategory]);
+  useEffect(() => {
+    embeddings.fetchPeopleEmbedding(ui.selectedCategory);
+    embeddings.fetchGroupsEmbedding(ui.selectedCategory);
+  }, [ui.selectedCategory]);
 
-    const isLoading = !embeddings.peopleEmbedding && !embeddings.groupsEmbedding;
+  const isLoading = !embeddings.peopleEmbedding && !embeddings.groupsEmbedding;
 
-    return (
-        <AnimatedPage>
-            <Box sx={{mb: 2}}>
-                <CategoryFilter/>
-            </Box>
-            <MethodologyPanel/>
-            {isLoading ? (
-                <CardSkeleton/>
-            ) : (
-                <>
-                    {embeddings.peopleEmbedding && (
-                        <PeopleScatter
-                            points={embeddings.peopleEmbedding.points}
-                            barycenters={embeddings.peopleEmbedding.barycenters}
-                            stress={embeddings.peopleEmbedding.stress}
-                        />
-                    )}
-                    <Box sx={{mt: 3}}/>
-                    {embeddings.groupsEmbedding && (
-                        <GroupsScatter
-                            points={embeddings.groupsEmbedding.points}
-                            stress={embeddings.groupsEmbedding.stress}
-                        />
-                    )}
-                </>
-            )}
-        </AnimatedPage>
-    );
+  return (
+    <AnimatedPage>
+      <Box sx={{mb: 2}}>
+        <CategoryFilter/>
+      </Box>
+      <MethodologyPanel/>
+      {isLoading ? (
+        <CardSkeleton/>
+      ) : (
+        <>
+          {embeddings.peopleEmbedding && (
+            <PeopleScatter
+              points={embeddings.peopleEmbedding.points}
+              barycenters={embeddings.peopleEmbedding.barycenters}
+              stress={embeddings.peopleEmbedding.stress}
+            />
+          )}
+          <Box sx={{mt: 3}}/>
+          {embeddings.groupsEmbedding && (
+            <GroupsScatter
+              points={embeddings.groupsEmbedding.points}
+              stress={embeddings.groupsEmbedding.stress}
+            />
+          )}
+        </>
+      )}
+    </AnimatedPage>
+  );
 });
 
 export default MapPage;

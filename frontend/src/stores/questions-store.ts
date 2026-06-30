@@ -1,8 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { QuestionOut, QuestionDetailOut } from "../api/types";
-import { getQuestions, getQuestion } from "../api/questions";
+import {makeAutoObservable, runInAction} from "mobx";
+import {QuestionOut, QuestionDetailOut} from "../api/types";
+import {getQuestions, getQuestion} from "../api/questions";
 import UiStore from "./ui-store";
-import { ERROR_DIALOG } from "../constants/fr";
+import {ERROR_DIALOG} from "../constants/fr";
 
 class QuestionsStore {
   questions: QuestionOut[] = [];

@@ -1,8 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { CategoryOut } from "../api/types";
-import { getCategories } from "../api/categories";
+import {makeAutoObservable, runInAction} from "mobx";
+import {CategoryOut} from "../api/types";
+import {getCategories} from "../api/categories";
 import UiStore from "./ui-store";
-import { ERROR_DIALOG } from "../constants/fr";
+import {ERROR_DIALOG} from "../constants/fr";
 
 class CategoriesStore {
   categories: CategoryOut[] = [];

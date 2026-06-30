@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
   Box,
   Drawer,
@@ -19,21 +19,21 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import PeopleIcon from "@mui/icons-material/People";
 import QuizIcon from "@mui/icons-material/Quiz";
 import MenuIcon from "@mui/icons-material/Menu";
-import { observer } from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import ErrorDialog from "../shared/error-dialog";
-import { NAV } from "../../constants/fr";
+import {NAV} from "../../constants/fr";
 
 const DRAWER_WIDTH = 220;
 
 const navItems = [
-  { label: NAV.MAP, icon: <MapIcon />, path: "/" },
-  { label: NAV.PEOPLE, icon: <PeopleIcon />, path: "/people" },
-  { label: NAV.GROUPS, icon: <GroupsIcon />, path: "/groups" },
-  { label: NAV.QUESTIONS, icon: <QuizIcon />, path: "/questions" },
+  {label: NAV.MAP, icon: <MapIcon/>, path: "/"},
+  {label: NAV.PEOPLE, icon: <PeopleIcon/>, path: "/people"},
+  {label: NAV.GROUPS, icon: <GroupsIcon/>, path: "/groups"},
+  {label: NAV.QUESTIONS, icon: <QuizIcon/>, path: "/questions"},
 ];
 
-const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
+const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({open, onClose}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -42,9 +42,9 @@ const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onC
       variant="temporary"
       open={open}
       onClose={onClose}
-      sx={{ "& .MuiDrawer-paper": { width: DRAWER_WIDTH, bgcolor: "#1E2433" } }}
+      sx={{"& .MuiDrawer-paper": {width: DRAWER_WIDTH, bgcolor: "#1E2433"}}}
     >
-      <Toolbar />
+      <Toolbar/>
       <List>
         {navItems.map((item) => (
           <ListItemButton
@@ -65,13 +65,13 @@ const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onC
                   item.path === "/"
                     ? location.pathname === "/" ? "primary.main" : "inherit"
                     : location.pathname.startsWith(item.path)
-                    ? "primary.main"
-                    : "inherit",
+                      ? "primary.main"
+                      : "inherit",
               }}
             >
               {item.icon}
             </ListItemIcon>
-            <ListItemText primary={item.label} />
+            <ListItemText primary={item.label}/>
           </ListItemButton>
         ))}
       </List>
@@ -79,30 +79,30 @@ const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onC
   );
 };
 
-const AppShell: React.FC<{ children: React.ReactNode }> = observer(({ children }) => {
+const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const { ui } = rootStore;
+  const {ui} = rootStore;
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box sx={{display: "flex", minHeight: "100vh", bgcolor: "background.default"}}>
       <AppBar
         position="fixed"
         elevation={0}
-        sx={{ bgcolor: "#1E2433", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        sx={{bgcolor: "#1E2433", borderBottom: "1px solid rgba(255,255,255,0.08)"}}
       >
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)} sx={{ mr: 2 }}>
-            <MenuIcon />
+          <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)} sx={{mr: 2}}>
+            <MenuIcon/>
           </IconButton>
-          <Typography variant="h6" sx={{ fontWeight: 500, letterSpacing: "-0.01em" }}>
+          <Typography variant="h6" sx={{fontWeight: 500, letterSpacing: "-0.01em"}}>
             {NAV.TITLE}
           </Typography>
         </Toolbar>
       </AppBar>
 
-      <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}/>
 
-      <Box component="main" sx={{ flexGrow: 1, mt: 8 }}>
+      <Box component="main" sx={{flexGrow: 1, mt: 8}}>
         {children}
       </Box>
 
@@ -110,14 +110,14 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({ children }
         open={ui.snackbar.open}
         autoHideDuration={4000}
         onClose={() => ui.closeSnackbar()}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{vertical: "bottom", horizontal: "center"}}
       >
         <Alert onClose={() => ui.closeSnackbar()} severity={ui.snackbar.severity} variant="filled">
           {ui.snackbar.message}
         </Alert>
       </Snackbar>
 
-      <ErrorDialog />
+      <ErrorDialog/>
     </Box>
   );
 });

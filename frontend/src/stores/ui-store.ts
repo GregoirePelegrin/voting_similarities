@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import {makeAutoObservable} from "mobx";
 
 class UiStore {
   selectedCategory: number | null = null;
@@ -31,7 +31,7 @@ class UiStore {
   }
 
   showSnackbar(message: string, severity: "success" | "error" | "info" = "info") {
-    this.snackbar = { open: true, message, severity };
+    this.snackbar = {open: true, message, severity};
   }
 
   closeSnackbar() {

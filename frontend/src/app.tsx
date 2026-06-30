@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { observer } from "mobx-react-lite";
+import React, {useEffect} from "react";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {ThemeProvider, CssBaseline} from "@mui/material";
+import {observer} from "mobx-react-lite";
 import theme from "./theme";
 import rootStore from "./stores/root-store";
 import AppShell from "./components/layout/app-shell";
@@ -20,17 +20,17 @@ const App = observer(() => {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      <CssBaseline/>
       <BrowserRouter>
         <AppShell>
           <Routes>
-            <Route path="/" element={<MapPage />} />
-            <Route path="/people" element={<PeopleListPage />} />
-            <Route path="/people/:id" element={<PersonDetailPage />} />
-            <Route path="/groups" element={<GroupsListPage />} />
-            <Route path="/groups/:id" element={<GroupDetailPage />} />
-            <Route path="/questions" element={<QuestionsListPage />} />
-            <Route path="/questions/:id" element={<QuestionDetailPage />} />
+            <Route path="/" element={<MapPage/>}/>
+            <Route path="/people" element={<PeopleListPage/>}/>
+            <Route path="/people/:id" element={<PersonDetailPage/>}/>
+            <Route path="/groups" element={<GroupsListPage/>}/>
+            <Route path="/groups/:id" element={<GroupDetailPage/>}/>
+            <Route path="/questions" element={<QuestionsListPage/>}/>
+            <Route path="/questions/:id" element={<QuestionDetailPage/>}/>
           </Routes>
         </AppShell>
       </BrowserRouter>

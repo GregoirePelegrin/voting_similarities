@@ -1,8 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { GroupListOut, GroupDetailOut, DeterminantCategoryOut, SimilarGroupOut } from "../api/types";
-import { getGroups, getGroup, getDeterminantCategories } from "../api/groups";
+import {makeAutoObservable, runInAction} from "mobx";
+import {GroupListOut, GroupDetailOut, DeterminantCategoryOut, SimilarGroupOut} from "../api/types";
+import {getGroups, getGroup, getDeterminantCategories} from "../api/groups";
 import UiStore from "./ui-store";
-import { ERROR_DIALOG } from "../constants/fr";
+import {ERROR_DIALOG} from "../constants/fr";
 
 class GroupsStore {
   groups: GroupListOut[] = [];

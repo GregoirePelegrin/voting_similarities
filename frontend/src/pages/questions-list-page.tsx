@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { observer } from "mobx-react-lite";
+import React, {useEffect} from "react";
+import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import QuestionsTable from "../components/questions/questions-table";
-import { CardSkeleton } from "../components/shared/loading-skeleton";
+import {CardSkeleton} from "../components/shared/loading-skeleton";
 
 const QuestionsListPage: React.FC = observer(() => {
-  const { questions, ui } = rootStore;
+  const {questions, ui} = rootStore;
 
   useEffect(() => {
     questions.fetchQuestions();
@@ -15,14 +15,14 @@ const QuestionsListPage: React.FC = observer(() => {
   if (ui.loading && questions.questions.length === 0) {
     return (
       <AnimatedPage>
-        <CardSkeleton />
+        <CardSkeleton/>
       </AnimatedPage>
     );
   }
 
   return (
     <AnimatedPage>
-      <QuestionsTable />
+      <QuestionsTable/>
     </AnimatedPage>
   );
 });

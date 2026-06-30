@@ -1,5 +1,5 @@
-import { apiFetch } from "./client";
-import { PaginatedPeopleOut, PersonDetailOut, CategoryAlignmentOut } from "./types";
+import {apiFetch} from "./client";
+import {PaginatedPeopleOut, PersonDetailOut, CategoryAlignmentOut} from "./types";
 
 export function getPeople(
   page: number,

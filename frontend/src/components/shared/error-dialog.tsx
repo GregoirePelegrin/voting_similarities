@@ -1,12 +1,12 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
+import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography} from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { observer } from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
-import { ERROR_DIALOG } from "../../constants/fr";
+import {ERROR_DIALOG} from "../../constants/fr";
 
 const ErrorDialog: React.FC = observer(() => {
-  const { ui } = rootStore;
+  const {ui} = rootStore;
 
   const handleRetry = async () => {
     ui.clearError();
@@ -19,8 +19,8 @@ const ErrorDialog: React.FC = observer(() => {
 
   return (
     <Dialog open={ui.error !== null} onClose={handleDismiss}>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <ErrorOutlineIcon color="error" />
+      <DialogTitle sx={{display: "flex", alignItems: "center", gap: 1}}>
+        <ErrorOutlineIcon color="error"/>
         {ERROR_DIALOG.TITLE}
       </DialogTitle>
       <DialogContent>
