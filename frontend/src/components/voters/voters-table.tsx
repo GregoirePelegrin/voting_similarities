@@ -4,23 +4,23 @@ import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {Box} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
-import {PEOPLE_TABLE} from "../../constants/fr";
+import {VOTERS_TABLE} from "../../constants/fr";
 
 const columns: GridColDef[] = [
-  {field: "id", headerName: PEOPLE_TABLE.ID, width: 80},
-  {field: "firstname", headerName: PEOPLE_TABLE.FIRST_NAME, flex: 1},
-  {field: "lastname", headerName: PEOPLE_TABLE.LAST_NAME, flex: 1},
-  {field: "group_name", headerName: PEOPLE_TABLE.GROUP, flex: 1},
-  {field: "role", headerName: PEOPLE_TABLE.ROLE, width: 130},
-  {field: "commission", headerName: PEOPLE_TABLE.COMMISSION, width: 140},
-  {field: "circonscription", headerName: PEOPLE_TABLE.CIRCONSCRIPTION, width: 160},
+  {field: "id", headerName: VOTERS_TABLE.ID, width: 80},
+  {field: "firstname", headerName: VOTERS_TABLE.FIRST_NAME, flex: 1},
+  {field: "lastname", headerName: VOTERS_TABLE.LAST_NAME, flex: 1},
+  {field: "group_name", headerName: VOTERS_TABLE.GROUP, flex: 1},
+  {field: "role", headerName: VOTERS_TABLE.ROLE, width: 130},
+  {field: "commission", headerName: VOTERS_TABLE.COMMISSION, width: 140},
+  {field: "circonscription", headerName: VOTERS_TABLE.CIRCONSCRIPTION, width: 160},
 ];
 
-const PeopleTable: React.FC = observer(() => {
-  const {peopleStore, uiStore} = rootStore;
+const VotersTable: React.FC = observer(() => {
+  const {votersStore, uiStore} = rootStore;
   const navigate = useNavigate();
 
-  const rows = peopleStore.people.map((p) => ({
+  const rows = votersStore.voters.map((p) => ({
     id: p.id,
     firstname: p.firstname,
     lastname: p.lastname,
@@ -40,7 +40,7 @@ const PeopleTable: React.FC = observer(() => {
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
         }}
-        onRowClick={(params) => navigate(`/people/${params.id}`)}
+        onRowClick={(params) => navigate(`/voters/${params.id}`)}
         sx={{
           cursor: "pointer",
           "& .MuiDataGrid-row:hover": {bgcolor: "rgba(74,144,217,0.08)"},
@@ -53,4 +53,4 @@ const PeopleTable: React.FC = observer(() => {
   );
 });
 
-export default PeopleTable;
+export default VotersTable;

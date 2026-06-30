@@ -1,14 +1,14 @@
 import {makeAutoObservable, runInAction} from "mobx";
-import {PersonOut, PersonDetailOut, CategoryAlignmentOut} from "../api/types";
-import {getPeople, getPerson, getCategoryAlignment} from "../api/people";
+import {VoterOut, VoterDetailOut, CategoryAlignmentOut} from "../api/types";
+import {getVoters, getVoter, getCategoryAlignment} from "../api/voters";
 import UiStore from "./ui-store";
 import {ERROR_DIALOG} from "../constants/fr";
 
-class PeopleStore {
-  people: PersonOut[] = [];
+class VotersStore {
+  voters: VoterOut[] = [];
   total = 0;
   groupId: number | null = null;
-  selectedPerson: PersonDetailOut | null = null;
+  selectedVoter: VoterDetailOut | null = null;
   categoryAlignment: CategoryAlignmentOut[] = [];
   private ui: UiStore;
 
@@ -17,12 +17,12 @@ class PeopleStore {
     makeAutoObservable(this);
   }
 
-  async fetchPeople(groupId?: number | null) {
+  async fetchVoters(groupId?: number | null) {
     try {
       if (groupId !== undefined) this.groupId = groupId;
-      const data = await getPeople(1, 2000, this.groupId ?? undefined);
+      const data = await getVoters(1, 2000, this.groupId ?? undefined);
       runInAction(() => {
-        this.people = data.items;
+        this.voters = data.items;
         this.total = data.total;
       });
     } catch {
@@ -30,20 +30,20 @@ class PeopleStore {
     }
   }
 
-  async fetchPerson(id: number, category?: number | null) {
+  async fetchVoter(id: number, category?: number | null) {
     try {
-      const data = await getPerson(id, category ?? undefined);
+      const data = await getVoter(id, category ?? undefined);
       runInAction(() => {
-        this.selectedPerson = data;
+        this.selectedVoter = data;
       });
     } catch {
       this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
-  async fetchCategoryAlignment(personId: number) {
+  async fetchCategoryAlignment(voterId: number) {
     try {
-      const data = await getCategoryAlignment(personId);
+      const data = await getCategoryAlignment(voterId);
       runInAction(() => {
         this.categoryAlignment = data;
       });
@@ -52,10 +52,10 @@ class PeopleStore {
     }
   }
 
-  clearPersonDetail() {
-    this.selectedPerson = null;
+  clearVoterDetail() {
+    this.selectedVoter = null;
     this.categoryAlignment = [];
   }
 }
 
-export default PeopleStore;
+export default VotersStore;

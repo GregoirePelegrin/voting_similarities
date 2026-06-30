@@ -1,18 +1,18 @@
 import React from "react";
 import {Card, CardContent, Typography, Box} from "@mui/material";
-import {SimilarPersonOut} from "../../api/types";
+import {SimilarVoterOut} from "../../api/types";
 import SimilarityBar from "../shared/similarity-bar";
-import {SIMILAR_PEOPLE} from "../../constants/fr";
+import {SIMILAR_VOTERS} from "../../constants/fr";
 
-interface SimilarPeopleCardProps {
+interface SimilarVotersCardProps {
   title: string;
-  people: SimilarPersonOut[];
+  voters: SimilarVoterOut[];
   color: string;
   showSign?: boolean;
 }
 
-const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = ({title, people: peopleList, color, showSign}) => {
-  if (!peopleList || peopleList.length === 0) return null;
+const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: votersList, color, showSign}) => {
+  if (!votersList || votersList.length === 0) return null;
   return (
     <Card sx={{height: "100%"}}>
       <CardContent>
@@ -20,12 +20,12 @@ const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = ({title, people: peo
           {title}
         </Typography>
         <Box>
-          {peopleList.map((p) => (
+          {votersList.map((p) => (
             <Box key={p.id} sx={{mb: 1.5}}>
               <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
                 <Typography variant="body2">{p.firstname} {p.lastname}</Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {p.shared_count} {SIMILAR_PEOPLE.SHARED}
+                  {p.shared_count} {SIMILAR_VOTERS.SHARED}
                 </Typography>
               </Box>
               <SimilarityBar value={p.similarity} color={showSign && p.similarity < 0 ? "#E15759" : color}
@@ -38,4 +38,4 @@ const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = ({title, people: peo
   );
 };
 
-export default SimilarPeopleCard;
+export default SimilarVotersCard;

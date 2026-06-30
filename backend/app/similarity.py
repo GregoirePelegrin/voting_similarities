@@ -8,7 +8,7 @@ from app.models import (
     Answer,
     Category,
     Group,
-    Person,
+    Voter,
     Question,
     question_category,
 )
@@ -24,36 +24,36 @@ class SimilarityConfig:
 
 @dataclass
 class AnswerData:
-    person_ids: np.ndarray
+    voter_ids: np.ndarray
     question_ids: np.ndarray
     yes_matrix: np.ndarray
     no_matrix: np.ndarray
     mask_matrix: np.ndarray
-    person_id_to_idx: dict
+    voter_id_to_idx: dict
     question_id_to_idx: dict
     group_members: dict
     category_questions: dict
 
 
 async def load_answer_data(session: AsyncSession) -> AnswerData:
-    result = await session.execute(select(Person.id).order_by(Person.id))
-    person_ids = np.array([r[0] for r in result.all()])
-    person_id_to_idx = {int(pid): i for i, pid in enumerate(person_ids)}
+    result = await session.execute(select(Voter.id).order_by(Voter.id))
+    voter_ids = np.array([r[0] for r in result.all()])
+    voter_id_to_idx = {int(pid): i for i, pid in enumerate(voter_ids)}
 
     result = await session.execute(select(Question.id).order_by(Question.id))
     question_ids = np.array([r[0] for r in result.all()])
     question_id_to_idx = {int(qid): i for i, qid in enumerate(question_ids)}
 
-    n_people = len(person_ids)
+    n_voters = len(voter_ids)
     n_questions = len(question_ids)
 
-    mask_matrix = np.zeros((n_people, n_questions), dtype=np.float64)
-    yes_matrix = np.zeros((n_people, n_questions), dtype=np.float64)
-    no_matrix = np.zeros((n_people, n_questions), dtype=np.float64)
+    mask_matrix = np.zeros((n_voters, n_questions), dtype=np.float64)
+    yes_matrix = np.zeros((n_voters, n_questions), dtype=np.float64)
+    no_matrix = np.zeros((n_voters, n_questions), dtype=np.float64)
 
-    result = await session.execute(select(Answer.person_id, Answer.question_id, Answer.value))
+    result = await session.execute(select(Answer.voter_id, Answer.question_id, Answer.value))
     for pid, qid, value in result.all():
-        i = person_id_to_idx[pid]
+        i = voter_id_to_idx[pid]
         j = question_id_to_idx[qid]
         mask_matrix[i, j] = 1.0
         if value:
@@ -67,7 +67,7 @@ async def load_answer_data(session: AsyncSession) -> AnswerData:
     group_members = {}
     for gid in group_ids:
         result = await session.execute(
-            select(Person.id).where(Person.group_id == gid).order_by(Person.id)
+            select(Voter.id).where(Voter.group_id == gid).order_by(Voter.id)
         )
         group_members[int(gid)] = [int(r[0]) for r in result.all()]
 
@@ -87,12 +87,12 @@ async def load_answer_data(session: AsyncSession) -> AnswerData:
         ]
 
     return AnswerData(
-        person_ids=person_ids,
+        voter_ids=voter_ids,
         question_ids=question_ids,
         yes_matrix=yes_matrix,
         no_matrix=no_matrix,
         mask_matrix=mask_matrix,
-        person_id_to_idx=person_id_to_idx,
+        voter_id_to_idx=voter_id_to_idx,
         question_id_to_idx=question_id_to_idx,
         group_members=group_members,
         category_questions=category_questions,
@@ -132,9 +132,9 @@ def apply_bayesian_shrinkage(raw_sim, shared_count, m):
 
 
 @dataclass
-class PersonPersonData:
-    person_a_ids: np.ndarray
-    person_b_ids: np.ndarray
+class VoterVoterData:
+    voter_a_ids: np.ndarray
+    voter_b_ids: np.ndarray
     similarity: np.ndarray
     raw_similarity: np.ndarray
     shared_count: np.ndarray
@@ -142,10 +142,10 @@ class PersonPersonData:
     cat_similarities: dict
 
 
-def compute_person_person_data(
+def compute_voter_voter_data(
     data, raw_sim, similarity, shared_count, confidence, cat_similarities
 ):
-    n = len(data.person_ids)
+    n = len(data.voter_ids)
     i_idx, j_idx = np.triu_indices(n, k=1)
 
     cat_sims = {}
@@ -153,9 +153,9 @@ def compute_person_person_data(
         for cat_id, cat_sim in cat_similarities.items():
             cat_sims[cat_id] = cat_sim[i_idx, j_idx]
 
-    return PersonPersonData(
-        person_a_ids=data.person_ids[i_idx],
-        person_b_ids=data.person_ids[j_idx],
+    return VoterVoterData(
+        voter_a_ids=data.voter_ids[i_idx],
+        voter_b_ids=data.voter_ids[j_idx],
         similarity=similarity[i_idx, j_idx],
         raw_similarity=raw_sim[i_idx, j_idx],
         shared_count=shared_count[i_idx, j_idx],
@@ -177,16 +177,16 @@ def _avg_intra_group(sim_matrix, indices):
     return float(np.mean(sub[np.triu_indices(n, k=1)]))
 
 
-def compute_person_group_records(data, similarity, cat_similarities, config):
+def compute_voter_group_records(data, similarity, cat_similarities, config):
     records = []
     group_ids = list(data.group_members.keys())
 
     for gid in group_ids:
         member_ids = data.group_members[gid]
-        member_indices = np.array([data.person_id_to_idx[pid] for pid in member_ids])
+        member_indices = np.array([data.voter_id_to_idx[pid] for pid in member_ids])
 
-        for pid in data.person_ids:
-            p_idx = data.person_id_to_idx[pid]
+        for pid in data.voter_ids:
+            p_idx = data.voter_id_to_idx[pid]
 
             other_indices = member_indices[member_indices != p_idx]
             if len(other_indices) > 0:
@@ -198,8 +198,8 @@ def compute_person_group_records(data, similarity, cat_similarities, config):
                 avg_sim = 0.0
                 group_mask = np.zeros(data.mask_matrix.shape[1], dtype=np.float64)
 
-            person_mask = data.mask_matrix[p_idx]
-            shared = int(np.sum(person_mask * group_mask))
+            voter_mask = data.mask_matrix[p_idx]
+            shared = int(np.sum(voter_mask * group_mask))
 
             conf = shared / (shared + config.m) if shared + config.m > 0 else 0.0
 
@@ -212,7 +212,7 @@ def compute_person_group_records(data, similarity, cat_similarities, config):
 
             records.append(
                 {
-                    "person_id": int(pid),
+                    "voter_id": int(pid),
                     "group_id": int(gid),
                     "similarity": avg_sim,
                     "shared_count": shared,
@@ -243,7 +243,7 @@ def compute_group_group_records(data, similarity, cat_similarities):
     records = []
 
     group_indices = {
-        gid: np.array([data.person_id_to_idx[pid] for pid in data.group_members[gid]])
+        gid: np.array([data.voter_id_to_idx[pid] for pid in data.group_members[gid]])
         for gid in group_ids
     }
 
@@ -280,7 +280,7 @@ def compute_cohesivity_records(data, similarity, cat_similarities):
     records = []
 
     group_indices = {
-        gid: np.array([data.person_id_to_idx[pid] for pid in data.group_members[gid]])
+        gid: np.array([data.voter_id_to_idx[pid] for pid in data.group_members[gid]])
         for gid in group_ids
     }
 

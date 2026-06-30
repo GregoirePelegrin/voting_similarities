@@ -15,9 +15,9 @@ from app.models import (
     GroupCohesivity,
     GroupEmbedding,
     GroupGroupSim,
-    PersonEmbedding,
-    PersonGroupSim,
-    PersonPersonSim,
+    VoterEmbedding,
+    VoterGroupSim,
+    VoterVoterSim,
 )
 from app.similarity import (
     SimilarityConfig,
@@ -26,8 +26,8 @@ from app.similarity import (
     compute_group_group_records,
     compute_pairwise,
     compute_per_category_pairwise,
-    compute_person_group_records,
-    compute_person_person_data,
+    compute_voter_group_records,
+    compute_voter_voter_data,
     load_answer_data,
 )
 from sqlalchemy import delete, insert, select
@@ -36,23 +36,23 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 CHUNK_SIZE = 5000
 
 
-def _pp_data_to_rows(pp_data, offset, size):
-    end = min(offset + size, len(pp_data.person_a_ids))
-    has_cats = bool(pp_data.cat_similarities)
+def _vv_data_to_rows(vv_data, offset, size):
+    end = min(offset + size, len(vv_data.voter_a_ids))
+    has_cats = bool(vv_data.cat_similarities)
     rows = []
     for k in range(offset, end):
         row = {
-            "person_a_id": int(pp_data.person_a_ids[k]),
-            "person_b_id": int(pp_data.person_b_ids[k]),
-            "similarity": float(pp_data.similarity[k]),
-            "raw_similarity": float(pp_data.raw_similarity[k]),
-            "shared_count": int(pp_data.shared_count[k]),
-            "confidence": float(pp_data.confidence[k]),
+            "voter_a_id": int(vv_data.voter_a_ids[k]),
+            "voter_b_id": int(vv_data.voter_b_ids[k]),
+            "similarity": float(vv_data.similarity[k]),
+            "raw_similarity": float(vv_data.raw_similarity[k]),
+            "shared_count": int(vv_data.shared_count[k]),
+            "confidence": float(vv_data.confidence[k]),
         }
         if has_cats:
             row["per_category"] = {
                 str(cat_id): float(cat_arr[k])
-                for cat_id, cat_arr in pp_data.cat_similarities.items()
+                for cat_id, cat_arr in vv_data.cat_similarities.items()
             }
         rows.append(row)
     return rows
@@ -65,7 +65,7 @@ async def run(config: SimilarityConfig):
     async with session_factory() as session:
         print("Loading answer data...")
         data = await load_answer_data(session)
-        print(f"  {len(data.person_ids)} people, {len(data.question_ids)} questions")
+        print(f"  {len(data.voter_ids)} voters, {len(data.question_ids)} questions")
 
         print("Computing pairwise similarity...")
         raw_sim, shared_count = compute_pairwise(
@@ -81,28 +81,28 @@ async def run(config: SimilarityConfig):
         print(f"  {len(cat_similarities)} categories")
 
         print("Clearing existing similarity data...")
-        await session.execute(delete(PersonPersonSim))
-        await session.execute(delete(PersonGroupSim))
+        await session.execute(delete(VoterVoterSim))
+        await session.execute(delete(VoterGroupSim))
         await session.execute(delete(GroupGroupSim))
         await session.execute(delete(GroupCohesivity))
         await session.flush()
 
-        print("Storing person-person similarity...")
-        pp_data = compute_person_person_data(
+        print("Storing voter-voter similarity...")
+        vv_data = compute_voter_voter_data(
             data, raw_sim, similarity, shared_count, confidence, cat_similarities
         )
-        n_pp = len(pp_data.person_a_ids)
-        print(f"  {n_pp} pairs")
-        for offset in range(0, n_pp, CHUNK_SIZE):
-            rows = _pp_data_to_rows(pp_data, offset, CHUNK_SIZE)
-            await session.execute(insert(PersonPersonSim), rows)
+        n_vv = len(vv_data.voter_a_ids)
+        print(f"  {n_vv} pairs")
+        for offset in range(0, n_vv, CHUNK_SIZE):
+            rows = _vv_data_to_rows(vv_data, offset, CHUNK_SIZE)
+            await session.execute(insert(VoterVoterSim), rows)
         await session.flush()
 
-        print("Storing person-group similarity...")
-        pg_records = compute_person_group_records(data, similarity, cat_similarities, config)
-        print(f"  {len(pg_records)} pairs")
-        for i in range(0, len(pg_records), CHUNK_SIZE):
-            await session.execute(insert(PersonGroupSim), pg_records[i : i + CHUNK_SIZE])
+        print("Storing voter-group similarity...")
+        vg_records = compute_voter_group_records(data, similarity, cat_similarities, config)
+        print(f"  {len(vg_records)} pairs")
+        for i in range(0, len(vg_records), CHUNK_SIZE):
+            await session.execute(insert(VoterGroupSim), vg_records[i : i + CHUNK_SIZE])
         await session.flush()
 
         print("Storing group-group similarity...")
@@ -120,46 +120,46 @@ async def run(config: SimilarityConfig):
         await session.flush()
 
         print("Computing MDS embeddings...")
-        await session.execute(delete(PersonEmbedding))
+        await session.execute(delete(VoterEmbedding))
         await session.execute(delete(GroupEmbedding))
         await session.flush()
 
         group_ids = list(data.group_members.keys())
-        person_ids = data.person_ids
+        voter_ids = data.voter_ids
 
-        print("  Global person embedding...")
+        print("  Global voter embedding...")
         global_coords, global_stress = classical_mds(similarity)
         print(f"    stress: {global_stress:.4f}")
-        pe_rows = [
+        ve_rows = [
             {
-                "person_id": int(person_ids[i]),
+                "voter_id": int(voter_ids[i]),
                 "category_id": None,
                 "x": float(global_coords[i, 0]),
                 "y": float(global_coords[i, 1]),
                 "stress": global_stress,
             }
-            for i in range(len(person_ids))
+            for i in range(len(voter_ids))
         ]
-        for i in range(0, len(pe_rows), CHUNK_SIZE):
-            await session.execute(insert(PersonEmbedding), pe_rows[i : i + CHUNK_SIZE])
+        for i in range(0, len(ve_rows), CHUNK_SIZE):
+            await session.execute(insert(VoterEmbedding), ve_rows[i : i + CHUNK_SIZE])
         await session.flush()
 
         for cat_id, cat_sim in cat_similarities.items():
-            print(f"  Person embedding for category {cat_id}...")
+            print(f"  Voter embedding for category {cat_id}...")
             cat_coords, cat_stress = classical_mds(cat_sim)
             print(f"    stress: {cat_stress:.4f}")
-            cat_pe_rows = [
+            cat_ve_rows = [
                 {
-                    "person_id": int(person_ids[i]),
+                    "voter_id": int(voter_ids[i]),
                     "category_id": cat_id,
                     "x": float(cat_coords[i, 0]),
                     "y": float(cat_coords[i, 1]),
                     "stress": cat_stress,
                 }
-                for i in range(len(person_ids))
+                for i in range(len(voter_ids))
             ]
-            for i in range(0, len(cat_pe_rows), CHUNK_SIZE):
-                await session.execute(insert(PersonEmbedding), cat_pe_rows[i : i + CHUNK_SIZE])
+            for i in range(0, len(cat_ve_rows), CHUNK_SIZE):
+                await session.execute(insert(VoterEmbedding), cat_ve_rows[i : i + CHUNK_SIZE])
             await session.flush()
 
         gg_sim_matrix = np.zeros((len(group_ids), len(group_ids)))
@@ -221,11 +221,11 @@ async def run(config: SimilarityConfig):
         for cat in cat_result.scalars().all():
             cat_names[cat.id] = cat.name
 
-        person_group_map = {}
-        for pid in data.person_ids:
+        voter_group_map = {}
+        for pid in data.voter_ids:
             for gid, members in data.group_members.items():
                 if pid in members:
-                    person_group_map[int(pid)] = int(gid)
+                    voter_group_map[int(pid)] = int(gid)
                     break
 
         group_ids_int = [int(gid) for gid in group_ids]
@@ -239,15 +239,15 @@ async def run(config: SimilarityConfig):
         for cat_id in sorted(cat_similarities.keys()):
             cat_sim = cat_similarities[cat_id]
 
-            predictions = np.zeros(len(data.person_ids), dtype=int)
-            for p_local_idx in range(len(data.person_ids)):
-                pid = int(data.person_ids[p_local_idx])
+            predictions = np.zeros(len(data.voter_ids), dtype=int)
+            for p_local_idx in range(len(data.voter_ids)):
+                pid = int(data.voter_ids[p_local_idx])
                 best_gid = group_ids_int[0]
                 best_sim = -np.inf
                 for gid in group_ids_int:
                     members = data.group_members[gid]
                     member_indices = np.array(
-                        [data.person_id_to_idx[m] for m in members if m != pid]
+                        [data.voter_id_to_idx[m] for m in members if m != pid]
                     )
                     if len(member_indices) > 0:
                         sim = float(np.mean(cat_sim[p_local_idx, member_indices]))
@@ -259,9 +259,9 @@ async def run(config: SimilarityConfig):
                 predictions[p_local_idx] = best_gid
 
             contingency = np.zeros((n_groups, n_groups))
-            for p_local_idx in range(len(data.person_ids)):
-                pid = int(data.person_ids[p_local_idx])
-                actual_gid = person_group_map.get(pid)
+            for p_local_idx in range(len(data.voter_ids)):
+                pid = int(data.voter_ids[p_local_idx])
+                actual_gid = voter_group_map.get(pid)
                 predicted_gid = predictions[p_local_idx]
                 if actual_gid is not None and actual_gid in gid_to_pos:
                     contingency[gid_to_pos[actual_gid], gid_to_pos[predicted_gid]] += 1

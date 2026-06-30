@@ -57,7 +57,7 @@ export interface GroupListOut {
   cohesivity: number | null;
 }
 
-export interface SimilarPersonOut {
+export interface SimilarVoterOut {
   id: number;
   firstname: string;
   lastname: string;
@@ -75,7 +75,7 @@ export interface GroupComparisonOut {
   shared_count: number;
 }
 
-export interface PersonOut {
+export interface VoterOut {
   id: number;
   firstname: string;
   lastname: string;
@@ -87,7 +87,7 @@ export interface PersonOut {
   circonscription: string | null;
 }
 
-export interface PersonDetailOut {
+export interface VoterDetailOut {
   id: number;
   firstname: string;
   lastname: string;
@@ -99,13 +99,13 @@ export interface PersonDetailOut {
   group_yes_rates: Record<string, number> | null;
   answer_rate: number;
   group_avg_answer_rate: number;
-  similar_people: SimilarPersonOut[];
-  dissimilar_people: SimilarPersonOut[];
+  similar_voters: SimilarVoterOut[];
+  dissimilar_voters: SimilarVoterOut[];
   group_comparisons: GroupComparisonOut[];
 }
 
-export interface PaginatedPeopleOut {
-  items: PersonOut[];
+export interface PaginatedVotersOut {
+  items: VoterOut[];
   total: number;
   page: number;
   page_size: number;
@@ -150,7 +150,7 @@ export interface BarycenterOut {
   y: number;
 }
 
-export interface PeopleEmbeddingOut {
+export interface VotersEmbeddingOut {
   stress: number;
   category_id: number | null;
   points: EmbeddingPointOut[];

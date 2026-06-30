@@ -5,7 +5,7 @@ import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 import CategoryFilter from "../components/shared/category-filter";
-import PeopleScatter from "../components/map/people-scatter";
+import VotersScatter from "../components/map/voters-scatter";
 import GroupsScatter from "../components/map/groups-scatter";
 import MethodologyPanel from "../components/map/methodology-panel";
 
@@ -13,11 +13,11 @@ const MapPage: React.FC = observer(() => {
   const {embeddingsStore, uiStore} = rootStore;
 
   useEffect(() => {
-    embeddingsStore.fetchPeopleEmbedding(uiStore.selectedCategory);
+    embeddingsStore.fetchVotersEmbedding(uiStore.selectedCategory);
     embeddingsStore.fetchGroupsEmbedding(uiStore.selectedCategory);
   }, [uiStore.selectedCategory]);
 
-  const isLoading = !embeddingsStore.peopleEmbedding && !embeddingsStore.groupsEmbedding;
+  const isLoading = !embeddingsStore.votersEmbedding && !embeddingsStore.groupsEmbedding;
 
   return (
     <AnimatedPage>
@@ -30,11 +30,11 @@ const MapPage: React.FC = observer(() => {
       ) : (
         <>
           {
-            embeddingsStore.peopleEmbedding ? (
-              <PeopleScatter
-                points={embeddingsStore.peopleEmbedding.points}
-                barycenters={embeddingsStore.peopleEmbedding.barycenters}
-                stress={embeddingsStore.peopleEmbedding.stress}
+            embeddingsStore.votersEmbedding ? (
+              <VotersScatter
+                points={embeddingsStore.votersEmbedding.points}
+                barycenters={embeddingsStore.votersEmbedding.barycenters}
+                stress={embeddingsStore.votersEmbedding.stress}
               />
             ) : (
               <CardSkeleton/>

@@ -5,15 +5,15 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import BusinessIcon from "@mui/icons-material/Business";
 import PersonIcon from "@mui/icons-material/Person";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import {PERSON_INFO} from "../../constants/fr";
+import {VOTER_INFO} from "../../constants/fr";
 
-interface PersonInfoCardProps {
+interface VoterInfoCardProps {
   role: string | null;
   commission: string | null;
   circonscription: string | null;
 }
 
-const PersonInfoCard: React.FC<PersonInfoCardProps> = ({role, commission, circonscription}) => {
+const VoterInfoCard: React.FC<VoterInfoCardProps> = ({role, commission, circonscription}) => {
   const [expanded, setExpanded] = useState(false);
 
   if (!role && !commission && !circonscription) return null;
@@ -45,7 +45,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = ({role, commission, circon
             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
               <PersonIcon sx={{fontSize: 18, color: "text.secondary"}}/>
               <Typography variant="body2">
-                <strong>{PERSON_INFO.ROLE}</strong> {role}
+                <strong>{VOTER_INFO.ROLE}</strong> {role}
               </Typography>
             </Box>
           )}
@@ -53,7 +53,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = ({role, commission, circon
             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
               <BusinessIcon sx={{fontSize: 18, color: "text.secondary"}}/>
               <Typography variant="body2">
-                <strong>{PERSON_INFO.COMMISSION}</strong> {commission}
+                <strong>{VOTER_INFO.COMMISSION}</strong> {commission}
               </Typography>
             </Box>
           )}
@@ -61,7 +61,7 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = ({role, commission, circon
             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
               <LocationOnIcon sx={{fontSize: 18, color: "text.secondary"}}/>
               <Typography variant="body2">
-                <strong>{PERSON_INFO.CIRCONSCRIPTION}</strong> {circonscription}
+                <strong>{VOTER_INFO.CIRCONSCRIPTION}</strong> {circonscription}
               </Typography>
             </Box>
           )}
@@ -71,4 +71,4 @@ const PersonInfoCard: React.FC<PersonInfoCardProps> = ({role, commission, circon
   );
 };
 
-export default PersonInfoCard;
+export default VoterInfoCard;

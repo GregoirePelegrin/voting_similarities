@@ -1,31 +1,31 @@
 import {apiFetch} from "./client";
-import {PaginatedPeopleOut, PersonDetailOut, CategoryAlignmentOut} from "./types";
+import {PaginatedVotersOut, VoterDetailOut, CategoryAlignmentOut} from "./types";
 
-export function getPeople(
+export function getVoters(
   page: number,
   pageSize: number,
   groupId?: number
-): Promise<PaginatedPeopleOut> {
+): Promise<PaginatedVotersOut> {
   const params = new URLSearchParams({
     page: String(page),
     page_size: String(pageSize),
   });
   if (groupId != null) params.set("group_id", String(groupId));
-  return apiFetch(`/people?${params}`);
+  return apiFetch(`/voters?${params}`);
 }
 
-export function getPerson(
+export function getVoter(
   id: number,
   category?: number | null
-): Promise<PersonDetailOut> {
+): Promise<VoterDetailOut> {
   const params = new URLSearchParams();
   if (category != null) params.set("category", String(category));
   const qs = params.toString();
-  return apiFetch(`/people/${id}${qs ? "?" + qs : ""}`);
+  return apiFetch(`/voters/${id}${qs ? "?" + qs : ""}`);
 }
 
 export function getCategoryAlignment(
-  personId: number
+  voterId: number
 ): Promise<CategoryAlignmentOut[]> {
-  return apiFetch(`/people/${personId}/category-alignment`);
+  return apiFetch(`/voters/${voterId}/category-alignment`);
 }

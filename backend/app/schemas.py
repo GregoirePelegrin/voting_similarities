@@ -71,7 +71,7 @@ class GroupListOut(BaseModel):
     cohesivity: float | None = None
 
 
-class SimilarPersonOut(BaseModel):
+class SimilarVoterOut(BaseModel):
     id: int
     firstname: str
     lastname: str
@@ -89,7 +89,7 @@ class GroupComparisonOut(BaseModel):
     shared_count: int
 
 
-class PersonOut(BaseModel):
+class VoterOut(BaseModel):
     id: int
     firstname: str
     lastname: str
@@ -101,7 +101,7 @@ class PersonOut(BaseModel):
     circonscription: str | None = None
 
 
-class PersonDetailOut(BaseModel):
+class VoterDetailOut(BaseModel):
     id: int
     firstname: str
     lastname: str
@@ -113,13 +113,13 @@ class PersonDetailOut(BaseModel):
     group_yes_rates: dict[str, float] | None = None
     answer_rate: float = 0.0
     group_avg_answer_rate: float = 0.0
-    similar_people: list[SimilarPersonOut]
-    dissimilar_people: list[SimilarPersonOut]
+    similar_voters: list[SimilarVoterOut]
+    dissimilar_voters: list[SimilarVoterOut]
     group_comparisons: list[GroupComparisonOut]
 
 
-class PaginatedPeopleOut(BaseModel):
-    items: list[PersonOut]
+class PaginatedVotersOut(BaseModel):
+    items: list[VoterOut]
     total: int
     page: int
     page_size: int
@@ -164,7 +164,7 @@ class BarycenterOut(BaseModel):
     y: float
 
 
-class PeopleEmbeddingOut(BaseModel):
+class VotersEmbeddingOut(BaseModel):
     stress: float
     category_id: int | None = None
     points: list[EmbeddingPointOut]

@@ -28,7 +28,7 @@ const DRAWER_WIDTH = 220;
 
 const navItems = [
   {label: NAV.MAP, icon: <MapIcon/>, path: "/"},
-  {label: NAV.PEOPLE, icon: <PeopleIcon/>, path: "/people"},
+  {label: NAV.VOTERS, icon: <PeopleIcon/>, path: "/voters"},
   {label: NAV.GROUPS, icon: <GroupsIcon/>, path: "/groups"},
   {label: NAV.QUESTIONS, icon: <QuizIcon/>, path: "/questions"},
 ];

@@ -6,8 +6,8 @@ import theme from "./theme";
 import rootStore from "./stores/root-store";
 import AppShell from "./components/layout/app-shell";
 import MapPage from "./pages/map-page";
-import PeopleListPage from "./pages/people-list-page";
-import PersonDetailPage from "./pages/person-detail-page";
+import VotersListPage from "./pages/voters-list-page";
+import VoterDetailPage from "./pages/voter-detail-page";
 import GroupsListPage from "./pages/groups-list-page";
 import GroupDetailPage from "./pages/group-detail-page";
 import QuestionsListPage from "./pages/questions-list-page";
@@ -25,8 +25,8 @@ const App = observer(() => {
         <AppShell>
           <Routes>
             <Route path="/" element={<MapPage/>}/>
-            <Route path="/people" element={<PeopleListPage/>}/>
-            <Route path="/people/:id" element={<PersonDetailPage/>}/>
+            <Route path="/voters" element={<VotersListPage/>}/>
+            <Route path="/voters/:id" element={<VoterDetailPage/>}/>
             <Route path="/groups" element={<GroupsListPage/>}/>
             <Route path="/groups/:id" element={<GroupDetailPage/>}/>
             <Route path="/questions" element={<QuestionsListPage/>}/>

@@ -13,10 +13,10 @@ import {Box, Typography, Chip} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import {EmbeddingPointOut, BarycenterOut} from "../../api/types";
-import {PEOPLE_SCATTER} from "../../constants/fr";
+import {VOTERS_SCATTER} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
 
-interface PeopleScatterProps {
+interface VotersScatterProps {
   points: EmbeddingPointOut[];
   barycenters: BarycenterOut[];
   stress: number;
@@ -34,7 +34,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
       </Box>
       {isBarycenter ? (
         <Typography variant="caption" color="text.secondary">
-          {d.member_count} {PEOPLE_SCATTER.MEMBERS_BC}
+          {d.member_count} {VOTERS_SCATTER.MEMBERS_BC}
         </Typography>
       ) : (
         d.group_name && (
@@ -47,7 +47,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const PeopleScatter: React.FC<PeopleScatterProps> = observer(({points, barycenters, stress}) => {
+const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycenters, stress}) => {
   const navigate = useNavigate();
 
   const stressColor = stress < 0.1 ? DATA_COLORS.positive : stress < 0.2 ? DATA_COLORS.warning : DATA_COLORS.negative;
@@ -55,7 +55,7 @@ const PeopleScatter: React.FC<PeopleScatterProps> = observer(({points, barycente
   return (
     <Box>
       <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 1}}>
-        <Typography variant="h6">{PEOPLE_SCATTER.HEADING}</Typography>
+        <Typography variant="h6">{VOTERS_SCATTER.HEADING}</Typography>
         <Chip
           size="small"
           label={`Stress: ${(stress * 100).toFixed(1)}%`}
@@ -72,10 +72,10 @@ const PeopleScatter: React.FC<PeopleScatterProps> = observer(({points, barycente
           <ZAxis range={[40]}/>
           <Tooltip content={<UnifiedTooltip/>}/>
           <Scatter
-            name="people"
+            name="voters"
             data={points}
             onClick={(data: any) => {
-              if (data?.id) navigate(`/people/${data.id}`);
+              if (data?.id) navigate(`/voters/${data.id}`);
             }}
             style={{cursor: "pointer"}}
           >
@@ -102,4 +102,4 @@ const PeopleScatter: React.FC<PeopleScatterProps> = observer(({points, barycente
   );
 });
 
-export default PeopleScatter;
+export default VotersScatter;

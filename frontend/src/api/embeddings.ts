@@ -1,13 +1,13 @@
 import {apiFetch} from "./client";
-import {PeopleEmbeddingOut, GroupsEmbeddingOut} from "./types";
+import {VotersEmbeddingOut, GroupsEmbeddingOut} from "./types";
 
-export function getPeopleEmbeddings(
+export function getVotersEmbeddings(
   category?: number | null
-): Promise<PeopleEmbeddingOut> {
+): Promise<VotersEmbeddingOut> {
   const params = new URLSearchParams();
   if (category != null) params.set("category", String(category));
   const qs = params.toString();
-  return apiFetch(`/embeddings/people${qs ? "?" + qs : ""}`);
+  return apiFetch(`/embeddings/voters${qs ? "?" + qs : ""}`);
 }
 
 export function getGroupsEmbeddings(

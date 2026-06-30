@@ -1,7 +1,7 @@
 export const NAV = {
   TITLE: "Similitudes de Vote",
   MAP: "Carte",
-  PEOPLE: "Personnes",
+  VOTERS: "Votants",
   GROUPS: "Groupes",
   QUESTIONS: "Questions",
 };
@@ -18,7 +18,7 @@ export const CATEGORY_FILTER = {
   ALL: "Toutes les catégories",
 };
 
-export const PEOPLE_TABLE = {
+export const VOTERS_TABLE = {
   ID: "ID",
   FIRST_NAME: "Prénom",
   LAST_NAME: "Nom",
@@ -28,7 +28,7 @@ export const PEOPLE_TABLE = {
   CIRCONSCRIPTION: "Circonscription",
 };
 
-export const PERSON_INFO = {
+export const VOTER_INFO = {
   ROLE: "Rôle :",
   COMMISSION: "Commission :",
   CIRCONSCRIPTION: "Circonscription :",
@@ -49,14 +49,14 @@ export const ANSWER_GRID = {
   NO_DIFF: "Non, différent",
 };
 
-export const SIMILAR_PEOPLE = {
+export const SIMILAR_VOTERS = {
   SHARED: "partagées",
 };
 
 export const GROUP_COMPARISON = {
   HEADING: "Comparaisons par groupe",
   TOOLTIP:
-    "Mesure la similarité du profil de vote de cette personne avec chaque groupe. " +
+    "Mesure la similarité du profil de vote de ce votant avec chaque groupe. " +
     "La similarité est basée sur un chevauchement asymétrique pondéré avec lissage bayésien. " +
     "La confiance reflète le nombre de questions communes auxquelles il a été répondu.",
 };
@@ -64,11 +64,11 @@ export const GROUP_COMPARISON = {
 export const CATEGORY_ALIGNMENT = {
   HEADING: "Alignement par catégorie",
   TOOLTIP:
-    "Mesure l'alignement de cette personne avec son propre groupe par rapport aux autres groupes " +
-    "pour chaque catégorie. Positif = la personne correspond à son groupe, négatif = elle s'en démarque.",
+    "Mesure l'alignement de ce votant avec son propre groupe par rapport aux autres groupes " +
+    "pour chaque catégorie. Positif = le votant correspond à son groupe, négatif = il s'en démarque.",
 };
 
-export const PERSON_DETAIL = {
+export const VOTER_DETAIL = {
   MOST_SIMILAR: "Les plus proches",
   LEAST_SIMILAR: "Les moins proches",
   ANSWER_RATE: "Taux de réponse",
@@ -129,8 +129,8 @@ export const QUESTION_DETAIL = {
   PCT_YES: "oui",
 };
 
-export const PEOPLE_SCATTER = {
-  HEADING: "Personnes",
+export const VOTERS_SCATTER = {
+  HEADING: "Votants",
   MEMBERS_BC: "membres (barycentre)",
 };
 
@@ -143,7 +143,7 @@ export const METHODOLOGY = {
   WHAT_YOU_SEE_HEADING: "Ce que vous voyez",
   WHAT_YOU_SEE_BODY:
     "Cette carte utilise le **Positionnement multidimensionnel classique (MDS)** pour projeter " +
-    "la structure complète de similarité en deux dimensions. Chaque point représente une personne " +
+    "la structure complète de similarité en deux dimensions. Chaque point représente un votant " +
     "(ou un groupe), et la distance entre les points reflète leur dissimilarité selon la métrique " +
     "de similarité asymétrique pondérée personnalisée.",
   WHY_MDS_HEADING: "Pourquoi le MDS et non l'ACP ?",
@@ -152,7 +152,7 @@ export const METHODOLOGY = {
     "rend l'accord Oui-Oui plus significatif que l'accord Non-Non. Le MDS travaille directement " +
     "sur la matrice de similarité, donc la disposition 2D reflète fidèlement *votre* métrique.",
   METRIC_HEADING: "La métrique de similarité",
-  METRIC_INTRO: "La similarité entre deux personnes est un chevauchement asymétrique pondéré :",
+  METRIC_INTRO: "La similarité entre deux votants est un chevauchement asymétrique pondéré :",
   YES_YES_LABEL: "Oui-Oui",
   YES_YES_DESC: "accord : poids 1,0 (signal fort de conviction partagée)",
   NO_NO_LABEL: "Non-Non",
@@ -162,7 +162,7 @@ export const METHODOLOGY = {
   SHRINKAGE_BODY:
     "Le lissage bayésien (Bayesian shrinkage) mélange le score brut de chaque paire avec la moyenne " +
     "globale, pondéré par le nombre de questions qu'ils partagent (paramètre m=10). Cela évite des " +
-    "scores anormalement élevés/faibles entre personnes qui se chevauchent à peine.",
+    "scores anormalement élevés/faibles entre votants qui se chevauchent à peine.",
   STRESS_HEADING: "Stress",
   STRESS_INTRO:
     "La valeur de **stress** mesure la perte d'information dans la projection 2D :",
@@ -171,14 +171,14 @@ export const METHODOLOGY = {
   STRESS_POOR: "Mauvais ajustement — la réduction en 2D est significative ; à interpréter avec prudence",
   BARYCENTER_HEADING: "Barycentres des groupes",
   BARYCENTER_BODY:
-    "Les grands marqueurs en forme de losange sur la carte des personnes montrent le **barycentre** " +
+    "Les grands marqueurs en forme de losange sur la carte des votants montrent le **barycentre** " +
     "de chaque groupe — la position moyenne (x, y) de tous ses membres. Il ne s'agit pas d'une " +
     "analyse distincte ; c'est simplement le centre de gravité des points du groupe.",
   PER_CATEGORY_HEADING: "Vues par catégorie",
   PER_CATEGORY_BODY:
     "Lorsque vous sélectionnez une catégorie, un MDS distinct est calculé en utilisant uniquement " +
     "la similarité des questions de cette catégorie. La disposition peut changer considérablement " +
-    "d'une catégorie à l'autre — des personnes qui se regroupent sur un sujet peuvent s'éloigner " +
+    "d'une catégorie à l'autre — des votants qui se regroupent sur un sujet peuvent s'éloigner " +
     "sur un autre.",
 };
 

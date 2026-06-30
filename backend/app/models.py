@@ -34,7 +34,7 @@ class Group(Base):
     name = Column(String(200), nullable=False, unique=True)
     color = Column(String(7), nullable=False)
 
-    members = relationship("Person", back_populates="group")
+    members = relationship("Voter", back_populates="group")
 
 
 class Role(Base):
@@ -43,7 +43,7 @@ class Role(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False, unique=True)
 
-    members = relationship("Person", back_populates="role")
+    members = relationship("Voter", back_populates="role")
 
 
 class Commission(Base):
@@ -52,11 +52,11 @@ class Commission(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False, unique=True)
 
-    members = relationship("Person", back_populates="commission")
+    members = relationship("Voter", back_populates="commission")
 
 
-class Person(Base):
-    __tablename__ = "people"
+class Voter(Base):
+    __tablename__ = "voters"
 
     id = Column(Integer, primary_key=True)
     firstname = Column(String(100), nullable=False)
@@ -69,7 +69,7 @@ class Person(Base):
     group = relationship("Group", back_populates="members")
     role = relationship("Role", back_populates="members")
     commission = relationship("Commission", back_populates="members")
-    answers = relationship("Answer", back_populates="person")
+    answers = relationship("Answer", back_populates="voter")
 
 
 class Category(Base):
@@ -96,20 +96,20 @@ class Question(Base):
 class Answer(Base):
     __tablename__ = "answers"
 
-    person_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
+    voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     question_id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
     value = Column(Boolean, nullable=False)
     answered_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
-    person = relationship("Person", back_populates="answers")
+    voter = relationship("Voter", back_populates="answers")
     question = relationship("Question", back_populates="answers")
 
 
-class PersonPersonSim(Base):
-    __tablename__ = "person_person_similarity"
+class VoterVoterSim(Base):
+    __tablename__ = "voter_voter_similarity"
 
-    person_a_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
-    person_b_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
+    voter_a_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
+    voter_b_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     similarity = Column(Float, nullable=False)
     raw_similarity = Column(Float, nullable=False)
     shared_count = Column(Integer, nullable=False)
@@ -117,10 +117,10 @@ class PersonPersonSim(Base):
     per_category = Column(JSON, nullable=True)
 
 
-class PersonGroupSim(Base):
-    __tablename__ = "person_group_similarity"
+class VoterGroupSim(Base):
+    __tablename__ = "voter_group_similarity"
 
-    person_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
+    voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     similarity = Column(Float, nullable=False)
     shared_count = Column(Integer, nullable=False)
@@ -145,10 +145,10 @@ class GroupCohesivity(Base):
     per_category = Column(JSON, nullable=True)
 
 
-class PersonEmbedding(Base):
-    __tablename__ = "person_embedding"
+class VoterEmbedding(Base):
+    __tablename__ = "voter_embedding"
 
-    person_id = Column(Integer, ForeignKey("people.id"), primary_key=True)
+    voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True, nullable=True)
     x = Column(Float, nullable=False)
     y = Column(Float, nullable=False)

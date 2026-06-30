@@ -1,6 +1,6 @@
 """Seed script: generate realistic sample data.
 
-Creates ~12 groups, ~12 categories, ~100 questions, ~700 people,
+Creates ~12 groups, ~12 categories, ~100 questions, ~700 voters,
 and answers with realistic correlated voting patterns.
 
 - Each group gets a latent voting profile (probability of voting Yes per question)
@@ -23,7 +23,7 @@ from app.models import (
     Category,
     Commission,
     Group,
-    Person,
+    Voter,
     Question,
     Role,
 )
@@ -34,7 +34,7 @@ SEED = 42
 NUM_GROUPS = 12
 NUM_CATEGORIES = 12
 NUM_QUESTIONS = 100
-NUM_PEOPLE = 700
+NUM_VOTERS = 700
 MIN_RESPONSE_RATE = 0.30
 MAX_RESPONSE_RATE = 0.80
 
@@ -204,9 +204,9 @@ async def seed_data():
             "Mercier", "Dupont", "Lambert", "Bonnet", "Francois", "Martinez",
         ]
 
-        people = []
+        voters = []
         group_sizes = np_rng.multinomial(
-            NUM_PEOPLE, [1 / NUM_GROUPS] * NUM_GROUPS
+            NUM_VOTERS, [1 / NUM_GROUPS] * NUM_GROUPS
         )
         for g_idx, _group in enumerate(groups):
             for _p_idx in range(group_sizes[g_idx]):
@@ -215,7 +215,7 @@ async def seed_data():
                 role = rng.choices(roles, weights=[1, 2, 3, 14])[0]
                 commission = rng.choice(commissions)
                 circonscription = f"Circonscription {rng.randint(1, 20):02d}"
-                person = Person(
+                voter = Voter(
                     firstname=firstname,
                     lastname=lastname,
                     group_id=_group.id,
@@ -223,30 +223,30 @@ async def seed_data():
                     commission_id=commission.id,
                     circonscription=circonscription,
                 )
-                people.append(person)
+                voters.append(voter)
 
-        session.add_all(people)
+        session.add_all(voters)
         await session.flush()
 
         # --- Answers ---
         # Each person draws from their group's profile with per-person noise
         # and has a random response rate (sparsity)
-        person_idx = 0
+        voter_idx = 0
         all_answers = []
         base_date = datetime(2025, 1, 1)
 
         for g_idx, _group in enumerate(groups):
             for _p_idx in range(group_sizes[g_idx]):
-                person = people[person_idx]
-                person_idx += 1
+                voter = voters[voter_idx]
+                voter_idx += 1
 
-                # Per-person noise: shift the group profile slightly
+                # Per-voter noise: shift the group profile slightly
                 personal_noise = np_rng.normal(0, 0.15, size=NUM_QUESTIONS)
                 personal_probs = np.clip(
                     group_profiles[g_idx] + personal_noise, 0.05, 0.95
                 )
 
-                # Response rate for this person
+                # Response rate for this voter
                 response_rate = rng.uniform(MIN_RESPONSE_RATE, MAX_RESPONSE_RATE)
 
                 for q_idx, question in enumerate(questions):
@@ -257,7 +257,7 @@ async def seed_data():
                     answered_at = base_date + timedelta(days=days_offset)
                     all_answers.append(
                         Answer(
-                            person_id=person.id,
+                            voter_id=voter.id,
                             question_id=question.id,
                             value=value,
                             answered_at=answered_at,
@@ -294,8 +294,8 @@ async def seed_data():
 
         result = await session.execute(select(func.count()).select_from(Group))
         n_groups = result.scalar()
-        result = await session.execute(select(func.count()).select_from(Person))
-        n_people = result.scalar()
+        result = await session.execute(select(func.count()).select_from(Voter))
+        n_voters = result.scalar()
         result = await session.execute(select(func.count()).select_from(Question))
         n_questions = result.scalar()
         result = await session.execute(select(func.count()).select_from(Category))
@@ -305,12 +305,12 @@ async def seed_data():
 
         print("Seeded database with:")
         print(f"  Groups:    {n_groups}")
-        print(f"  People:    {n_people}")
+        print(f"  Voters:    {n_voters}")
         print(f"  Questions: {n_questions}")
         print(f"  Categories:{n_categories}")
         print(f"  Answers:   {n_answers}")
-        print(f"  Avg answers/person: {n_answers / n_people:.1f}")
-        print(f"  Avg response rate:  {n_answers / (n_people * n_questions) * 100:.1f}%")
+        print(f"  Avg answers/voter: {n_answers / n_voters:.1f}")
+        print(f"  Avg response rate:  {n_answers / (n_voters * n_questions) * 100:.1f}%")
 
     await engine.dispose()
 

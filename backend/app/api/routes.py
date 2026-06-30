@@ -12,10 +12,10 @@ from app.models import (
     GroupCohesivity,
     GroupEmbedding,
     GroupGroupSim,
-    Person,
-    PersonEmbedding,
-    PersonGroupSim,
-    PersonPersonSim,
+    Voter,
+    VoterEmbedding,
+    VoterGroupSim,
+    VoterVoterSim,
     Question,
     Role,
     question_category,
@@ -34,14 +34,14 @@ from app.schemas import (
     GroupListOut,
     GroupsEmbeddingOut,
     GroupSummaryOut,
-    PaginatedPeopleOut,
-    PeopleEmbeddingOut,
-    PersonDetailOut,
-    PersonOut,
+    PaginatedVotersOut,
+    VotersEmbeddingOut,
+    VoterDetailOut,
+    VoterOut,
     QuestionDetailOut,
     QuestionOut,
     SimilarGroupOut,
-    SimilarPersonOut,
+    SimilarVoterOut,
 )
 
 router = APIRouter()
@@ -114,10 +114,10 @@ async def get_question(
         )
     ).scalar() or 0
 
-    total_people = (
-        await db.execute(select(func.count()).select_from(Person))
+    total_voters = (
+        await db.execute(select(func.count()).select_from(Voter))
     ).scalar() or 0
-    total_missing = total_people - total_yes - total_no
+    total_missing = total_voters - total_yes - total_no
 
     all_groups = (
         await db.execute(select(Group).order_by(Group.id))
@@ -126,7 +126,7 @@ async def get_question(
     group_stats = []
     for g in all_groups:
         member_ids_result = await db.execute(
-            select(Person.id).where(Person.group_id == g.id)
+            select(Voter.id).where(Voter.group_id == g.id)
         )
         member_ids = [r[0] for r in member_ids_result.all()]
         n_members = len(member_ids)
@@ -141,7 +141,7 @@ async def get_question(
                     .where(
                         Answer.question_id == question_id,
                         Answer.value,
-                        Answer.person_id.in_(member_ids),
+                        Answer.voter_id.in_(member_ids),
                     )
                 )
             ).scalar() or 0
@@ -152,7 +152,7 @@ async def get_question(
                     .where(
                         Answer.question_id == question_id,
                         ~Answer.value,
-                        Answer.person_id.in_(member_ids),
+                        Answer.voter_id.in_(member_ids),
                     )
                 )
             ).scalar() or 0
@@ -186,28 +186,28 @@ async def get_question(
     )
 
 
-@router.get("/people", response_model=PaginatedPeopleOut)
-async def list_people(
+@router.get("/voters", response_model=PaginatedVotersOut)
+async def list_voters(
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=2000),
     group_id: int | None = None,
     db: AsyncSession = Depends(get_db),
 ):
-    query = select(Person)
-    count_query = select(func.count()).select_from(Person)
+    query = select(Voter)
+    count_query = select(func.count()).select_from(Voter)
 
     if group_id is not None:
-        query = query.where(Person.group_id == group_id)
-        count_query = count_query.where(Person.group_id == group_id)
+        query = query.where(Voter.group_id == group_id)
+        count_query = count_query.where(Voter.group_id == group_id)
 
     total = (await db.execute(count_query)).scalar()
     offset = (page - 1) * page_size
-    result = await db.execute(query.order_by(Person.id).offset(offset).limit(page_size))
-    people = result.scalars().all()
+    result = await db.execute(query.order_by(Voter.id).offset(offset).limit(page_size))
+    voters = result.scalars().all()
 
-    group_ids = {p.group_id for p in people}
-    role_ids = {p.role_id for p in people if p.role_id}
-    comm_ids = {p.commission_id for p in people if p.commission_id}
+    group_ids = {p.group_id for p in voters}
+    role_ids = {p.role_id for p in voters if p.role_id}
+    comm_ids = {p.commission_id for p in voters if p.commission_id}
 
     g_result = await db.execute(
         select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
@@ -226,9 +226,9 @@ async def list_people(
         )
         comm_map = dict(c_result.all())
 
-    return PaginatedPeopleOut(
+    return PaginatedVotersOut(
         items=[
-            PersonOut(
+            VoterOut(
                 id=p.id,
                 firstname=p.firstname,
                 lastname=p.lastname,
@@ -239,7 +239,7 @@ async def list_people(
                 commission=comm_map.get(p.commission_id) if p.commission_id else None,
                 circonscription=p.circonscription,
             )
-            for p in people
+            for p in voters
         ],
         total=total,
         page=page,
@@ -247,17 +247,17 @@ async def list_people(
     )
 
 
-@router.get("/people/{person_id}", response_model=PersonDetailOut)
-async def get_person(
-    person_id: int,
+@router.get("/voters/{voter_id}", response_model=VoterDetailOut)
+async def get_voter(
+    voter_id: int,
     category: int | None = None,
     db: AsyncSession = Depends(get_db),
 ):
-    person = await db.get(Person, person_id)
-    if person is None:
-        raise HTTPException(status_code=404, detail="Person not found")
+    voter = await db.get(Voter, voter_id)
+    if voter is None:
+        raise HTTPException(status_code=404, detail="Voter not found")
 
-    group = await db.get(Group, person.group_id)
+    group = await db.get(Group, voter.group_id)
 
     # Answers
     all_qid_query = select(Question.id).order_by(Question.id)
@@ -279,7 +279,7 @@ async def get_person(
 
     answer_query = (
         select(Answer.question_id, Answer.value)
-        .where(Answer.person_id == person_id)
+        .where(Answer.voter_id == voter_id)
         .order_by(Answer.question_id)
     )
     if category is not None:
@@ -312,71 +312,71 @@ async def get_person(
         for qid in all_qids
     ]
 
-    # Person-person similarity
+    # Voter-voter similarity
     sim_result = await db.execute(
-        select(PersonPersonSim).where(
-            (PersonPersonSim.person_a_id == person_id)
-            | (PersonPersonSim.person_b_id == person_id)
+        select(VoterVoterSim).where(
+            (VoterVoterSim.voter_a_id == voter_id)
+            | (VoterVoterSim.voter_b_id == voter_id)
         )
     )
     sim_rows = sim_result.scalars().all()
 
     cat_key = str(category) if category is not None else None
-    person_sims = []
+    voter_sims = []
     other_ids = set()
     for row in sim_rows:
-        other_id = row.person_b_id if row.person_a_id == person_id else row.person_a_id
+        other_id = row.voter_b_id if row.voter_a_id == voter_id else row.voter_a_id
         sim = row.similarity
         if cat_key is not None and row.per_category and cat_key in row.per_category:
             sim = row.per_category[cat_key]
-        person_sims.append((other_id, sim, row.confidence, row.shared_count))
+        voter_sims.append((other_id, sim, row.confidence, row.shared_count))
         other_ids.add(other_id)
 
-    person_sims.sort(key=lambda x: x[1], reverse=True)
-    similar = person_sims[:5]
-    dissimilar = list(reversed(person_sims[-5:])) if len(person_sims) >= 5 else person_sims
+    voter_sims.sort(key=lambda x: x[1], reverse=True)
+    similar = voter_sims[:5]
+    dissimilar = list(reversed(voter_sims[-5:])) if len(voter_sims) >= 5 else voter_sims
 
-    # Batch fetch person names
+    # Batch fetch voter names
     all_sim_ids = {s[0] for s in similar + dissimilar}
-    person_map = {}
+    voter_map = {}
     if all_sim_ids:
         p_result = await db.execute(
-            select(Person.id, Person.firstname, Person.lastname).where(
-                Person.id.in_(all_sim_ids)
+            select(Voter.id, Voter.firstname, Voter.lastname).where(
+                Voter.id.in_(all_sim_ids)
             )
         )
-        person_map = {r[0]: (r[1], r[2]) for r in p_result.all()}
+        voter_map = {r[0]: (r[1], r[2]) for r in p_result.all()}
 
-    similar_people = [
-        SimilarPersonOut(
+    similar_voters = [
+        SimilarVoterOut(
             id=oid,
-            firstname=person_map[oid][0],
-            lastname=person_map[oid][1],
+            firstname=voter_map[oid][0],
+            lastname=voter_map[oid][1],
             similarity=sim,
             confidence=conf,
             shared_count=sc,
         )
         for oid, sim, conf, sc in similar
-        if oid in person_map
+        if oid in voter_map
     ]
-    dissimilar_people = [
-        SimilarPersonOut(
+    dissimilar_voters = [
+        SimilarVoterOut(
             id=oid,
-            firstname=person_map[oid][0],
-            lastname=person_map[oid][1],
+            firstname=voter_map[oid][0],
+            lastname=voter_map[oid][1],
             similarity=sim,
             confidence=conf,
             shared_count=sc,
         )
         for oid, sim, conf, sc in dissimilar
-        if oid in person_map
+        if oid in voter_map
     ]
 
     # Group comparisons
     group_result = await db.execute(
-        select(PersonGroupSim)
-        .where(PersonGroupSim.person_id == person_id)
-        .order_by(PersonGroupSim.group_id)
+        select(VoterGroupSim)
+        .where(VoterGroupSim.voter_id == voter_id)
+        .order_by(VoterGroupSim.group_id)
     )
     pg_rows = group_result.scalars().all()
 
@@ -414,25 +414,25 @@ async def get_person(
     # Group member count
     member_count = (
         await db.execute(
-            select(func.count()).select_from(Person).where(Person.group_id == group.id)
+            select(func.count()).select_from(Voter).where(Voter.group_id == group.id)
         )
     ).scalar()
 
     role_name = None
-    if person.role_id:
-        role = await db.get(Role, person.role_id)
+    if voter.role_id:
+        role = await db.get(Role, voter.role_id)
         if role:
             role_name = role.name
 
     commission_name = None
-    if person.commission_id:
-        comm = await db.get(Commission, person.commission_id)
+    if voter.commission_id:
+        comm = await db.get(Commission, voter.commission_id)
         if comm:
             commission_name = comm.name
 
     group_yes_rates = {}
     own_member_ids_result = await db.execute(
-        select(Person.id).where(Person.group_id == group.id)
+        select(Voter.id).where(Voter.group_id == group.id)
     )
     own_member_ids = [r[0] for r in own_member_ids_result.all()]
 
@@ -442,9 +442,9 @@ async def get_person(
     if own_member_ids and all_qids:
         member_answer_counts = (
             await db.execute(
-                select(Answer.person_id, func.count())
-                .where(Answer.person_id.in_(own_member_ids))
-                .group_by(Answer.person_id)
+                select(Answer.voter_id, func.count())
+                .where(Answer.voter_id.in_(own_member_ids))
+                .group_by(Answer.voter_id)
             )
         ).all()
         rates = [cnt / len(all_qids) for _, cnt in member_answer_counts]
@@ -462,7 +462,7 @@ async def get_person(
                     .where(
                         Answer.question_id == qid,
                         Answer.value,
-                        Answer.person_id.in_(own_member_ids),
+                        Answer.voter_id.in_(own_member_ids),
                     )
                 )
             ).scalar() or 0
@@ -472,7 +472,7 @@ async def get_person(
                     .select_from(Answer)
                     .where(
                         Answer.question_id == qid,
-                        Answer.person_id.in_(own_member_ids),
+                        Answer.voter_id.in_(own_member_ids),
                     )
                 )
             ).scalar() or 0
@@ -480,22 +480,22 @@ async def get_person(
                 yes_count / total_count if total_count > 0 else 0.0
             )
 
-    return PersonDetailOut(
-        id=person.id,
-        firstname=person.firstname,
-        lastname=person.lastname,
+    return VoterDetailOut(
+        id=voter.id,
+        firstname=voter.firstname,
+        lastname=voter.lastname,
         group=GroupSummaryOut(
             id=group.id, name=group.name, color=group.color, member_count=member_count
         ),
         role=role_name,
         commission=commission_name,
-        circonscription=person.circonscription,
+        circonscription=voter.circonscription,
         answers=answers,
         group_yes_rates=group_yes_rates if group_yes_rates else None,
         answer_rate=answer_rate,
         group_avg_answer_rate=group_avg_answer_rate,
-        similar_people=similar_people,
-        dissimilar_people=dissimilar_people,
+        similar_voters=similar_voters,
+        dissimilar_voters=dissimilar_voters,
         group_comparisons=group_comparisons,
     )
 
@@ -509,9 +509,9 @@ async def list_groups(db: AsyncSession = Depends(get_db)):
     member_counts = {}
     if group_ids:
         mc_result = await db.execute(
-            select(Person.group_id, func.count())
-            .where(Person.group_id.in_(group_ids))
-            .group_by(Person.group_id)
+            select(Voter.group_id, func.count())
+            .where(Voter.group_id.in_(group_ids))
+            .group_by(Voter.group_id)
         )
         member_counts = dict(mc_result.all())
 
@@ -548,7 +548,7 @@ async def get_group(
 
     member_count = (
         await db.execute(
-            select(func.count()).select_from(Person).where(Person.group_id == group_id)
+            select(func.count()).select_from(Voter).where(Voter.group_id == group_id)
         )
     ).scalar()
 
@@ -622,15 +622,15 @@ async def get_group(
     group_answer_rate = 0.0
     if member_count and member_count > 0:
         member_ids_result = await db.execute(
-            select(Person.id).where(Person.group_id == group_id)
+            select(Voter.id).where(Voter.group_id == group_id)
         )
         member_ids = [r[0] for r in member_ids_result.all()]
         if member_ids:
             member_answer_counts = (
                 await db.execute(
-                    select(Answer.person_id, func.count())
-                    .where(Answer.person_id.in_(member_ids))
-                    .group_by(Answer.person_id)
+                    select(Answer.voter_id, func.count())
+                    .where(Answer.voter_id.in_(member_ids))
+                    .group_by(Answer.voter_id)
                 )
             ).all()
             rates = [cnt / total_questions for _, cnt in member_answer_counts]
@@ -651,28 +651,28 @@ async def get_group(
     )
 
 
-@router.get("/embeddings/people", response_model=PeopleEmbeddingOut)
-async def get_people_embeddings(
+@router.get("/embeddings/voters", response_model=VotersEmbeddingOut)
+async def get_voters_embeddings(
     category: int | None = None,
     db: AsyncSession = Depends(get_db),
 ):
-    emb_query = select(PersonEmbedding).where(PersonEmbedding.category_id == category)
-    emb_result = await db.execute(emb_query.order_by(PersonEmbedding.person_id))
+    emb_query = select(VoterEmbedding).where(VoterEmbedding.category_id == category)
+    emb_result = await db.execute(emb_query.order_by(VoterEmbedding.voter_id))
     emb_rows = emb_result.scalars().all()
 
     if not emb_rows:
         raise HTTPException(status_code=404, detail="No embeddings found for this category")
 
-    person_ids = [e.person_id for e in emb_rows]
+    voter_ids = [e.voter_id for e in emb_rows]
 
     p_result = await db.execute(
-        select(Person.id, Person.firstname, Person.lastname, Person.group_id).where(
-            Person.id.in_(person_ids)
+        select(Voter.id, Voter.firstname, Voter.lastname, Voter.group_id).where(
+            Voter.id.in_(voter_ids)
         )
     )
-    person_map = {r[0]: (r[1], r[2], r[3]) for r in p_result.all()}
+    voter_map = {r[0]: (r[1], r[2], r[3]) for r in p_result.all()}
 
-    group_ids = {v[2] for v in person_map.values()}
+    group_ids = {v[2] for v in voter_map.values()}
     g_result = await db.execute(
         select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
     )
@@ -683,8 +683,8 @@ async def get_people_embeddings(
     bary_count: dict[int, int] = {}
 
     for e in emb_rows:
-        fname, lname, gid = person_map.get(
-            e.person_id, ("Unknown", "", None)
+        fname, lname, gid = voter_map.get(
+            e.voter_id, ("Unknown", "", None)
         )
         pname = f"{fname} {lname}".strip()
         if gid:
@@ -694,7 +694,7 @@ async def get_people_embeddings(
 
         points.append(
             EmbeddingPointOut(
-                id=e.person_id,
+                id=e.voter_id,
                 name=pname,
                 group_id=gid,
                 group_name=gname,
@@ -716,7 +716,7 @@ async def get_people_embeddings(
         n = bary_count[gid]
         gname, gcolor = group_map.get(gid, ("Unknown", "#808080"))
         mc_result = await db.execute(
-            select(func.count()).select_from(Person).where(Person.group_id == gid)
+            select(func.count()).select_from(Voter).where(Voter.group_id == gid)
         )
         mc = mc_result.scalar() or 0
         barycenters.append(
@@ -732,7 +732,7 @@ async def get_people_embeddings(
 
     stress = emb_rows[0].stress if emb_rows else 0.0
 
-    return PeopleEmbeddingOut(
+    return VotersEmbeddingOut(
         stress=stress,
         category_id=category,
         points=points,
@@ -874,21 +874,21 @@ async def get_group_determinant_categories(
     return out
 
 
-@router.get("/people/{person_id}/category-alignment", response_model=list[CategoryAlignmentOut])
-async def get_person_category_alignment(
-    person_id: int,
+@router.get("/voters/{voter_id}/category-alignment", response_model=list[CategoryAlignmentOut])
+async def get_voter_category_alignment(
+    voter_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    person = await db.get(Person, person_id)
-    if person is None:
-        raise HTTPException(status_code=404, detail="Person not found")
+    voter = await db.get(Voter, voter_id)
+    if voter is None:
+        raise HTTPException(status_code=404, detail="Voter not found")
 
     pg_result = await db.execute(
-        select(PersonGroupSim).where(PersonGroupSim.person_id == person_id)
+        select(VoterGroupSim).where(VoterGroupSim.voter_id == voter_id)
     )
     pg_rows = pg_result.scalars().all()
 
-    own_group_id = person.group_id
+    own_group_id = voter.group_id
 
     cat_result = await db.execute(select(Category).order_by(Category.id))
     cat_map = {c.id: c.name for c in cat_result.scalars().all()}

@@ -1,11 +1,11 @@
 import {makeAutoObservable, runInAction} from "mobx";
-import {PeopleEmbeddingOut, GroupsEmbeddingOut} from "../api/types";
-import {getPeopleEmbeddings, getGroupsEmbeddings} from "../api/embeddings";
+import {VotersEmbeddingOut, GroupsEmbeddingOut} from "../api/types";
+import {getVotersEmbeddings, getGroupsEmbeddings} from "../api/embeddings";
 import UiStore from "./ui-store";
 import {ERROR_DIALOG} from "../constants/fr";
 
 class EmbeddingsStore {
-  peopleEmbedding: PeopleEmbeddingOut | null = null;
+  votersEmbedding: VotersEmbeddingOut | null = null;
   groupsEmbedding: GroupsEmbeddingOut | null = null;
   private ui: UiStore;
 
@@ -14,11 +14,11 @@ class EmbeddingsStore {
     makeAutoObservable(this);
   }
 
-  async fetchPeopleEmbedding(category?: number | null) {
+  async fetchVotersEmbedding(category?: number | null) {
     try {
-      const data = await getPeopleEmbeddings(category);
+      const data = await getVotersEmbeddings(category);
       runInAction(() => {
-        this.peopleEmbedding = data;
+        this.votersEmbedding = data;
       });
     } catch {
       this.ui.setError(ERROR_DIALOG.API_CONNECTION);

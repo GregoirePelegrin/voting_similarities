@@ -2,17 +2,17 @@ import React, {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
-import PeopleTable from "../components/people/people-table";
+import VotersTable from "../components/voters/voters-table";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 
-const PeopleListPage: React.FC = observer(() => {
-  const {peopleStore, uiStore} = rootStore;
+const VotersListPage: React.FC = observer(() => {
+  const {votersStore, uiStore} = rootStore;
 
   useEffect(() => {
-    peopleStore.fetchPeople();
+    votersStore.fetchVoters();
   }, []);
 
-  if (uiStore.loading && peopleStore.people.length === 0) {
+  if (uiStore.loading && votersStore.voters.length === 0) {
     return (
       <AnimatedPage>
         <CardSkeleton/>
@@ -22,9 +22,9 @@ const PeopleListPage: React.FC = observer(() => {
 
   return (
     <AnimatedPage>
-      <PeopleTable/>
+      <VotersTable/>
     </AnimatedPage>
   );
 });
 
-export default PeopleListPage;
+export default VotersListPage;
