@@ -31,13 +31,13 @@ const VoterDetailPage: React.FC = observer(() => {
     if (voterId) {
       votersStore.fetchVoter(voterId, uiStore.selectedCategory);
     }
-  }, [voterId, uiStore.selectedCategory]);
+  }, [voterId, uiStore.selectedCategory, uiStore.retryVersion]);
 
   useEffect(() => {
     if (voterId) {
       votersStore.fetchCategoryAlignment(voterId);
     }
-  }, [voterId]);
+  }, [voterId, uiStore.retryVersion]);
 
   const voter = votersStore.selectedVoter;
 

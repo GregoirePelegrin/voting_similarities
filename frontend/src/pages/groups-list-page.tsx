@@ -10,7 +10,7 @@ const GroupsListPage: React.FC = observer(() => {
 
   useEffect(() => {
     groupsStore.fetchGroups();
-  }, []);
+  }, [uiStore.retryVersion]);
 
   if (uiStore.loading && groupsStore.groups.length === 0) {
     return (

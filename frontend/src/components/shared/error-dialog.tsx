@@ -10,6 +10,7 @@ const ErrorDialog: React.FC = observer(() => {
 
   const handleRetry = async () => {
     uiStore.clearError();
+    uiStore.incrementRetry();
     await rootStore.init();
   };
 

@@ -10,7 +10,7 @@ const QuestionsListPage: React.FC = observer(() => {
 
   useEffect(() => {
     questionsStore.fetchQuestions();
-  }, []);
+  }, [uiStore.retryVersion]);
 
   if (uiStore.loading && questionsStore.questions.length === 0) {
     return (

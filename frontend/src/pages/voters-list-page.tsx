@@ -10,7 +10,7 @@ const VotersListPage: React.FC = observer(() => {
 
   useEffect(() => {
     votersStore.fetchVoters();
-  }, []);
+  }, [uiStore.retryVersion]);
 
   if (uiStore.loading && votersStore.voters.length === 0) {
     return (

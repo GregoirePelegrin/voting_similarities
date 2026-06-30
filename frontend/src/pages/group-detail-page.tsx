@@ -28,13 +28,13 @@ const GroupDetailPage: React.FC = observer(() => {
     if (groupId) {
       groupsStore.fetchGroup(groupId, uiStore.selectedCategory);
     }
-  }, [groupId, uiStore.selectedCategory]);
+  }, [groupId, uiStore.selectedCategory, uiStore.retryVersion]);
 
   useEffect(() => {
     if (groupId) {
       groupsStore.fetchDeterminantCategories(groupId);
     }
-  }, [groupId]);
+  }, [groupId, uiStore.retryVersion]);
 
   const group = groupsStore.selectedGroup;
 

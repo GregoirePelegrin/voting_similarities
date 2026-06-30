@@ -15,7 +15,7 @@ const MapPage: React.FC = observer(() => {
   useEffect(() => {
     embeddingsStore.fetchVotersEmbedding(uiStore.selectedCategory);
     embeddingsStore.fetchGroupsEmbedding(uiStore.selectedCategory);
-  }, [uiStore.selectedCategory]);
+  }, [uiStore.selectedCategory, uiStore.retryVersion]);
 
   const isLoading = !embeddingsStore.votersEmbedding && !embeddingsStore.groupsEmbedding;
 

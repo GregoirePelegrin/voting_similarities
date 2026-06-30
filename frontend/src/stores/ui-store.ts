@@ -4,6 +4,7 @@ class UiStore {
   selectedCategory: number | null = null;
   loading = false;
   error: string | null = null;
+  retryVersion = 0;
   snackbar: { open: boolean; message: string; severity: "success" | "error" | "info" } = {
     open: false,
     message: "",
@@ -28,6 +29,10 @@ class UiStore {
 
   clearError() {
     this.error = null;
+  }
+
+  incrementRetry() {
+    this.retryVersion += 1;
   }
 
   showSnackbar(message: string, severity: "success" | "error" | "info" = "info") {

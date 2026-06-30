@@ -28,7 +28,6 @@ class RootStore {
     try {
       await Promise.all([
         this.categoriesStore.fetchCategories(),
-        this.questionsStore.fetchQuestions(),
       ]);
     } catch {
       this.uiStore.setError(ERROR_DIALOG.API_CONNECTION);

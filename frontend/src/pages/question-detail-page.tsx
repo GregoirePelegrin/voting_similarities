@@ -10,7 +10,7 @@ import {DATA_COLORS} from "../theme";
 
 const QuestionDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {questionsStore} = rootStore;
+  const {questionsStore, uiStore} = rootStore;
   const questionId = Number(id);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const QuestionDetailPage: React.FC = observer(() => {
     if (questionId) {
       questionsStore.fetchQuestion(questionId);
     }
-  }, [questionId]);
+  }, [questionId, uiStore.retryVersion]);
 
   const q = questionsStore.selectedQuestion;
 

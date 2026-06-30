@@ -59,6 +59,8 @@ export const GROUP_COMPARISON = {
     "Mesure la similarité du profil de vote de ce votant avec chaque groupe. " +
     "La similarité est basée sur un chevauchement asymétrique pondéré avec lissage bayésien. " +
     "La confiance reflète le nombre de questions communes auxquelles il a été répondu.",
+  SIMILARITY: "Similarité",
+  CONFIDENCE: "Confiance"
 };
 
 export const CATEGORY_ALIGNMENT = {
