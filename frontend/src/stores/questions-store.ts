@@ -35,6 +35,10 @@ class QuestionsStore {
       this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
+
+  clearQuestionDetail() {
+    this.selectedQuestion = null;
+  }
 }
 
 export default QuestionsStore;

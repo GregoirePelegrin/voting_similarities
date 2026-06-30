@@ -21,6 +21,13 @@ const PersonDetailPage: React.FC = observer(() => {
   const personId = Number(id);
 
   useEffect(() => {
+      if (personId) {
+          ui.setCategory(null);
+          people.clearPersonDetail();
+      }
+  }, [personId]);
+
+  useEffect(() => {
     if (personId) {
       people.fetchPerson(personId, ui.selectedCategory);
     }

@@ -51,6 +51,11 @@ class PeopleStore {
       this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
+
+  clearPersonDetail() {
+      this.selectedPerson = null;
+      this.categoryAlignment = [];
+  }
 }
 
 export default PeopleStore;

@@ -14,6 +14,12 @@ const QuestionDetailPage: React.FC = observer(() => {
   const questionId = Number(id);
 
   useEffect(() => {
+      if (questionId) {
+          questions.clearQuestionDetail();
+      }
+  }, [questionId]);
+
+  useEffect(() => {
     if (questionId) {
       questions.fetchQuestion(questionId);
     }
@@ -67,7 +73,7 @@ const QuestionDetailPage: React.FC = observer(() => {
                   <Typography variant="body2">{gs.group_name}</Typography>
                 </Box>
                 <Typography variant="caption" color="text.secondary">
-                  {gs.yes_count}{QUESTION_DETAIL.Y_SHORT} / {gs.no_count}{QUESTION_DETAIL.N_SHORT} / {gs.missing_count}{QUESTION_DETAIL.DASH_SHORT}
+                  {gs.yes_count} {QUESTION_DETAIL.YES_LABEL} / {gs.no_count} {QUESTION_DETAIL.NO_LABEL} / {gs.missing_count} {QUESTION_DETAIL.MISSING_LABEL}
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", height: 10, borderRadius: 1, overflow: "hidden" }}>
