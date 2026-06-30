@@ -24,32 +24,33 @@ const CustomTooltip: React.FC<any> = ({ active, payload }) => {
 };
 
 const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({ comparisons }) => {
-  const data = [...comparisons].sort((a, b) => b.similarity - a.similarity);
+    if (!comparisons || comparisons.length === 0) return null;
+    const data = [...comparisons].sort((a, b) => b.similarity - a.similarity);
 
-  return (
-    <Card sx={{ bgcolor: "background.paper" }}>
-      <CardContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-          <Typography variant="h6">{GROUP_COMPARISON.HEADING}</Typography>
-          <Tooltip title={GROUP_COMPARISON.TOOLTIP}>
-            <InfoOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
-          </Tooltip>
-        </Box>
-        <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
-          <BarChart data={data} layout="vertical" margin={{ left: 100, right: 40 }}>
-            <XAxis type="number" domain={[0, "auto"]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} />
-            <YAxis type="category" dataKey="group_name" width={90} tick={{ fill: DATA_COLORS.neutral, fontSize: 12 }} />
-            <RTooltip content={<CustomTooltip />} />
-            <Bar dataKey="similarity" radius={[0, 4, 4, 0]} barSize={20}>
-              {data.map((d, i) => (
-                <Cell key={i} fill={d.group_color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
-  );
+    return (
+      <Card sx={{ bgcolor: "background.paper" }}>
+        <CardContent>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+            <Typography variant="h6">{GROUP_COMPARISON.HEADING}</Typography>
+            <Tooltip title={GROUP_COMPARISON.TOOLTIP}>
+              <InfoOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
+            </Tooltip>
+          </Box>
+          <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
+            <BarChart data={data} layout="vertical" margin={{ left: 100, right: 40 }}>
+              <XAxis type="number" domain={[0, "auto"]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} />
+              <YAxis type="category" dataKey="group_name" width={90} tick={{ fill: DATA_COLORS.neutral, fontSize: 12 }} />
+              <RTooltip content={<CustomTooltip />} />
+              <Bar dataKey="similarity" radius={[0, 4, 4, 0]} barSize={20}>
+                {data.map((d, i) => (
+                  <Cell key={i} fill={d.group_color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+    );
 };
 
 export default GroupComparisonBars;
