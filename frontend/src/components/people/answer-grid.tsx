@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AnswerOut } from "../../api/types";
 import { ANSWER_GRID } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 interface AnswerGridProps {
   answers: AnswerOut[];
@@ -17,11 +18,11 @@ const SEGMENT_COLORS = {
 };
 
 function getSegmentColor(answer: AnswerOut): string {
-  if (!answer.answered) return SEGMENT_COLORS.missing;
+  if (!answer.answered) return DATA_COLORS.missing;
   if (answer.value) {
-    return answer.has_passed ? SEGMENT_COLORS.yesSame : SEGMENT_COLORS.yesDifferent;
+    return answer.has_passed ? DATA_COLORS.yesSame : DATA_COLORS.yesDifferent;
   }
-  return answer.has_passed ? SEGMENT_COLORS.noDifferent : SEGMENT_COLORS.noSame;
+  return answer.has_passed ? DATA_COLORS.noDifferent : DATA_COLORS.noSame;
 }
 
 function getSegmentLabel(answer: AnswerOut): string {
@@ -90,11 +91,11 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({ answers }) => {
 
         <Box sx={{ display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap" }}>
           {[
-            { color: SEGMENT_COLORS.yesSame, label: ANSWER_GRID.YES_SAME },
-            { color: SEGMENT_COLORS.noSame, label: ANSWER_GRID.NO_SAME },
-            { color: SEGMENT_COLORS.yesDifferent, label: ANSWER_GRID.YES_DIFF },
-            { color: SEGMENT_COLORS.noDifferent, label: ANSWER_GRID.NO_DIFF },
-            { color: SEGMENT_COLORS.missing, label: ANSWER_GRID.NO_ANSWER },
+            { color: DATA_COLORS.yesSame, label: ANSWER_GRID.YES_SAME },
+            { color: DATA_COLORS.noSame, label: ANSWER_GRID.NO_SAME },
+            { color: DATA_COLORS.yesDifferent, label: ANSWER_GRID.YES_DIFF },
+            { color: DATA_COLORS.noDifferent, label: ANSWER_GRID.NO_DIFF },
+            { color: DATA_COLORS.missing, label: ANSWER_GRID.NO_ANSWER },
           ].map((item) => (
             <Box key={item.label} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <Box sx={{ width: 10, height: 10, borderRadius: 0.5, bgcolor: item.color }} />

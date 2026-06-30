@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { SimilarGroupOut } from "../../api/types";
 import rootStore from "../../stores/root-store";
 import { CATEGORY_HEATMAP } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 interface CategoryHeatmapProps {
   similarGroups: SimilarGroupOut[];
@@ -37,9 +38,9 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({ similarGroup
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#9EAAB8", fontSize: 12 }}>{CATEGORY_HEATMAP.GROUP}</th>
+                  <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: DATA_COLORS.neutral, fontSize: 12 }}>{CATEGORY_HEATMAP.GROUP}</th>
                   {catNames.map((cn) => (
-                    <th key={cn} style={{ textAlign: "center", padding: "8px 4px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#9EAAB8", fontSize: 11, writingMode: "vertical-rl", textOrientation: "mixed", maxWidth: 40 }}>
+                    <th key={cn} style={{ textAlign: "center", padding: "8px 4px", borderBottom: "1px solid rgba(255,255,255,0.1)", color: DATA_COLORS.neutral, fontSize: 11, writingMode: "vertical-rl", textOrientation: "mixed", maxWidth: 40 }}>
                       {cn}
                     </th>
                   ))}

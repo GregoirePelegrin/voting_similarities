@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { DATA_COLORS } from "../../theme";
 
 interface SimilarityBarProps {
   value: number;
@@ -8,7 +9,7 @@ interface SimilarityBarProps {
   showSign?: boolean;
 }
 
-const SimilarityBar: React.FC<SimilarityBarProps> = ({ value, color = "#4A90D9", label, showSign }) => {
+const SimilarityBar: React.FC<SimilarityBarProps> = ({ value, color = DATA_COLORS.primary, label, showSign }) => {
   const pct = Math.max(0, Math.min(1, Math.abs(value))) * 100;
   const displayValue = showSign && value < 0
     ? `${(value * 100).toFixed(1)}%`

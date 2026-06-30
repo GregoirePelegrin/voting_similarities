@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { CategoryOut } from "../api/types";
 import { getCategories } from "../api/categories";
 import UiStore from "./ui-store";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class CategoriesStore {
   categories: CategoryOut[] = [];
@@ -19,7 +20,7 @@ class CategoriesStore {
         this.categories = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 }

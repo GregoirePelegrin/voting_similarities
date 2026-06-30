@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { EmbeddingPointOut } from "../../api/types";
 import { GROUPS_SCATTER } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 interface GroupsScatterProps {
   points: EmbeddingPointOut[];
@@ -36,7 +37,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload }) => {
 const GroupsScatter: React.FC<GroupsScatterProps> = observer(({ points, stress }) => {
   const navigate = useNavigate();
 
-  const stressColor = stress < 0.1 ? "#59A14F" : stress < 0.2 ? "#EDC948" : "#E15759";
+  const stressColor = stress < 0.1 ? DATA_COLORS.positive : stress < 0.2 ? DATA_COLORS.warning : DATA_COLORS.negative;
 
   return (
     <Box>
@@ -51,8 +52,8 @@ const GroupsScatter: React.FC<GroupsScatterProps> = observer(({ points, stress }
       </Box>
       <ResponsiveContainer width="100%" height={350}>
         <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-          <XAxis type="number" dataKey="x" name="x" tick={{ fill: "#9EAAB8", fontSize: 11 }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} tickLine={false} />
-          <YAxis type="number" dataKey="y" name="y" tick={{ fill: "#9EAAB8", fontSize: 11 }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} tickLine={false} />
+          <XAxis type="number" dataKey="x" name="x" tick={{ fill: DATA_COLORS.neutral, fontSize: 11 }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} tickLine={false} />
+          <YAxis type="number" dataKey="y" name="y" tick={{ fill: DATA_COLORS.neutral, fontSize: 11 }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} tickLine={false} />
           <ZAxis range={[200]} />
           <Tooltip content={<CustomTooltip />} />
           <Scatter

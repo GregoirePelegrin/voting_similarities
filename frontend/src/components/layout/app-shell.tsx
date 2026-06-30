@@ -63,9 +63,9 @@ const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onC
               sx={{
                 color:
                   item.path === "/"
-                    ? location.pathname === "/" ? "#4A90D9" : "inherit"
+                    ? location.pathname === "/" ? "primary.main" : "inherit"
                     : location.pathname.startsWith(item.path)
-                    ? "#4A90D9"
+                    ? "primary.main"
                     : "inherit",
               }}
             >

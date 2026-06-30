@@ -4,6 +4,7 @@ import QuestionsStore from "./questions-store";
 import PeopleStore from "./people-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class RootStore {
   ui: UiStore;
@@ -30,7 +31,7 @@ class RootStore {
         this.questions.fetchQuestions(),
       ]);
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     } finally {
       this.ui.setLoading(false);
     }

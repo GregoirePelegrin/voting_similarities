@@ -10,6 +10,7 @@ export const ERROR_DIALOG = {
   TITLE: "Erreur de connexion",
   DISMISS: "Ignorer",
   RETRY: "Réessayer",
+  API_CONNECTION: "API non disponible. Assurez-vous que le serveur est en marche"
 };
 
 export const CATEGORY_FILTER = {

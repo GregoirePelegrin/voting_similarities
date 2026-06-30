@@ -66,4 +66,17 @@ const theme = createTheme({
   },
 });
 
+export const DATA_COLORS = {
+    yesSame: "#59A14F",
+    yesDifferent: "#4A90D9",
+    noSame: "#E15759",
+    noDifferent: "#B07AA1",
+    missing: "#555555",
+    positive: "#59A14F",
+    negative: "#E15759",
+    warning: "#EDC948",
+    neutral: "#9EAAB8",
+    primary: "#4A90D9"
+};
+
 export default theme;

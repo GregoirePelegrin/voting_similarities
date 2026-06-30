@@ -5,6 +5,7 @@ import { Box, Chip } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import { QUESTIONS_TABLE } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: QUESTIONS_TABLE.ID, width: 80 },
@@ -19,7 +20,7 @@ const columns: GridColDef[] = [
         size="small"
         sx={{
           bgcolor: params.value ? "rgba(89,161,79,0.2)" : "rgba(225,87,89,0.2)",
-          color: params.value ? "#59A14F" : "#E15759",
+          color: params.value ? DATA_COLORS.positive : DATA_COLORS.negative,
           fontSize: 11,
           height: 24,
         }}

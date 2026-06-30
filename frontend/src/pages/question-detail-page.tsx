@@ -6,6 +6,7 @@ import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 import { QUESTION_DETAIL } from "../constants/fr";
+import { DATA_COLORS } from "../theme";
 
 const QuestionDetailPage: React.FC = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -43,7 +44,7 @@ const QuestionDetailPage: React.FC = observer(() => {
             size="small"
             sx={{
               bgcolor: q.has_passed ? "rgba(89,161,79,0.2)" : "rgba(225,87,89,0.2)",
-              color: q.has_passed ? "#59A14F" : "#E15759",
+              color: q.has_passed ? DATA_COLORS.positive : DATA_COLORS.negative,
             }}
           />
           {q.category_names.map((cn) => (

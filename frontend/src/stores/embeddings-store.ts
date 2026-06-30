@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { PeopleEmbeddingOut, GroupsEmbeddingOut } from "../api/types";
 import { getPeopleEmbeddings, getGroupsEmbeddings } from "../api/embeddings";
 import UiStore from "./ui-store";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class EmbeddingsStore {
   peopleEmbedding: PeopleEmbeddingOut | null = null;
@@ -20,7 +21,7 @@ class EmbeddingsStore {
         this.peopleEmbedding = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
@@ -31,7 +32,7 @@ class EmbeddingsStore {
         this.groupsEmbedding = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 }

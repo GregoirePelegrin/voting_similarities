@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box, LinearProgress, Tooltip } from "@mu
 import { DeterminantCategoryOut } from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { DETERMINANT_CATEGORIES } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
@@ -42,7 +43,7 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ c
                 bgcolor: "rgba(255,255,255,0.08)",
                 "& .MuiLinearProgress-bar": {
                   borderRadius: 4,
-                  bgcolor: "#4A90D9",
+                  bgcolor: DATA_COLORS.primary,
                 },
               }}
             />

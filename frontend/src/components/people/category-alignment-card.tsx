@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, 
 import { CategoryAlignmentOut } from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { CATEGORY_ALIGNMENT } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 interface CategoryAlignmentCardProps {
   alignments: CategoryAlignmentOut[];
@@ -41,12 +42,12 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({ alignment
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{ left: 100, right: 40 }}>
             <XAxis type="number" tickFormatter={(v: number) => `${v.toFixed(0)}%`} />
-            <YAxis type="category" dataKey="category_name" width={90} tick={{ fill: "#9EAAB8", fontSize: 12 }} />
+            <YAxis type="category" dataKey="category_name" width={90} tick={{ fill: DATA_COLORS.neutral, fontSize: 12 }} />
             <RTooltip content={<CustomTooltip />} />
             <ReferenceLine x={0} stroke="rgba(255,255,255,0.15)" />
             <Bar dataKey="alignment_pct" radius={[0, 4, 4, 0]} barSize={20}>
               {data.map((d, i) => (
-                <Cell key={i} fill={d.alignment_pct >= 0 ? "#59A14F" : "#E15759"} />
+                <Cell key={i} fill={d.alignment_pct >= 0 ? DATA_COLORS.positive : DATA_COLORS.negative} />
               ))}
             </Bar>
           </BarChart>

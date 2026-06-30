@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { PersonOut, PersonDetailOut, CategoryAlignmentOut } from "../api/types";
 import { getPeople, getPerson, getCategoryAlignment } from "../api/people";
 import UiStore from "./ui-store";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class PeopleStore {
   people: PersonOut[] = [];
@@ -25,7 +26,7 @@ class PeopleStore {
         this.total = data.total;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
@@ -36,7 +37,7 @@ class PeopleStore {
         this.selectedPerson = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
@@ -47,7 +48,7 @@ class PeopleStore {
         this.categoryAlignment = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 }

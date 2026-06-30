@@ -13,6 +13,7 @@ import PersonInfoCard from "../components/people/person-info-card";
 import CohesivityGauge from "../components/shared/cohesivity-gauge";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 import { PERSON_DETAIL } from "../constants/fr";
+import { DATA_COLORS } from "../theme";
 
 const PersonDetailPage: React.FC = observer(() => {
   const { id } = useParams<{ id: string }>();
@@ -80,14 +81,14 @@ const PersonDetailPage: React.FC = observer(() => {
           <SimilarPeopleCard
             title={PERSON_DETAIL.MOST_SIMILAR}
             people={person.similar_people}
-            color="#4A90D9"
+            color={DATA_COLORS.primary}
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <SimilarPeopleCard
             title={PERSON_DETAIL.LEAST_SIMILAR}
             people={person.dissimilar_people}
-            color="#E15759"
+            color={DATA_COLORS.negative}
             showSign
           />
         </Grid>

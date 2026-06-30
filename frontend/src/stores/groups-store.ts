@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { GroupListOut, GroupDetailOut, DeterminantCategoryOut, SimilarGroupOut } from "../api/types";
 import { getGroups, getGroup, getDeterminantCategories } from "../api/groups";
 import UiStore from "./ui-store";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class GroupsStore {
   groups: GroupListOut[] = [];
@@ -22,7 +23,7 @@ class GroupsStore {
         this.groups = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
@@ -36,7 +37,7 @@ class GroupsStore {
         }
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
@@ -47,7 +48,7 @@ class GroupsStore {
         this.determinantCategories = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 

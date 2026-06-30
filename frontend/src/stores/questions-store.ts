@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { QuestionOut, QuestionDetailOut } from "../api/types";
 import { getQuestions, getQuestion } from "../api/questions";
 import UiStore from "./ui-store";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class QuestionsStore {
   questions: QuestionOut[] = [];
@@ -20,7 +21,7 @@ class QuestionsStore {
         this.questions = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 
@@ -31,7 +32,7 @@ class QuestionsStore {
         this.selectedQuestion = data;
       });
     } catch {
-      this.ui.setError("Could not connect to the API. Please ensure the backend is running.");
+      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
     }
   }
 }

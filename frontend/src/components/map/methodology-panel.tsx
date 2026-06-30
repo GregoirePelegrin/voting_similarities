@@ -3,6 +3,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography, Box, Chip } 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { METHODOLOGY } from "../../constants/fr";
+import { DATA_COLORS } from "../../theme";
 
 const MethodologyPanel: React.FC = () => {
   return (
@@ -33,15 +34,15 @@ const MethodologyPanel: React.FC = () => {
         </Typography>
         <Box sx={{ pl: 2, mb: 2 }}>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label={METHODOLOGY.YES_YES_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(74,144,217,0.2)", color: "#4A90D9" }} />
+            <Chip label={METHODOLOGY.YES_YES_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(74,144,217,0.2)", color: DATA_COLORS.primary }} />
             {METHODOLOGY.YES_YES_DESC}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label={METHODOLOGY.NO_NO_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(255,255,255,0.08)", color: "#9EAAB8" }} />
+            <Chip label={METHODOLOGY.NO_NO_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(255,255,255,0.08)", color: DATA_COLORS.neutral }} />
             {METHODOLOGY.NO_NO_DESC}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label={METHODOLOGY.DISAGREE_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: "#E15759" }} />
+            <Chip label={METHODOLOGY.DISAGREE_LABEL} size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: DATA_COLORS.negative }} />
             {METHODOLOGY.DISAGREE_DESC}
           </Box>
         </Box>
@@ -57,15 +58,15 @@ const MethodologyPanel: React.FC = () => {
         </Typography>
         <Box sx={{ pl: 2, mb: 2 }}>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label="< 10%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(89,161,79,0.2)", color: "#59A14F" }} />
+            <Chip label="< 10%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(89,161,79,0.2)", color: DATA_COLORS.positive }} />
             {METHODOLOGY.STRESS_GOOD}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label="10–20%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(237,201,72,0.2)", color: "#EDC948" }} />
+            <Chip label="10–20%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(237,201,72,0.2)", color: DATA_COLORS.warning }} />
             {METHODOLOGY.STRESS_FAIR}
           </Box>
           <Box sx={{ typography: "body2", mb: 0.5, display: "flex", alignItems: "center" }}>
-            <Chip label="≥ 20%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: "#E15759" }} />
+            <Chip label="≥ 20%" size="small" sx={{ mr: 0.5, bgcolor: "rgba(225,87,89,0.2)", color: DATA_COLORS.negative }} />
             {METHODOLOGY.STRESS_POOR}
           </Box>
         </Box>
