@@ -17,29 +17,29 @@ import {DATA_COLORS} from "../theme";
 
 const PersonDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {people, ui} = rootStore;
+  const {peopleStore, uiStore} = rootStore;
   const personId = Number(id);
 
   useEffect(() => {
     if (personId) {
-      ui.setCategory(null);
-      people.clearPersonDetail();
+      uiStore.setCategory(null);
+      peopleStore.clearPersonDetail();
     }
   }, [personId]);
 
   useEffect(() => {
     if (personId) {
-      people.fetchPerson(personId, ui.selectedCategory);
+      peopleStore.fetchPerson(personId, uiStore.selectedCategory);
     }
-  }, [personId, ui.selectedCategory]);
+  }, [personId, uiStore.selectedCategory]);
 
   useEffect(() => {
     if (personId) {
-      people.fetchCategoryAlignment(personId);
+      peopleStore.fetchCategoryAlignment(personId);
     }
   }, [personId]);
 
-  const person = people.selectedPerson;
+  const person = peopleStore.selectedPerson;
 
   if (!person) {
     return (
@@ -105,7 +105,7 @@ const PersonDetailPage: React.FC = observer(() => {
           <GroupComparisonBars comparisons={person.group_comparisons}/>
         </Grid>
         <Grid item xs={12}>
-          <CategoryAlignmentCard alignments={people.categoryAlignment}/>
+          <CategoryAlignmentCard alignments={peopleStore.categoryAlignment}/>
         </Grid>
         <Grid item xs={12}>
           <AnswerGrid answers={person.answers}/>

@@ -10,22 +10,22 @@ import {DATA_COLORS} from "../theme";
 
 const QuestionDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {questions} = rootStore;
+  const {questionsStore} = rootStore;
   const questionId = Number(id);
 
   useEffect(() => {
     if (questionId) {
-      questions.clearQuestionDetail();
+      questionsStore.clearQuestionDetail();
     }
   }, [questionId]);
 
   useEffect(() => {
     if (questionId) {
-      questions.fetchQuestion(questionId);
+      questionsStore.fetchQuestion(questionId);
     }
   }, [questionId]);
 
-  const q = questions.selectedQuestion;
+  const q = questionsStore.selectedQuestion;
 
   if (!q) {
     return (

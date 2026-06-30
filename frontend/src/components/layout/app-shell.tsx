@@ -81,7 +81,7 @@ const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({open, onCl
 
 const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const {ui} = rootStore;
+  const {uiStore} = rootStore;
 
   return (
     <Box sx={{display: "flex", minHeight: "100vh", bgcolor: "background.default"}}>
@@ -107,13 +107,13 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) 
       </Box>
 
       <Snackbar
-        open={ui.snackbar.open}
+        open={uiStore.snackbar.open}
         autoHideDuration={4000}
-        onClose={() => ui.closeSnackbar()}
+        onClose={() => uiStore.closeSnackbar()}
         anchorOrigin={{vertical: "bottom", horizontal: "center"}}
       >
-        <Alert onClose={() => ui.closeSnackbar()} severity={ui.snackbar.severity} variant="filled">
-          {ui.snackbar.message}
+        <Alert onClose={() => uiStore.closeSnackbar()} severity={uiStore.snackbar.severity} variant="filled">
+          {uiStore.snackbar.message}
         </Alert>
       </Snackbar>
 

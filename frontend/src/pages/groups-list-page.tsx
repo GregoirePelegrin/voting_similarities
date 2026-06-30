@@ -6,13 +6,13 @@ import GroupsTable from "../components/groups/groups-table";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 
 const GroupsListPage: React.FC = observer(() => {
-  const {groups, ui} = rootStore;
+  const {groupsStore, uiStore} = rootStore;
 
   useEffect(() => {
-    groups.fetchGroups();
+    groupsStore.fetchGroups();
   }, []);
 
-  if (ui.loading && groups.groups.length === 0) {
+  if (uiStore.loading && groupsStore.groups.length === 0) {
     return (
       <AnimatedPage>
         <CardSkeleton/>

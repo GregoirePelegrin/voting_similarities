@@ -17,10 +17,10 @@ const columns: GridColDef[] = [
 ];
 
 const PeopleTable: React.FC = observer(() => {
-  const {people, ui} = rootStore;
+  const {peopleStore, uiStore} = rootStore;
   const navigate = useNavigate();
 
-  const rows = people.people.map((p) => ({
+  const rows = peopleStore.people.map((p) => ({
     id: p.id,
     firstname: p.firstname,
     lastname: p.lastname,
@@ -47,7 +47,7 @@ const PeopleTable: React.FC = observer(() => {
           bgcolor: "background.paper",
           border: "1px solid rgba(255,255,255,0.08)",
         }}
-        loading={ui.loading}
+        loading={uiStore.loading}
       />
     </Box>
   );

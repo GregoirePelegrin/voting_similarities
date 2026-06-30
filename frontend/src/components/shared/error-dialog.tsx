@@ -6,26 +6,26 @@ import rootStore from "../../stores/root-store";
 import {ERROR_DIALOG} from "../../constants/fr";
 
 const ErrorDialog: React.FC = observer(() => {
-  const {ui} = rootStore;
+  const {uiStore} = rootStore;
 
   const handleRetry = async () => {
-    ui.clearError();
+    uiStore.clearError();
     await rootStore.init();
   };
 
   const handleDismiss = () => {
-    ui.clearError();
+    uiStore.clearError();
   };
 
   return (
-    <Dialog open={ui.error !== null} onClose={handleDismiss}>
+    <Dialog open={uiStore.error !== null} onClose={handleDismiss}>
       <DialogTitle sx={{display: "flex", alignItems: "center", gap: 1}}>
         <ErrorOutlineIcon color="error"/>
         {ERROR_DIALOG.TITLE}
       </DialogTitle>
       <DialogContent>
         <Typography>
-          {ui.error}
+          {uiStore.error}
         </Typography>
       </DialogContent>
       <DialogActions>

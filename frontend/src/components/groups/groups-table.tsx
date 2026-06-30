@@ -36,10 +36,10 @@ const columns: GridColDef[] = [
 ];
 
 const GroupsTable: React.FC = observer(() => {
-  const {groups, ui} = rootStore;
+  const {groupsStore, uiStore} = rootStore;
   const navigate = useNavigate();
 
-  const rows = groups.groups.map((g) => ({
+  const rows = groupsStore.groups.map((g) => ({
     id: g.id,
     name: g.name,
     color: g.color,
@@ -63,7 +63,7 @@ const GroupsTable: React.FC = observer(() => {
           bgcolor: "background.paper",
           border: "1px solid rgba(255,255,255,0.08)",
         }}
-        loading={ui.loading}
+        loading={uiStore.loading}
       />
     </Box>
   );

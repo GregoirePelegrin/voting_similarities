@@ -6,13 +6,13 @@ import PeopleTable from "../components/people/people-table";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 
 const PeopleListPage: React.FC = observer(() => {
-  const {people, ui} = rootStore;
+  const {peopleStore, uiStore} = rootStore;
 
   useEffect(() => {
-    people.fetchPeople();
+    peopleStore.fetchPeople();
   }, []);
 
-  if (ui.loading && people.people.length === 0) {
+  if (uiStore.loading && peopleStore.people.length === 0) {
     return (
       <AnimatedPage>
         <CardSkeleton/>

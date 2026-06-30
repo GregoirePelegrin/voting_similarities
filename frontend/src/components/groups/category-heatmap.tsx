@@ -12,13 +12,13 @@ interface CategoryHeatmapProps {
 }
 
 const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups, groupColor}) => {
-  const {categories} = rootStore;
+  const {categoriesStore} = rootStore;
 
   const rows = similarGroups.map((sg) => {
     const catSims: Record<string, number> = {};
     if (sg.per_category) {
       for (const [cid, sim] of Object.entries(sg.per_category)) {
-        const cat = categories.categories.find((c) => c.id === Number(cid));
+        const cat = categoriesStore.categories.find((c) => c.id === Number(cid));
         catSims[cat?.name ?? cid] = sim;
       }
     }

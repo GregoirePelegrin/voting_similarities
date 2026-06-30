@@ -42,12 +42,12 @@ const columns: GridColDef[] = [
 ];
 
 const QuestionsTable: React.FC = observer(() => {
-  const {questions, categories, ui} = rootStore;
+  const {questionsStore, categoriesStore, uiStore} = rootStore;
   const navigate = useNavigate();
 
-  const catMap = new Map(categories.categories.map((c) => [c.id, c.name]));
+  const catMap = new Map(categoriesStore.categories.map((c) => [c.id, c.name]));
 
-  const rows = questions.questions.map((q) => ({
+  const rows = questionsStore.questions.map((q) => ({
     id: q.id,
     text: q.text,
     has_passed: q.has_passed,
@@ -70,7 +70,7 @@ const QuestionsTable: React.FC = observer(() => {
           bgcolor: "background.paper",
           border: "1px solid rgba(255,255,255,0.08)",
         }}
-        loading={ui.loading}
+        loading={uiStore.loading}
       />
     </Box>
   );

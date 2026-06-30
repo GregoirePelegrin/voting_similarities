@@ -4,36 +4,36 @@ import QuestionsStore from "./questions-store";
 import PeopleStore from "./people-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
-import {ERROR_DIALOG} from "../constants/fr";
+import { ERROR_DIALOG } from "../constants/fr";
 
 class RootStore {
-  ui: UiStore;
-  categories: CategoriesStore;
-  questions: QuestionsStore;
-  people: PeopleStore;
-  groups: GroupsStore;
-  embeddings: EmbeddingsStore;
+  uiStore: UiStore;
+  categoriesStore: CategoriesStore;
+  questionsStore: QuestionsStore;
+  peopleStore: PeopleStore;
+  groupsStore: GroupsStore;
+  embeddingsStore: EmbeddingsStore;
 
   constructor() {
-    this.ui = new UiStore();
-    this.categories = new CategoriesStore(this.ui);
-    this.questions = new QuestionsStore(this.ui);
-    this.people = new PeopleStore(this.ui);
-    this.groups = new GroupsStore(this.ui);
-    this.embeddings = new EmbeddingsStore(this.ui);
+    this.uiStore = new UiStore();
+    this.categoriesStore = new CategoriesStore(this.uiStore);
+    this.questionsStore = new QuestionsStore(this.uiStore);
+    this.peopleStore = new PeopleStore(this.uiStore);
+    this.groupsStore = new GroupsStore(this.uiStore);
+    this.embeddingsStore = new EmbeddingsStore(this.uiStore);
   }
 
   async init() {
-    this.ui.setLoading(true);
+    this.uiStore.setLoading(true);
     try {
       await Promise.all([
-        this.categories.fetchCategories(),
-        this.questions.fetchQuestions(),
+        this.categoriesStore.fetchCategories(),
+        this.questionsStore.fetchQuestions(),
       ]);
     } catch {
-      this.ui.setError(ERROR_DIALOG.API_CONNECTION);
+      this.uiStore.setError(ERROR_DIALOG.API_CONNECTION);
     } finally {
-      this.ui.setLoading(false);
+      this.uiStore.setLoading(false);
     }
   }
 }

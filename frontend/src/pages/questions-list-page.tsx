@@ -6,13 +6,13 @@ import QuestionsTable from "../components/questions/questions-table";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 
 const QuestionsListPage: React.FC = observer(() => {
-  const {questions, ui} = rootStore;
+  const {questionsStore, uiStore} = rootStore;
 
   useEffect(() => {
-    questions.fetchQuestions();
+    questionsStore.fetchQuestions();
   }, []);
 
-  if (ui.loading && questions.questions.length === 0) {
+  if (uiStore.loading && questionsStore.questions.length === 0) {
     return (
       <AnimatedPage>
         <CardSkeleton/>

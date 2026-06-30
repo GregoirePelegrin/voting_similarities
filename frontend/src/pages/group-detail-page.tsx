@@ -14,29 +14,29 @@ import {GROUP_DETAIL} from "../constants/fr";
 
 const GroupDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {groups, ui} = rootStore;
+  const {groupsStore, uiStore} = rootStore;
   const groupId = Number(id);
 
   useEffect(() => {
     if (groupId) {
-      ui.setCategory(null);
-      groups.clearGroupDetail();
+      uiStore.setCategory(null);
+      groupsStore.clearGroupDetail();
     }
   }, [groupId]);
 
   useEffect(() => {
     if (groupId) {
-      groups.fetchGroup(groupId, ui.selectedCategory);
+      groupsStore.fetchGroup(groupId, uiStore.selectedCategory);
     }
-  }, [groupId, ui.selectedCategory]);
+  }, [groupId, uiStore.selectedCategory]);
 
   useEffect(() => {
     if (groupId) {
-      groups.fetchDeterminantCategories(groupId);
+      groupsStore.fetchDeterminantCategories(groupId);
     }
   }, [groupId]);
 
-  const group = groups.selectedGroup;
+  const group = groupsStore.selectedGroup;
 
   if (!group) {
     return (
@@ -72,10 +72,10 @@ const GroupDetailPage: React.FC = observer(() => {
           <SimilarGroupsList groups={group.similar_groups}/>
         </Grid>
         <Grid item xs={12}>
-          <CategoryHeatmap similarGroups={groups.heatmapSimilarGroups} groupColor={group.color}/>
+          <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color}/>
         </Grid>
         <Grid item xs={12}>
-          <DeterminantCategoriesCard categories={groups.determinantCategories}/>
+          <DeterminantCategoriesCard categories={groupsStore.determinantCategories}/>
         </Grid>
       </Grid>
     </AnimatedPage>
