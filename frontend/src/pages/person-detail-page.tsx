@@ -10,7 +10,7 @@ import AnswerGrid from "../components/people/answer-grid";
 import GroupComparisonBars from "../components/people/group-comparison-bars";
 import CategoryAlignmentCard from "../components/people/category-alignment-card";
 import PersonInfoCard from "../components/people/person-info-card";
-import CohesivityGauge from "../components/groups/cohesivity-gauge";
+import CohesivityGauge from "../components/shared/cohesivity-gauge";
 import { CardSkeleton } from "../components/shared/loading-skeleton";
 import { PERSON_DETAIL } from "../constants/fr";
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { observer } from "mobx-react-lite";
 import { AnswerOut } from "../../api/types";
 import { ANSWER_GRID } from "../../constants/fr";
 
@@ -41,7 +40,7 @@ function getSegmentTitle(answer: AnswerOut): string {
     : `Q${answer.question_id}: ${label}`;
 }
 
-const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
+const AnswerGrid: React.FC<AnswerGridProps> = ({ answers }) => {
   const navigate = useNavigate();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
@@ -108,6 +107,6 @@ const AnswerGrid: React.FC<AnswerGridProps> = observer(({ answers }) => {
       </CardContent>
     </Card>
   );
-});
+};
 
 export default AnswerGrid;

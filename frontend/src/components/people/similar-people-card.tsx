@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
-import { observer } from "mobx-react-lite";
 import { SimilarPersonOut } from "../../api/types";
 import SimilarityBar from "../shared/similarity-bar";
 import { SIMILAR_PEOPLE } from "../../constants/fr";
@@ -12,7 +11,7 @@ interface SimilarPeopleCardProps {
   showSign?: boolean;
 }
 
-const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, people: peopleList, color, showSign }) => {
+const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = ({ title, people: peopleList, color, showSign }) => {
   return (
     <Card sx={{ bgcolor: "background.paper", height: "100%" }}>
       <CardContent>
@@ -35,6 +34,6 @@ const SimilarPeopleCard: React.FC<SimilarPeopleCardProps> = observer(({ title, p
       </CardContent>
     </Card>
   );
-});
+};
 
 export default SimilarPeopleCard;

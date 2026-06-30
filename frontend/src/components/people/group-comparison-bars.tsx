@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, Cell } from "recharts";
-import { observer } from "mobx-react-lite";
 import { GroupComparisonOut } from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { GROUP_COMPARISON } from "../../constants/fr";
@@ -23,7 +22,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload }) => {
   );
 };
 
-const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = observer(({ comparisons }) => {
+const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({ comparisons }) => {
   const data = [...comparisons].sort((a, b) => b.similarity - a.similarity);
 
   return (
@@ -50,6 +49,6 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = observer(({ comp
       </CardContent>
     </Card>
   );
-});
+};
 
 export default GroupComparisonBars;

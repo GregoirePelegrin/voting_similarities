@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import CategoryFilter from "../components/shared/category-filter";
-import CohesivityGauge from "../components/groups/cohesivity-gauge";
+import CohesivityGauge from "../components/shared/cohesivity-gauge";
 import SimilarGroupsList from "../components/groups/similar-groups-list";
 import CategoryHeatmap from "../components/groups/category-heatmap";
 import DeterminantCategoriesCard from "../components/groups/determinant-categories-card";

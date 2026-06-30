@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
-import { observer } from "mobx-react-lite";
 import { SimilarGroupOut } from "../../api/types";
 import SimilarityBar from "../shared/similarity-bar";
 import { SIMILAR_GROUPS } from "../../constants/fr";
@@ -9,7 +8,7 @@ interface SimilarGroupsListProps {
   groups: SimilarGroupOut[];
 }
 
-const SimilarGroupsList: React.FC<SimilarGroupsListProps> = observer(({ groups }) => {
+const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({ groups }) => {
   return (
     <Card sx={{ bgcolor: "background.paper" }}>
       <CardContent>
@@ -28,6 +27,6 @@ const SimilarGroupsList: React.FC<SimilarGroupsListProps> = observer(({ groups }
       </CardContent>
     </Card>
   );
-});
+};
 
 export default SimilarGroupsList;
