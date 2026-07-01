@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = ["*"]
     DB_ECHO: bool = False
     DB_POOL_SIZE: int = 5
+    UVICORN_WORKERS: int = 4
     LOG_LEVEL: str = "INFO"
     SIMILARITY_W_YES: float = 1.0
     SIMILARITY_W_NO: float = 0.2
