@@ -86,14 +86,14 @@ const VoterDetailPage: React.FC = observer(() => {
       </Box>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{xs: 12, md: 6}}>
           <SimilarVotersCard
             title={VOTER_DETAIL.MOST_SIMILAR}
             voters={voter.similar_voters}
             color={DATA_COLORS.primary}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{xs: 12, md: 6}}>
           <SimilarVotersCard
             title={VOTER_DETAIL.LEAST_SIMILAR}
             voters={voter.dissimilar_voters}
@@ -101,13 +101,13 @@ const VoterDetailPage: React.FC = observer(() => {
             showSign
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{xs: 12}}>
           <GroupComparisonBars comparisons={voter.group_comparisons}/>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{xs: 12}}>
           <CategoryAlignmentCard alignments={votersStore.categoryAlignment}/>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{xs: 12}}>
           <AnswerGrid answers={voter.answers}/>
         </Grid>
       </Grid>

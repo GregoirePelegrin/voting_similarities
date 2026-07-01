@@ -1,6 +1,6 @@
 import React from "react";
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography} from "@mui/material";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import {ERROR_DIALOG} from "../../constants/fr";

@@ -60,7 +60,7 @@ const GroupDetailPage: React.FC = observer(() => {
       </Box>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+        <Grid size={{xs: 12, md: 4}}>
           <Card>
             <CardContent sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2}}>
               <CohesivityGauge value={group.cohesivity} color={group.color}/>
@@ -68,13 +68,13 @@ const GroupDetailPage: React.FC = observer(() => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid size={{xs: 12, md: 8}}>
           <SimilarGroupsList groups={group.similar_groups}/>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{xs: 12}}>
           <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color}/>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{xs: 12}}>
           <DeterminantCategoriesCard categories={groupsStore.determinantCategories}/>
         </Grid>
       </Grid>
