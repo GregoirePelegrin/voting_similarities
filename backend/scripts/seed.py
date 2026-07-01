@@ -11,12 +11,9 @@ and answers with realistic correlated voting patterns.
 
 import asyncio
 from datetime import datetime, timedelta
-from pathlib import Path
 from random import Random
 
 import numpy as np
-from alembic import command
-from alembic.config import Config as AlembicConfig
 from app.config import settings
 from app.models import (
     Answer,
@@ -27,7 +24,7 @@ from app.models import (
     Question,
     Role,
 )
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 SEED = 42
@@ -97,18 +94,6 @@ QUESTION_TEMPLATES = [
 ]
 
 
-def reset_schema():
-    backend_dir = Path(__file__).resolve().parent.parent
-    ini_path = backend_dir / "alembic.ini"
-    alembic_cfg = AlembicConfig(str(ini_path))
-    alembic_cfg.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
-    alembic_cfg.set_main_option(
-        "script_location", str(backend_dir / "migrations")
-    )
-    command.downgrade(alembic_cfg, "base")
-    command.upgrade(alembic_cfg, "head")
-
-
 async def seed_data():
     rng = Random(SEED)
     np_rng = np.random.default_rng(SEED)
@@ -118,6 +103,24 @@ async def seed_data():
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
 
     async with session_factory() as session:
+        for table, label in [
+            (Voter, "voters"),
+            (Group, "groups"),
+            (Category, "categories"),
+            (Question, "questions"),
+        ]:
+            count = (await session.execute(
+                select(func.count()).select_from(table)
+            )).scalar()
+            if count > 0:
+                print(
+                    f"ERROR: {label} table already has {count} rows. "
+                    "Refusing to seed. Drop tables manually first "
+                    "(alembic downgrade base && alembic upgrade head) "
+                    "before re-running."
+                )
+                await engine.dispose()
+                return
         # --- Categories ---
         categories = [Category(name=name) for name in CATEGORY_NAMES]
         session.add_all(categories)
@@ -268,19 +271,17 @@ async def seed_data():
         await session.flush()
 
         # --- Compute has_passed for each question ---
-        from sqlalchemy import func as sa_func
-
         for q in questions:
             yes_count = (
                 await session.execute(
-                    select(sa_func.count())
+                    select(func.count())
                     .select_from(Answer)
                     .where(Answer.question_id == q.id, Answer.value)
                 )
             ).scalar()
             no_count = (
                 await session.execute(
-                    select(sa_func.count())
+                    select(func.count())
                     .select_from(Answer)
                     .where(Answer.question_id == q.id, ~Answer.value)
                 )
@@ -290,8 +291,6 @@ async def seed_data():
         await session.commit()
 
         # --- Summary ---
-        from sqlalchemy import func
-
         result = await session.execute(select(func.count()).select_from(Group))
         n_groups = result.scalar()
         result = await session.execute(select(func.count()).select_from(Voter))
@@ -316,5 +315,4 @@ async def seed_data():
 
 
 if __name__ == "__main__":
-    reset_schema()
     asyncio.run(seed_data())

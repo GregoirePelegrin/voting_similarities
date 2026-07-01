@@ -1,35 +1,47 @@
 # Voting Similarities
 
-A web application for analyzing and comparing how individuals and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with Bayesian shrinkage, Classical MDS for 2D visualization, and information gain for explainability.
+A web application for analyzing and comparing how voters and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with Bayesian shrinkage, Classical MDS for 2D visualization, and information gain for explainability.
 
-## Quick Start
+## Production Startup (podman + PostgreSQL)
 
 ```bash
-# 1. Backend setup
-conda activate base                           # or any Python 3.11+ environment
-pip install fastapi uvicorn[standard] sqlalchemy[asyncio] aiosqlite alembic numpy pydantic pydantic-settings
-cp .env.example .env                          # customize if needed
+# Prerequisites: a running PostgreSQL container with the `voting_similarities` database
+# e.g.: podman run -d --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres:16
 
-# 2. Initialize the database with sample data
-PYTHONPATH=backend python backend/scripts/seed.py
+# 1. Build images
+podman build -t voting-backend:latest --build-arg PIP_TRUSTED_HOST=127.0.0.1 -f backend/Dockerfile .
+podman build -t voting-frontend:latest --build-arg NPM_CONFIG_PROXY=http://127.0.0.1:3128 -f frontend/Dockerfile .
 
-# 3. Compute similarities, embeddings, and category discriminativeness
-PYTHONPATH=backend python backend/scripts/compute_similarities.py
+# 2. Start backend (uses host networking to reach local PostgreSQL)
+podman run -d --name voting-backend --network host \
+  --env-file prod.env \
+  voting-backend:latest
 
-# 4. Start the backend
-python -m backend
+# 3. Run database migrations (runs automatically on startup, or manually:)
+podman exec voting-backend alembic upgrade head
 
-# 5. Frontend setup (in another terminal)
-cd frontend
-npm install
-npm start
+# 4. Seed and compute similarities (only on fresh database)
+podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/seed.py
+podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/compute_similarities.py
+
+# 5. Start frontend
+podman run -d --name voting-frontend -p 8080:80 voting-frontend:latest
 ```
 
-Then open http://localhost:3000 in your browser. The backend API runs on http://localhost:8000 by default.
+Then open http://localhost:8080 in your browser. The backend API runs on http://localhost:8000.
+
+### Resetting the database
+
+```bash
+podman exec voting-backend alembic downgrade base
+podman exec voting-backend alembic upgrade head
+podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/seed.py
+podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/compute_similarities.py
+```
 
 ---
 
-## Detailed Setup
+## Development Setup
 
 ### Prerequisites
 
@@ -49,8 +61,6 @@ cd voting_similarities
 #### Install dependencies
 
 ```bash
-# Using conda
-conda activate base
 pip install fastapi "uvicorn[standard]" "sqlalchemy[asyncio]" aiosqlite asyncpg alembic numpy pydantic pydantic-settings
 
 # Dev dependencies (optional, for linting)
@@ -58,8 +68,6 @@ pip install ruff pytest pytest-asyncio httpx
 ```
 
 #### Configure
-
-Copy the example environment file and customize if needed:
 
 ```bash
 cp .env.example .env
@@ -75,28 +83,9 @@ Key variables (see [Configuration](#configuration) for the full list):
 
 #### Initialize the database
 
-The seed script creates the schema (via Alembic migrations) and populates it with realistic sample data (~12 groups, ~12 categories, ~100 questions, ~700 people):
-
 ```bash
 PYTHONPATH=backend python backend/scripts/seed.py
-```
-
-This creates `data/dev.db` in the project root.
-
-#### Compute similarities and embeddings
-
-The batch job computes all pairwise similarities (person-person, person-group, group-group), group cohesivity, MDS embeddings, and category discriminativeness:
-
-```bash
 PYTHONPATH=backend python backend/scripts/compute_similarities.py
-```
-
-This takes a few seconds for the sample data. With the full dataset (~7500 questions, ~700 people) it may take several minutes.
-
-Optional flags to override similarity metric parameters:
-
-```bash
-PYTHONPATH=backend python backend/scripts/compute_similarities.py --w-yes 1.0 --w-no 0.2 --w-mismatch 0.5 --m 10
 ```
 
 #### Start the server
@@ -106,12 +95,6 @@ python -m backend
 ```
 
 The API is available at http://localhost:8000. Swagger docs at http://localhost:8000/docs.
-
-You can customize the port and host:
-
-```bash
-API_PORT=3001 API_HOST=127.0.0.1 python -m backend
-```
 
 ### 3. Frontend
 
@@ -131,19 +114,6 @@ REACT_APP_API_URL=http://my-server:8000 npm start
 
 ---
 
-## Using with a Populated Database
-
-If you already have a `data/dev.db` (or any populated SQLite/PostgreSQL database):
-
-1. Set `DATABASE_URL` in `.env` to point to your database
-2. Run migrations if needed: `cd backend && alembic upgrade head`
-3. Compute similarities: `PYTHONPATH=backend python backend/scripts/compute_similarities.py`
-4. Start the backend and frontend as above
-
-The database must contain data in the following tables: `groups`, `categories`, `questions`, `people`, `answers`, and the `question_category` association table. The seed script is only for generating sample data — in production you would populate these tables from your own data source.
-
----
-
 ## API Endpoints
 
 | Method | Path | Description |
@@ -152,21 +122,21 @@ The database must contain data in the following tables: `groups`, `categories`, 
 | GET | `/categories` | List all categories |
 | GET | `/questions` | List all questions with their categories and has_passed |
 | GET | `/questions/{id}` | Question detail with per-group answer stats |
-| GET | `/people?page=&page_size=&group_id=` | Paginated people list |
-| GET | `/people/{id}?category=` | Person detail with similar/dissimilar people, group comparisons, answer rate, group avg answer rate |
-| GET | `/people/{id}/category-alignment` | Per-category alignment of a person with their group vs others |
+| GET | `/voters?page=&page_size=&group_id=` | Paginated voters list |
+| GET | `/voters/{id}?category=` | Voter detail with similar/dissimilar voters, group comparisons |
+| GET | `/voters/{id}/category-alignment` | Per-category alignment of a voter with their group vs others |
 | GET | `/groups` | List all groups with cohesivity |
-| GET | `/groups/{id}?category=` | Group detail with cohesivity, answer rate, similar groups, per-category breakdown |
+| GET | `/groups/{id}?category=` | Group detail with cohesivity, similar groups, per-category |
 | GET | `/groups/{id}/determinant-categories` | Categories ranked by information gain for this group |
 | GET | `/categories/discriminativeness` | All categories ranked by discriminative power |
-| GET | `/embeddings/people?category=` | MDS 2D coordinates + barycenters for people |
+| GET | `/embeddings/voters?category=` | MDS 2D coordinates + barycenters for voters |
 | GET | `/embeddings/groups?category=` | MDS 2D coordinates for groups |
 
 ---
 
 ## Configuration
 
-### Backend (`.env` or environment variables)
+### Backend (`.env` / `prod.env` or environment variables)
 
 | Variable | Default | Description |
 |---|---|---|
@@ -174,6 +144,7 @@ The database must contain data in the following tables: `groups`, `categories`, 
 | `API_PORT` | `8000` | Port for the uvicorn server |
 | `API_HOST` | `0.0.0.0` | Host for the uvicorn server |
 | `RELOAD` | `True` | Enable uvicorn auto-reload (disable in production) |
+| `UVICORN_WORKERS` | `4` | Number of uvicorn worker processes |
 | `CORS_ORIGINS` | `["*"]` | Allowed CORS origins (JSON list) |
 | `DB_ECHO` | `False` | Echo SQL statements to logs |
 | `DB_POOL_SIZE` | `5` | SQLAlchemy connection pool size (PostgreSQL only) |
@@ -187,25 +158,22 @@ The database must contain data in the following tables: `groups`, `categories`, 
 
 | Variable | Default | Description |
 |---|---|---|
-| `REACT_APP_API_URL` | `http://localhost:8000` | Backend API base URL |
+| `REACT_APP_API_URL` | `http://localhost:8000` | Backend API base URL (set at build time) |
 
 ---
 
 ## Project Structure
 
 ```
-├── .env.example          # Template for environment variables
-├── .env                  # Local config (gitignored)
+├── .env.example          # Template for dev environment variables
+├── prod.env              # Production environment variables
 ├── .gitignore
-├── PROJECT.md            # Detailed technical documentation
 ├── pyproject.toml        # Python project config + ruff settings
-├── data/
-│   └── dev.db            # SQLite database (gitignored)
 ├── backend/
-│   ├── __main__.py       # Entry point: python -m backend
+│   ├── Dockerfile        # Multi-stage Python 3.12-slim image
 │   ├── alembic.ini       # Alembic migration config
 │   ├── app/
-│   │   ├── main.py       # FastAPI app + CORS + logging
+│   │   ├── main.py       # FastAPI app + lifecycle hooks
 │   │   ├── config.py     # pydantic-settings configuration
 │   │   ├── database.py   # SQLAlchemy engine + session
 │   │   ├── models.py     # All SQLAlchemy models
@@ -216,10 +184,13 @@ The database must contain data in the following tables: `groups`, `categories`, 
 │   │       ├── health.py # /health endpoint
 │   │       └── routes.py # All API endpoints
 │   ├── scripts/
-│   │   ├── seed.py               # Generate sample data
+│   │   ├── seed.py               # Generate sample data (safe: refuses if data exists)
 │   │   └── compute_similarities.py # Batch computation job
-│   └── migrations/       # Alembic migration files
+│   ├── migrations/       # Alembic migration files
+│   └── database_handling.md  # Detailed DB operations guide
 └── frontend/
+    ├── Dockerfile        # Multi-stage Node 20 + nginx image
+    ├── nginx.conf        # Nginx config with SPA fallback
     ├── package.json
     └── src/
         ├── app.tsx        # Root component + routing
@@ -237,7 +208,7 @@ The database must contain data in the following tables: `groups`, `categories`, 
 # Backend
 ruff check backend/
 
-# Frontend (built into react-scripts)
+# Frontend
 cd frontend && CI=true npm run build
 ```
 
@@ -262,5 +233,5 @@ Classical Multidimensional Scaling projects the similarity matrix into 2D. Unlik
 ### Explainability
 
 - **Information gain**: measures how much knowing answers in a category reduces uncertainty about group membership
-- **Category alignment**: for a given person, how well each category aligns them with their own group versus other groups
+- **Category alignment**: for a given voter, how well each category aligns them with their own group versus other groups
 - **Variance score**: how much a category polarizes groups (descriptive complement to IG)

@@ -148,8 +148,9 @@ class GroupCohesivity(Base):
 class VoterEmbedding(Base):
     __tablename__ = "voter_embedding"
 
-    voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
-    category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    voter_id = Column(Integer, ForeignKey("voters.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     x = Column(Float, nullable=False)
     y = Column(Float, nullable=False)
     stress = Column(Float, nullable=False)
@@ -158,8 +159,9 @@ class VoterEmbedding(Base):
 class GroupEmbedding(Base):
     __tablename__ = "group_embedding"
 
-    group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
-    category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True, nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     x = Column(Float, nullable=False)
     y = Column(Float, nullable=False)
     stress = Column(Float, nullable=False)

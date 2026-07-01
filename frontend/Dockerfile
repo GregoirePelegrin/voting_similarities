@@ -1,5 +1,7 @@
 FROM node:20-alpine AS builder
 
+ARG NPM_CONFIG_PROXY
+ARG NODE_TLS_REJECT_UNAUTHORIZED=0
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
