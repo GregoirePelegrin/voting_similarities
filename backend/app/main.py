@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
+from app.api.config import router as config_router
 from app.api.health import router as health_router
 from app.api.routes import router as api_router
 from app.config import settings
@@ -27,6 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(config_router)
 app.include_router(health_router)
 app.include_router(api_router)
 

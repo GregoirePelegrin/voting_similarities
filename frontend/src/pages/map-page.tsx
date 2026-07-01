@@ -10,7 +10,7 @@ import GroupsScatter from "../components/map/groups-scatter";
 import MethodologyPanel from "../components/map/methodology-panel";
 
 const MapPage: React.FC = observer(() => {
-  const {embeddingsStore, uiStore} = rootStore;
+  const {embeddingsStore, uiStore, similarityConfig} = rootStore;
 
   useEffect(() => {
     embeddingsStore.fetchVotersEmbedding(uiStore.selectedCategory);
@@ -24,7 +24,7 @@ const MapPage: React.FC = observer(() => {
       <Box sx={{mb: 2}}>
         <CategoryFilter/>
       </Box>
-      <MethodologyPanel/>
+      <MethodologyPanel config={similarityConfig}/>
       {isLoading ? (
         <CardSkeleton/>
       ) : (

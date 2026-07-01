@@ -14,6 +14,7 @@ import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import {EmbeddingPointOut, BarycenterOut} from "../../api/types";
 import {VOTERS_SCATTER} from "../../constants/fr";
+import {APP_CONFIG} from "../../constants/config";
 import {DATA_COLORS} from "../../theme";
 
 interface VotersScatterProps {
@@ -50,7 +51,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
 const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycenters, stress}) => {
   const navigate = useNavigate();
 
-  const stressColor = stress < 0.1 ? DATA_COLORS.positive : stress < 0.2 ? DATA_COLORS.warning : DATA_COLORS.negative;
+  const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
 
   return (
     <Box>

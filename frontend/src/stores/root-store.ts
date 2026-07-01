@@ -4,7 +4,8 @@ import QuestionsStore from "./questions-store";
 import VotersStore from "./voters-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
-import { ERROR_DIALOG } from "../constants/fr";
+import {fetchSimilarityConfig, SimilarityConfig} from "../api/config";
+import {ERROR_DIALOG} from "../constants/fr";
 
 class RootStore {
   uiStore: UiStore;
@@ -13,6 +14,7 @@ class RootStore {
   votersStore: VotersStore;
   groupsStore: GroupsStore;
   embeddingsStore: EmbeddingsStore;
+  similarityConfig: SimilarityConfig | null = null;
 
   constructor() {
     this.uiStore = new UiStore();
@@ -26,9 +28,11 @@ class RootStore {
   async init() {
     this.uiStore.setLoading(true);
     try {
-      await Promise.all([
+      const [cfg] = await Promise.all([
+        fetchSimilarityConfig(),
         this.categoriesStore.fetchCategories(),
       ]);
+      this.similarityConfig = cfg;
     } catch {
       this.uiStore.setError(ERROR_DIALOG.API_CONNECTION);
     } finally {

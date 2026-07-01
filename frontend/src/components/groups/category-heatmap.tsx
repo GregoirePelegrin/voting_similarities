@@ -72,7 +72,6 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
                   </td>
                   {catNames.map((cn) => {
                     const val = (row as any)[cn] as number | undefined;
-                    const intensity = val != null ? Math.max(0, Math.min(1, val * 3)) : 0;
                     return (
                       <td key={cn} style={{
                         textAlign: "center",
@@ -86,7 +85,7 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
                               width: 28,
                               height: 28,
                               borderRadius: 1,
-                              bgcolor: val != null ? `rgba(74,144,217,${intensity * 0.7 + 0.05})` : "rgba(255,255,255,0.03)",
+                              bgcolor: val != null ? `hsl(${val * 120}, 75%, ${32 + val * 18}%)` : "rgba(255,255,255,0.03)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",

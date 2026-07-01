@@ -1,0 +1,4 @@
+export const APP_CONFIG = {
+  STRESS_THRESHOLD_GOOD: 0.1,
+  STRESS_THRESHOLD_FAIR: 0.2,
+};
