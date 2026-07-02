@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 ARG NPM_CONFIG_PROXY
 ARG NODE_TLS_REJECT_UNAUTHORIZED=0

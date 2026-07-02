@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")"
+
+HTTP_PROXY="${HTTP_PROXY:-}"
+HTTPS_PROXY="${HTTPS_PROXY:-}"
+
+echo "=== Building backend image ==="
+podman build --network host \
+  -t voting-backend:latest -f backend/Dockerfile .
+
+echo "=== Building frontend image ==="
+HTTP_PROXY="$HTTP_PROXY" HTTPS_PROXY="$HTTPS_PROXY" \
+podman build --network host \
+  --build-arg NPM_CONFIG_PROXY="$HTTP_PROXY" \
+  -t voting-frontend:latest -f frontend/Dockerfile .
+
+echo "=== Stopping existing containers ==="
+podman rm -f voting-backend voting-frontend 2>/dev/null || true
+
+echo "=== Starting backend ==="
+podman run -d \
+  --name voting-backend \
+  --network host \
+  --env-file .env \
+  -v ./data:/app/data:Z \
+  voting-backend:latest
+
+echo "=== Waiting for backend health ==="
+for i in $(seq 1 30); do
+  if curl -s http://localhost:8000/health >/dev/null 2>&1; then
+    echo "Backend is healthy"
+    break
+  fi
+  if [ "$i" -eq 30 ]; then
+    echo "Backend failed to start"
+    exit 1
+  fi
+  sleep 2
+done
+
+echo "=== Starting frontend ==="
+podman run -d \
+  --name voting-frontend \
+  --network host \
+  voting-frontend:latest
+
+echo "=== Deployed ==="
+echo "Frontend: http://localhost:8080"
+echo "Backend:  http://localhost:8000"
+echo "Docs:     http://localhost:8000/docs"

@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from app.config import settings
 from app.embedding import classical_mds
 from app.models import (
+    Base,
     Category,
     CategoryDiscriminativeness,
     GroupCohesivity,
@@ -61,6 +62,9 @@ def _vv_data_to_rows(vv_data, offset, size):
 async def run(config: SimilarityConfig):
     engine = create_async_engine(settings.DATABASE_URL, echo=settings.DB_ECHO)
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
     async with session_factory() as session:
         print("Loading answer data...")
