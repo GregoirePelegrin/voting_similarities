@@ -3,13 +3,13 @@ import {Card, CardContent, Typography, Box, LinearProgress, Tooltip} from "@mui/
 import {DeterminantCategoryOut} from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {DETERMINANT_CATEGORIES} from "../../constants/fr";
-import {DATA_COLORS} from "../../theme";
 
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
+  groupColor: string;
 }
 
-const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories}) => {
+const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories, groupColor}) => {
   if (!categories || categories.length === 0) return null;
 
   const maxIg = Math.max(...categories.map((c) => c.info_gain));
@@ -43,7 +43,7 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
                 bgcolor: "rgba(255,255,255,0.08)",
                 "& .MuiLinearProgress-bar": {
                   borderRadius: 4,
-                  bgcolor: DATA_COLORS.primary,
+                  bgcolor: groupColor,
                 },
               }}
             />

@@ -1,4 +1,5 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 import {Card, CardContent, Typography, Box, Tooltip} from "@mui/material";
 import {BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, Cell} from "recharts";
 import {GroupComparisonOut} from "../../api/types";
@@ -24,6 +25,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
 };
 
 const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons}) => {
+  const navigate = useNavigate();
   if (!comparisons || comparisons.length === 0) return null;
   const data = [...comparisons].sort((a, b) => b.similarity - a.similarity);
 
@@ -43,7 +45,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons}) 
             <RTooltip content={<CustomTooltip/>}/>
             <Bar dataKey="similarity" radius={[0, 4, 4, 0]} barSize={20}>
               {data.map((d, i) => (
-                <Cell key={i} fill={d.group_color}/>
+                <Cell key={i} fill={d.group_color} onClick={() => navigate(`/groups/${d.group_id}`)} style={{cursor: "pointer"}}/>
               ))}
             </Bar>
           </BarChart>
