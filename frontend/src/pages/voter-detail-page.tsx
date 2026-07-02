@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
-import {Box, Typography, Chip, Grid, Card, CardContent} from "@mui/material";
+import {Box, Typography, Chip, Grid, Card, CardContent, ToggleButtonGroup, ToggleButton} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
@@ -12,7 +12,7 @@ import CategoryAlignmentCard from "../components/voters/category-alignment-card"
 import VoterInfoCard from "../components/voters/voter-info-card";
 import CohesivityGauge from "../components/shared/cohesivity-gauge";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
-import {VOTER_DETAIL} from "../constants/fr";
+import {VOTER_DETAIL, SORT} from "../constants/fr";
 import {DATA_COLORS} from "../theme";
 
 const VoterDetailPage: React.FC = observer(() => {
@@ -68,7 +68,18 @@ const VoterDetailPage: React.FC = observer(() => {
             {voter.group.member_count} {VOTER_DETAIL.MEMBERS}
           </Typography>
         </Box>
-        <CategoryFilter/>
+        <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
+          <CategoryFilter/>
+          <ToggleButtonGroup
+            size="small"
+            value={uiStore.sortMode}
+            exclusive
+            onChange={(_, v) => v && uiStore.setSortMode(v)}
+          >
+            <ToggleButton value="value">{SORT.BY_VALUE}</ToggleButton>
+            <ToggleButton value="name">{SORT.BY_NAME}</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
       </Box>
 
       <Card sx={{mb: 3}}>
@@ -108,10 +119,10 @@ const VoterDetailPage: React.FC = observer(() => {
           />
         </Grid>
         <Grid size={{xs: 12}}>
-          <GroupComparisonBars comparisons={voter.group_comparisons}/>
+          <GroupComparisonBars comparisons={voter.group_comparisons} sortMode={uiStore.sortMode}/>
         </Grid>
         <Grid size={{xs: 12}}>
-          <CategoryAlignmentCard alignments={votersStore.categoryAlignment}/>
+          <CategoryAlignmentCard alignments={votersStore.categoryAlignment} sortMode={uiStore.sortMode}/>
         </Grid>
         <Grid size={{xs: 12}}>
           <AnswerGrid answers={voter.answers}/>

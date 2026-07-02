@@ -6,8 +6,11 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {CATEGORY_ALIGNMENT} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
 
+import {SortMode} from "../../stores/ui-store";
+
 interface CategoryAlignmentCardProps {
   alignments: CategoryAlignmentOut[];
+  sortMode?: SortMode;
 }
 
 const CustomTooltip: React.FC<any> = ({active, payload}) => {
@@ -23,10 +26,16 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments}) => {
+const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments, sortMode = "value"}) => {
   if (!alignments || alignments.length === 0) return null;
 
-  const data = [...alignments].map((a) => ({...a, alignment_pct: a.alignment * 100}));
+  const data = [...alignments]
+    .sort((a, b) =>
+      sortMode === "name"
+        ? a.category_name.localeCompare(b.category_name)
+        : b.alignment - a.alignment
+    )
+    .map((a) => ({...a, alignment_pct: a.alignment * 100}));
 
   return (
     <Card>

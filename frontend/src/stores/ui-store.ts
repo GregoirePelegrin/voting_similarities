@@ -1,7 +1,10 @@
 import {makeAutoObservable} from "mobx";
 
+export type SortMode = "value" | "name";
+
 class UiStore {
   selectedCategory: number | null = null;
+  sortMode: SortMode = "value";
   loading = false;
   error: string | null = null;
   retryVersion = 0;
@@ -17,6 +20,10 @@ class UiStore {
 
   setCategory(id: number | null) {
     this.selectedCategory = id;
+  }
+
+  setSortMode(mode: SortMode) {
+    this.sortMode = mode;
   }
 
   setLoading(v: boolean) {

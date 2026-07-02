@@ -14,20 +14,22 @@ interface CategoryHeatmapProps {
 const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups, groupColor}) => {
   const {categoriesStore} = rootStore;
 
-  const rows = similarGroups.map((sg) => {
-    const catSims: Record<string, number> = {};
-    if (sg.per_category) {
-      for (const [cid, sim] of Object.entries(sg.per_category)) {
-        const cat = categoriesStore.categories.find((c) => c.id === Number(cid));
-        catSims[cat?.name ?? cid] = sim;
+  const rows = similarGroups
+    .map((sg) => {
+      const catSims: Record<string, number> = {};
+      if (sg.per_category) {
+        for (const [cid, sim] of Object.entries(sg.per_category)) {
+          const cat = categoriesStore.categories.find((c) => c.id === Number(cid));
+          catSims[cat?.name ?? cid] = sim;
+        }
       }
-    }
-    return {name: sg.name, color: sg.color, ...catSims};
-  });
+      return {name: sg.name, color: sg.color, ...catSims};
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   if (rows.length === 0) return null;
 
-  const catNames = Object.keys(rows[0]).filter((k) => k !== "name" && k !== "color");
+  const catNames = Object.keys(rows[0]).filter((k) => k !== "name" && k !== "color").sort();
 
   return (
     <Card>

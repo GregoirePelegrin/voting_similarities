@@ -7,8 +7,11 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {GROUP_COMPARISON} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
 
+import {SortMode} from "../../stores/ui-store";
+
 interface GroupComparisonBarsProps {
   comparisons: GroupComparisonOut[];
+  sortMode?: SortMode;
 }
 
 const CustomTooltip: React.FC<any> = ({active, payload}) => {
@@ -18,16 +21,20 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
     <Box sx={{bgcolor: "#2A3142", p: 1.5, borderRadius: 1, boxShadow: 2}}>
       <Typography variant="body2" sx={{fontWeight: 500}}>{d.group_name}</Typography>
       <Typography variant="caption" color="text.secondary">
-        {GROUP_COMPARISON.SIMILARITY}: {(d.similarity * 100).toFixed(1)}% &middot; {GROUP_COMPARISON.CONFIDENCE}: {(d.confidence * 100).toFixed(0)}
+        {GROUP_COMPARISON.SIMILARITY}: {(d.similarity * 100).toFixed(1)}% · {GROUP_COMPARISON.CONFIDENCE}: {(d.confidence * 100).toFixed(0)}
       </Typography>
     </Box>
   );
 };
 
-const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons}) => {
+const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, sortMode = "value"}) => {
   const navigate = useNavigate();
   if (!comparisons || comparisons.length === 0) return null;
-  const data = [...comparisons].sort((a, b) => b.similarity - a.similarity);
+  const data = [...comparisons].sort((a, b) =>
+    sortMode === "name"
+      ? a.group_name.localeCompare(b.group_name)
+      : b.similarity - a.similarity
+  );
 
   return (
     <Card>

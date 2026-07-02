@@ -106,6 +106,12 @@ export const CATEGORY_HEATMAP = {
   NA: "N/A",
 };
 
+export const SORT = {
+  LABEL: "Trier",
+  BY_VALUE: "Valeur",
+  BY_NAME: "Nom",
+};
+
 export const GROUP_DETAIL = {
   MEMBERS: "membres",
   ANSWER_RATE: "Taux de réponse",

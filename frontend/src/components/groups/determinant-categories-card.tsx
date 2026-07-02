@@ -3,16 +3,23 @@ import {Card, CardContent, Typography, Box, LinearProgress, Tooltip} from "@mui/
 import {DeterminantCategoryOut} from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {DETERMINANT_CATEGORIES} from "../../constants/fr";
+import {SortMode} from "../../stores/ui-store";
 
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
   groupColor: string;
+  sortMode?: SortMode;
 }
 
-const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories, groupColor}) => {
+const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories, groupColor, sortMode = "value"}) => {
   if (!categories || categories.length === 0) return null;
 
-  const maxIg = Math.max(...categories.map((c) => c.info_gain));
+  const sorted = [...categories].sort((a, b) =>
+    sortMode === "name"
+      ? a.category_name.localeCompare(b.category_name)
+      : b.info_gain - a.info_gain
+  );
+  const maxIg = Math.max(...sorted.map((c) => c.info_gain));
 
   return (
     <Card>
@@ -24,7 +31,7 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
           </Tooltip>
         </Box>
 
-        {categories.map((cat) => (
+        {sorted.map((cat) => (
           <Box key={cat.category_id} sx={{mb: 2}}>
             <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
               <Typography variant="body2" sx={{fontWeight: 500}}>
