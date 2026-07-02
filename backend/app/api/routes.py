@@ -615,9 +615,20 @@ async def get_group(
 
     similar_groups.sort(key=lambda x: x.similarity, reverse=True)
 
-    total_questions = (
-        await db.execute(select(func.count()).select_from(Question))
-    ).scalar() or 1
+    if category is not None:
+        cat_qids = (
+            await db.execute(
+                select(question_category.c.question_id).where(
+                    question_category.c.category_id == category
+                )
+            )
+        )
+        qids_in_cat = [r[0] for r in cat_qids.all()]
+
+    total_questions_query = select(func.count()).select_from(Question)
+    if category is not None:
+        total_questions_query = total_questions_query.where(Question.id.in_(qids_in_cat))
+    total_questions = (await db.execute(total_questions_query)).scalar() or 1
 
     group_answer_rate = 0.0
     if member_count and member_count > 0:
@@ -626,12 +637,14 @@ async def get_group(
         )
         member_ids = [r[0] for r in member_ids_result.all()]
         if member_ids:
+            answer_query = (
+                select(Answer.voter_id, func.count())
+                .where(Answer.voter_id.in_(member_ids))
+            )
+            if category is not None:
+                answer_query = answer_query.where(Answer.question_id.in_(qids_in_cat))
             member_answer_counts = (
-                await db.execute(
-                    select(Answer.voter_id, func.count())
-                    .where(Answer.voter_id.in_(member_ids))
-                    .group_by(Answer.voter_id)
-                )
+                await db.execute(answer_query.group_by(Answer.voter_id))
             ).all()
             rates = [cnt / total_questions for _, cnt in member_answer_counts]
             unanswered_members = len(member_ids) - len(rates)

@@ -7,7 +7,9 @@ HTTP_PROXY="${HTTP_PROXY:-}"
 HTTPS_PROXY="${HTTPS_PROXY:-}"
 
 echo "=== Building backend image ==="
+HTTP_PROXY="$HTTP_PROXY" HTTPS_PROXY="$HTTPS_PROXY" \
 podman build --network host \
+  --build-arg PIP_TRUSTED_HOST="files.pythonhosted.org pypi.org" \
   -t voting-backend:latest -f backend/Dockerfile .
 
 echo "=== Building frontend image ==="

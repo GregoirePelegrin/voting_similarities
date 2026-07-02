@@ -71,23 +71,23 @@ const VoterDetailPage: React.FC = observer(() => {
         <CategoryFilter/>
       </Box>
 
-      <Box sx={{display: "flex", gap: 3, mb: 3, alignItems: "flex-start"}}>
-        <Box sx={{flex: 1, minWidth: 0}}>
-          <VoterInfoCard
-            role={voter.role}
-            commission={voter.commission}
-            circonscription={voter.circonscription}
-          />
-        </Box>
-        <Card>
-          <CardContent sx={{display: "flex", gap: 3, alignItems: "center"}}>
+      <Card sx={{mb: 3}}>
+        <CardContent sx={{display: "flex", gap: 3, alignItems: "center"}}>
+          <Box sx={{flex: 1, minWidth: 0}}>
+            <VoterInfoCard
+              role={voter.role}
+              commission={voter.commission}
+              circonscription={voter.circonscription}
+            />
+          </Box>
+          <Box sx={{display: "flex", gap: 3, alignItems: "center"}}>
             <CohesivityGauge value={voter.answer_rate} color={voter.group.color} size={90}
                              label={VOTER_DETAIL.ANSWER_RATE}/>
             <CohesivityGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={90}
                              label={VOTER_DETAIL.GROUP_AVG}/>
-          </CardContent>
-        </Card>
-      </Box>
+          </Box>
+        </CardContent>
+      </Card>
 
       <Grid container spacing={3}>
         <Grid size={{xs: 12, md: 6}}>

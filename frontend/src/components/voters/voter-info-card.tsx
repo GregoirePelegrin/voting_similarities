@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, Typography, Box} from "@mui/material";
+import {Typography, Box} from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import PersonIcon from "@mui/icons-material/Person";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -15,8 +15,7 @@ const VoterInfoCard: React.FC<VoterInfoCardProps> = ({role, commission, circonsc
   if (!role && !commission && !circonscription) return null;
 
   return (
-    <Card sx={{mb: 3}}>
-      <Box sx={{p: 2, display: "flex", flexDirection: "column", gap: 1.5}}>
+    <Box sx={{display: "flex", flexDirection: "column", gap: 1.5}}>
         {role && (
           <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
             <PersonIcon sx={{fontSize: 18, color: "text.secondary"}}/>
@@ -41,8 +40,7 @@ const VoterInfoCard: React.FC<VoterInfoCardProps> = ({role, commission, circonsc
             </Typography>
           </Box>
         )}
-      </Box>
-    </Card>
+    </Box>
   );
 };
 

@@ -24,7 +24,7 @@ const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: vot
         </Typography>
         <Box>
           {votersList.map((p) => {
-            const barColor = showSign && p.similarity < 0 ? "#E15759" : (getGroupColor?.(p.id) || color);
+            const barColor = getGroupColor?.(p.id) || (showSign && p.similarity < 0 ? "#E15759" : color);
             return (
               <Box
                 key={p.id}
