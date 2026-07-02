@@ -14,7 +14,7 @@ const columns: GridColDef[] = [
     minWidth: 200,
     flex: 1,
     renderCell: (params) => (
-      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+      <Box sx={{display: "flex", alignItems: "center", gap: 1, width: "100%", height: "100%"}}>
         <Box sx={{width: 12, height: 12, borderRadius: "50%", bgcolor: params.row.color}}/>
         <Typography variant="body2">{params.value}</Typography>
       </Box>
@@ -28,7 +28,9 @@ const columns: GridColDef[] = [
     flex: 1,
     renderCell: (params) =>
       params.value != null ? (
-        <SimilarityBar value={params.value} color={params.row.color}/>
+        <Box sx={{display: "flex", alignItems: "center", width: "100%", height: "100%"}}>
+          <SimilarityBar value={params.value} color={params.row.color}/>
+        </Box>
       ) : (
         <Typography variant="body2" color="text.secondary">-</Typography>
       ),
@@ -55,6 +57,7 @@ const GroupsTable: React.FC = observer(() => {
         pageSizeOptions={[25, 50, 100]}
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
+          sorting: {sortModel: [{field: "name", sort: "asc"}]},
         }}
         onRowClick={(params) => navigate(`/groups/${params.id}`)}
         sx={{

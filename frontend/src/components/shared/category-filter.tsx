@@ -21,7 +21,7 @@ const CategoryFilter: React.FC = observer(() => {
         <MenuItem value="">
           <em>{CATEGORY_FILTER.ALL}</em>
         </MenuItem>
-        {categoriesStore.categories.map((c) => (
+        {categoriesStore.categories.slice().sort((a, b) => a.name.localeCompare(b.name)).map((c) => (
           <MenuItem key={c.id} value={c.id}>
             {c.name}
           </MenuItem>

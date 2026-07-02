@@ -86,7 +86,7 @@ const GroupDetailPage: React.FC = observer(() => {
           <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color}/>
         </Grid>
         <Grid size={{xs: 12}}>
-          <DeterminantCategoriesCard categories={groupsStore.determinantCategories} groupColor={group.color} sortMode={uiStore.sortMode}/>
+          <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode}/>
         </Grid>
       </Grid>
     </AnimatedPage>

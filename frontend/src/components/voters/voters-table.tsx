@@ -7,7 +7,6 @@ import rootStore from "../../stores/root-store";
 import {VOTERS_TABLE} from "../../constants/fr";
 
 const columns: GridColDef[] = [
-  {field: "id", headerName: VOTERS_TABLE.ID, width: 80},
   {field: "firstname", headerName: VOTERS_TABLE.FIRST_NAME, flex: 1},
   {field: "lastname", headerName: VOTERS_TABLE.LAST_NAME, flex: 1},
   {field: "group_name", headerName: VOTERS_TABLE.GROUP, flex: 1},
@@ -39,6 +38,7 @@ const VotersTable: React.FC = observer(() => {
         pageSizeOptions={[25, 50, 100]}
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
+          sorting: {sortModel: [{field: "lastname", sort: "asc"}, {field: "firstname", sort: "asc"}]},
         }}
         onRowClick={(params) => navigate(`/voters/${params.id}`)}
         sx={{

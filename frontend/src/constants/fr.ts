@@ -94,10 +94,13 @@ export const DETERMINANT_CATEGORIES = {
   TOOLTIP:
     "Catégories classées par leur capacité à prédire l'identité de ce groupe. " +
     "Le gain d'information mesure à quel point connaître les réponses dans une catégorie " +
-    "réduit l'incertitude sur l'appartenance au groupe.",
+    "réduit l'incertitude sur l'appartenance au groupe. " +
+    "La précision est le taux de bonne prédiction de l'appartenance au groupe. " +
+    "La divergence KL mesure à quel point la distribution des votes du groupe se distingue de la moyenne.",
   UNCERTAINTY: "d'incertitude résolue",
-  ACCURACY: "Précision :",
-  MOST_CONFUSED: "Plus souvent confondu avec :",
+  PRECISION: "Précision",
+  KL_DIVERGENCE: "Divergence KL",
+  MOST_CONFUSED: "Plus souvent confondu avec",
 };
 
 export const CATEGORY_HEATMAP = {
