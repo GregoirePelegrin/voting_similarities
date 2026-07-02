@@ -17,7 +17,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
     <Box sx={{bgcolor: "#2A3142", p: 1.5, borderRadius: 1, boxShadow: 2}}>
       <Typography variant="body2" sx={{fontWeight: 500}}>{d.category_name}</Typography>
       <Typography variant="caption" color="text.secondary">
-        Alignment: {d.alignment >= 0 ? "+" : ""}{(d.alignment * 100).toFixed(1)}%
+        {CATEGORY_ALIGNMENT.TOOLTIP_LABEL}: {d.alignment >= 0 ? "+" : ""}{(d.alignment * 100).toFixed(1)}%
       </Typography>
     </Box>
   );
@@ -26,9 +26,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
 const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments}) => {
   if (!alignments || alignments.length === 0) return null;
 
-  const data = [...alignments]
-    .map((a) => ({...a, alignment_pct: a.alignment * 100}))
-    .sort((a, b) => b.alignment_pct - a.alignment_pct);
+  const data = [...alignments].map((a) => ({...a, alignment_pct: a.alignment * 100}));
 
   return (
     <Card>
@@ -46,9 +44,11 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments
             <RTooltip content={<CustomTooltip/>}/>
             <ReferenceLine x={0} stroke="rgba(255,255,255,0.15)"/>
             <Bar dataKey="alignment_pct" radius={[0, 4, 4, 0]} barSize={20}>
-              {data.map((d, i) => (
-                <Cell key={i} fill={d.alignment_pct >= 0 ? DATA_COLORS.positive : DATA_COLORS.negative}/>
-              ))}
+              {data.map((d, i) => {
+                const hue = (d.alignment + 1) * 60;
+                const lightness = 32 + Math.abs(d.alignment) * 18;
+                return <Cell key={i} fill={`hsl(${hue}, 75%, ${lightness}%)`}/>;
+              })}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

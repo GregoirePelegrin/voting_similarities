@@ -927,5 +927,4 @@ async def get_voter_category_alignment(
                 )
             )
 
-    out.sort(key=lambda x: x.alignment, reverse=True)
     return out

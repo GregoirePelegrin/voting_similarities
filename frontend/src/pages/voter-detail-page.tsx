@@ -67,7 +67,7 @@ const VoterDetailPage: React.FC = observer(() => {
         <CategoryFilter/>
       </Box>
 
-      <Box sx={{display: "flex", gap: 3, mb: 3}}>
+      <Box sx={{display: "flex", gap: 3, mb: 3, alignItems: "flex-start"}}>
         <Box sx={{flex: 1, minWidth: 0}}>
           <VoterInfoCard
             role={voter.role}

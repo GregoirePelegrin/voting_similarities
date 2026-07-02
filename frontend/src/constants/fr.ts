@@ -65,6 +65,7 @@ export const GROUP_COMPARISON = {
 
 export const CATEGORY_ALIGNMENT = {
   HEADING: "Alignement par catégorie",
+  TOOLTIP_LABEL: "Alignement",
   TOOLTIP:
     "Mesure l'alignement de ce votant avec son propre groupe par rapport aux autres groupes " +
     "pour chaque catégorie. Positif = le votant correspond à son groupe, négatif = il s'en démarque.",
