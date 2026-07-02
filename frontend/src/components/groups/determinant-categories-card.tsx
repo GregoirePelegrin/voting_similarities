@@ -30,19 +30,19 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
         </Box>
 
         {sorted.map((cat) => (
-          <Tooltip key={cat.category_id} title={
-            <Box>
-              <Typography variant="caption" display="block">
-                {DETERMINANT_CATEGORIES.PRECISION} : {(cat.accuracy * 100).toFixed(0)}%
-              </Typography>
-              <Typography variant="caption" display="block">
-                {DETERMINANT_CATEGORIES.KL_DIVERGENCE} : {cat.kl_divergence.toFixed(3)}
-              </Typography>
+          <Tooltip key={cat.category_id} followCursor title={
+            <Box sx={{display: "flex", flexDirection: "column"}}>
               {cat.most_confused_with_name && (
-                <Typography variant="caption" display="block" sx={{mt: 0.5}}>
+                <Typography variant="caption">
                   {DETERMINANT_CATEGORIES.MOST_CONFUSED} : {cat.most_confused_with_name}
                 </Typography>
               )}
+              <Typography variant="caption">
+                {DETERMINANT_CATEGORIES.PRECISION} : {(cat.accuracy * 100).toFixed(0)}%
+              </Typography>
+              <Typography variant="caption">
+                {DETERMINANT_CATEGORIES.KL_DIVERGENCE} : {cat.kl_divergence.toFixed(3)}
+              </Typography>
             </Box>
           }>
             <Box sx={{mb: 2}}>
