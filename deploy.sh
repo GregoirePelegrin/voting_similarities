@@ -6,16 +6,22 @@ cd "$(dirname "$0")"
 HTTP_PROXY="${HTTP_PROXY:-}"
 HTTPS_PROXY="${HTTPS_PROXY:-}"
 
+BACKEND_ARGS=()
+FRONTEND_ARGS=()
+if [ -n "$HTTP_PROXY" ]; then
+  BACKEND_ARGS+=(--build-arg "PIP_TRUSTED_HOST=files.pythonhosted.org pypi.org")
+  FRONTEND_ARGS+=(--build-arg "NPM_CONFIG_PROXY=$HTTP_PROXY")
+  FRONTEND_ARGS+=(--build-arg "NODE_TLS_REJECT_UNAUTHORIZED=0")
+fi
+
 echo "=== Building backend image ==="
-HTTP_PROXY="$HTTP_PROXY" HTTPS_PROXY="$HTTPS_PROXY" \
 podman build --network host \
-  --build-arg PIP_TRUSTED_HOST="files.pythonhosted.org pypi.org" \
+  "${BACKEND_ARGS[@]}" \
   -t voting-backend:latest -f backend/Dockerfile .
 
 echo "=== Building frontend image ==="
-HTTP_PROXY="$HTTP_PROXY" HTTPS_PROXY="$HTTPS_PROXY" \
 podman build --network host \
-  --build-arg NPM_CONFIG_PROXY="$HTTP_PROXY" \
+  "${FRONTEND_ARGS[@]}" \
   -t voting-frontend:latest -f frontend/Dockerfile .
 
 echo "=== Stopping existing containers ==="

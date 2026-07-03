@@ -5,10 +5,8 @@ A web application for analyzing and comparing how voters and groups vote on yes/
 ## Production Startup (podman)
 
 ```bash
-# Requires: HTTP proxy on http://127.0.0.1:3128 (for pip/npm inside containers)
-
 # Build and deploy both containers
-HTTP_PROXY=http://127.0.0.1:3128 HTTPS_PROXY=http://127.0.0.1:3128 bash deploy.sh
+bash deploy.sh
 
 # On a fresh database, seed and compute similarities:
 podman exec voting-backend python /app/scripts/seed.py
@@ -17,7 +15,7 @@ podman exec voting-backend python /app/scripts/compute_similarities.py
 
 Then open http://localhost:8080. Backend API at http://localhost:8000, docs at http://localhost:8000/docs.
 
-**Note:** Port 80 is blocked on this host, so the frontend serves on port 8080. Host networking is used because podman cannot route `localhost:8000` between bridge containers on this system.
+**Note:** Host networking is used so the backend can reach services on the host (e.g. a local database). The frontend nginx listens on port 8080 instead of 80 (no privileged port binding inside the container).
 
 ### Resetting the database
 
@@ -31,12 +29,8 @@ podman exec voting-backend python /app/scripts/compute_similarities.py
 ### Manual rebuild (without deploy.sh)
 
 ```bash
-HTTP_PROXY=http://127.0.0.1:3128 HTTPS_PROXY=http://127.0.0.1:3128 \
-podman build --network host --build-arg PIP_TRUSTED_HOST="files.pythonhosted.org pypi.org" \
-  -t voting-backend:latest -f backend/Dockerfile .
-
-HTTP_PROXY=http://127.0.0.1:3128 HTTPS_PROXY=http://127.0.0.1:3128 \
-podman build --network host -t voting-frontend:latest -f frontend/Dockerfile .
+podman build -t voting-backend:latest -f backend/Dockerfile .
+podman build -t voting-frontend:latest -f frontend/Dockerfile .
 
 podman rm -f voting-backend voting-frontend 2>/dev/null
 
@@ -190,7 +184,7 @@ The frontend is a Vite + React SPA with no runtime environment variables. The AP
     ├── Dockerfile         # Multi-stage Node 22 + nginx image
     ├── nginx.conf         # Nginx config (port 8080, SPA fallback)
     ├── package.json
-    ├── vite.config.ts     # Vite config + API proxy
+    ├── vite.config.ts     # Vite config + dev API proxy
     └── src/
         ├── app.tsx        # Root component + routing
         ├── api/           # API client functions + types

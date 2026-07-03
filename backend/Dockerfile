@@ -1,11 +1,13 @@
 FROM python:3.12-slim AS builder
 
-ARG PIP_TRUSTED_HOST
+ARG PIP_TRUSTED_HOST=
 WORKDIR /install
 COPY requirements.txt backend/requirements.txt
-RUN pip install --no-cache-dir \
-    $(for h in $PIP_TRUSTED_HOST; do echo --trusted-host $h; done) \
-    -r backend/requirements.txt
+RUN if [ -n "$PIP_TRUSTED_HOST" ]; then \
+      pip install --no-cache-dir $(for h in $PIP_TRUSTED_HOST; do echo --trusted-host $h; done) -r backend/requirements.txt; \
+    else \
+      pip install --no-cache-dir -r backend/requirements.txt; \
+    fi
 
 FROM python:3.12-slim
 WORKDIR /app
