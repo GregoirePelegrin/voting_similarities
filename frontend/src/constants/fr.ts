@@ -3,6 +3,7 @@ export const NAV = {
   MAP: "Carte",
   VOTERS: "Votants",
   GROUPS: "Groupes",
+  CATEGORIES: "Catégories",
   QUESTIONS: "Questions",
 };
 
@@ -85,6 +86,12 @@ export const GROUPS_TABLE = {
   COHESIVITY: "Cohésion",
 };
 
+export const CATEGORIES_TABLE = {
+  NAME: "Nom",
+  INFO_GAIN: "Gain d'information",
+  VARIANCE: "Variance",
+};
+
 export const SIMILAR_GROUPS = {
   HEADING: "Groupes similaires",
 };
@@ -95,10 +102,8 @@ export const DETERMINANT_CATEGORIES = {
     "Catégories classées par leur capacité à prédire l'identité de ce groupe. " +
     "Le gain d'information mesure à quel point connaître les réponses dans une catégorie " +
     "réduit l'incertitude sur l'appartenance au groupe. " +
-    "La précision est le taux de bonne prédiction de l'appartenance au groupe. " +
     "La divergence KL mesure à quel point la distribution des votes du groupe se distingue de la moyenne.",
-  UNCERTAINTY: "d'incertitude résolue",
-  PRECISION: "Précision",
+  PRECISION_LABEL: "précision",
   KL_DIVERGENCE: "Divergence KL",
   MOST_CONFUSED: "Plus souvent confondu avec",
 };
@@ -118,6 +123,7 @@ export const SORT = {
 export const GROUP_DETAIL = {
   MEMBERS: "membres",
   ANSWER_RATE: "Taux de réponse",
+  COHESION: "Cohésion",
 };
 
 export const QUESTIONS_TABLE = {
@@ -250,4 +256,78 @@ export const PAGE = {
   TITLE: "Similitudes de Vote",
   DESCRIPTION: "Similitudes de Vote — Analysez les similitudes de vote à travers les groupes",
   NOSCRIPT: "Vous devez activer JavaScript pour utiliser cette application.",
+};
+
+export const METRICS = {
+  CATEGORIES_LIST: {
+    INFO_GAIN: {
+      heading: "Gain d'information",
+      body:
+        "Le gain d'information mesure à quel point connaître les réponses d'un votant dans " +
+        "une catégorie donnée réduit l'incertitude sur son appartenance à un groupe. " +
+        "Il est calculé via l'information mutuelle normalisée (NMI) entre la variable " +
+        "« catégorie de question » et la variable « groupe d'appartenance ». " +
+        "Plus le score est élevé, plus la catégorie est discriminante : les groupes " +
+        "ont tendance à voter différemment sur ces questions. " +
+        "La variance indique la dispersion de ce pouvoir discriminant entre les groupes.",
+    },
+  },
+  GROUPS_LIST: {
+    COHESIVITY: {
+      heading: "Cohésion",
+      body:
+        "La cohésion mesure la similarité moyenne des votes entre les membres d'un même groupe. " +
+        "Un score de 100 % signifie que tous les membres votent exactement de la même manière " +
+        "sur toutes les questions. Un score faible révèle des divergences internes au groupe.",
+    },
+  },
+  VOTER_DETAIL: {
+    GROUP_COMPARISON: {
+      heading: "Comparaisons par groupe",
+      body:
+        "Pour chaque groupe, on calcule la similarité entre le profil de vote du votant " +
+        "et la moyenne du groupe. La similarité est asymétrique : on pondère davantage " +
+        "les accords « Oui‑Oui » que les « Non‑Non », car deux « oui » sur une même motion " +
+        "reflètent une conviction partagée plus forte. " +
+        "Un lissage bayésien (shrinkage) fiabilise le score quand le nombre de questions " +
+        "communes est faible. La confiance indique la proportion de questions partagées.",
+    },
+    CATEGORY_ALIGNMENT: {
+      heading: "Alignement par catégorie",
+      body:
+        "Compare, pour chaque catégorie de questions, la similarité du votant avec son " +
+        "propre groupe par rapport à sa similarité moyenne avec les autres groupes. " +
+        "Un alignement positif signifie que le votant vote davantage comme son groupe " +
+        "que comme les autres groupes. Négatif, il s'en démarque.",
+    },
+  },
+  GROUP_DETAIL: {
+    DETERMINANT_CATEGORIES: {
+      heading: "Catégories déterminantes",
+      body:
+        "Pour chaque catégorie, on mesure sa capacité à prédire l'appartenance à ce groupe. " +
+        "La précision est le taux de bonnes prédictions : si la catégorie prédit que le " +
+        "votant appartient au groupe, quelle est la probabilité que ce soit correct ? " +
+        "La divergence KL quantifie à quel point la distribution des votes du groupe " +
+        "se distingue de la moyenne de tous les votants. " +
+        "Le gain d'information (Info. Gain) représente la réduction d'incertitude sur " +
+        "l'appartenance au groupe lorsque l'on connaît les réponses dans cette catégorie.",
+    },
+    SIMILAR_GROUPS: {
+      heading: "Groupes similaires",
+      body:
+        "Similarité moyenne entre les membres de ce groupe et ceux d'un autre groupe. " +
+        "Le score est symétrique et utilise la même métrique que pour les votants : " +
+        "les accords « Oui‑Oui » comptent plus que les « Non‑Non », et un lissage " +
+        "bayésien est appliqué pour fiabiliser les comparaisons.",
+    },
+    CATEGORY_HEATMAP: {
+      heading: "Similarité par catégorie",
+      body:
+        "Matrice montrant la similarité entre ce groupe et chaque autre groupe, " +
+        "catégorie par catégorie. Les cellules sont colorées de rouge (peu similaire) " +
+        "à vert (très similaire). Cela permet d'identifier sur quels thèmes les groupes " +
+        "se rapprochent ou s'éloignent.",
+    },
+  },
 };

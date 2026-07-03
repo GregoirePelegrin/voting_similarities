@@ -12,7 +12,8 @@ import CategoryAlignmentCard from "../components/voters/category-alignment-card"
 import VoterInfoCard from "../components/voters/voter-info-card";
 import CohesivityGauge from "../components/shared/cohesivity-gauge";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
-import {VOTER_DETAIL, SORT} from "../constants/fr";
+import MetricInfoCard from "../components/shared/metric-info-card";
+import {VOTER_DETAIL, SORT, METRICS} from "../constants/fr";
 import {DATA_COLORS} from "../theme";
 
 const VoterDetailPage: React.FC = observer(() => {
@@ -122,6 +123,14 @@ const VoterDetailPage: React.FC = observer(() => {
           <AnswerGrid answers={voter.answers}/>
         </Grid>
       </Grid>
+      <Box sx={{mt: 3}}>
+        <MetricInfoCard
+          sections={[
+            METRICS.VOTER_DETAIL.GROUP_COMPARISON,
+            METRICS.VOTER_DETAIL.CATEGORY_ALIGNMENT,
+          ]}
+        />
+      </Box>
     </AnimatedPage>
   );
 });

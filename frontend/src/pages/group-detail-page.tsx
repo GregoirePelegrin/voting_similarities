@@ -10,7 +10,8 @@ import SimilarGroupsList from "../components/groups/similar-groups-list";
 import CategoryHeatmap from "../components/groups/category-heatmap";
 import DeterminantCategoriesCard from "../components/groups/determinant-categories-card";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
-import {GROUP_DETAIL, SORT} from "../constants/fr";
+import MetricInfoCard from "../components/shared/metric-info-card";
+import {GROUP_DETAIL, SORT, METRICS} from "../constants/fr";
 
 const GroupDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
@@ -74,7 +75,7 @@ const GroupDetailPage: React.FC = observer(() => {
         <Grid size={{xs: 12, md: 4}}>
           <Card>
             <CardContent sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2}}>
-              <CohesivityGauge value={group.cohesivity} color={group.color}/>
+              <CohesivityGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION}/>
               <CohesivityGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE}/>
             </CardContent>
           </Card>
@@ -89,6 +90,15 @@ const GroupDetailPage: React.FC = observer(() => {
           <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode}/>
         </Grid>
       </Grid>
+      <Box sx={{mt: 3}}>
+        <MetricInfoCard
+          sections={[
+            METRICS.GROUP_DETAIL.DETERMINANT_CATEGORIES,
+            METRICS.GROUP_DETAIL.SIMILAR_GROUPS,
+            METRICS.GROUP_DETAIL.CATEGORY_HEATMAP,
+          ]}
+        />
+      </Box>
     </AnimatedPage>
   );
 });

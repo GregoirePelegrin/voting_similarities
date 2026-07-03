@@ -1,9 +1,8 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
-import {Card, CardContent, Typography, Box, Tooltip} from "@mui/material";
+import {Card, CardContent, Typography, Box} from "@mui/material";
 import {BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, Cell} from "recharts";
 import {GroupComparisonOut} from "../../api/types";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {GROUP_COMPARISON} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
 
@@ -39,12 +38,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
   return (
     <Card>
       <CardContent>
-        <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
-          <Typography variant="h6">{GROUP_COMPARISON.HEADING}</Typography>
-          <Tooltip title={GROUP_COMPARISON.TOOLTIP}>
-            <InfoOutlinedIcon sx={{fontSize: 18, color: "text.secondary"}}/>
-          </Tooltip>
-        </Box>
+        <Typography variant="h6" sx={{mb: 2}}>{GROUP_COMPARISON.HEADING}</Typography>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" domain={[0, "auto"]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>

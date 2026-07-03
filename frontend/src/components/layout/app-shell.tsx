@@ -17,6 +17,7 @@ import {
 import MapIcon from "@mui/icons-material/Map";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PeopleIcon from "@mui/icons-material/People";
+import CategoryIcon from "@mui/icons-material/Category";
 import QuizIcon from "@mui/icons-material/Quiz";
 import MenuIcon from "@mui/icons-material/Menu";
 import {observer} from "mobx-react-lite";
@@ -30,6 +31,7 @@ const navItems = [
   {label: NAV.MAP, icon: <MapIcon/>, path: "/"},
   {label: NAV.VOTERS, icon: <PeopleIcon/>, path: "/voters"},
   {label: NAV.GROUPS, icon: <GroupsIcon/>, path: "/groups"},
+  {label: NAV.CATEGORIES, icon: <CategoryIcon/>, path: "/categories"},
   {label: NAV.QUESTIONS, icon: <QuizIcon/>, path: "/questions"},
 ];
 

@@ -12,6 +12,7 @@ const VotersListPage = React.lazy(() => import("./pages/voters-list-page"));
 const VoterDetailPage = React.lazy(() => import("./pages/voter-detail-page"));
 const GroupsListPage = React.lazy(() => import("./pages/groups-list-page"));
 const GroupDetailPage = React.lazy(() => import("./pages/group-detail-page"));
+const CategoriesListPage = React.lazy(() => import("./pages/categories-list-page"));
 const QuestionsListPage = React.lazy(() => import("./pages/questions-list-page"));
 const QuestionDetailPage = React.lazy(() => import("./pages/question-detail-page"));
 
@@ -32,6 +33,7 @@ const App = observer(() => {
               <Route path="/voters/:id" element={<VoterDetailPage/>}/>
               <Route path="/groups" element={<GroupsListPage/>}/>
               <Route path="/groups/:id" element={<GroupDetailPage/>}/>
+              <Route path="/categories" element={<CategoriesListPage/>}/>
               <Route path="/questions" element={<QuestionsListPage/>}/>
               <Route path="/questions/:id" element={<QuestionDetailPage/>}/>
             </Routes>

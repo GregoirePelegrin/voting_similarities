@@ -32,7 +32,7 @@ const columns: GridColDef[] = [
     headerName: QUESTIONS_TABLE.CATEGORIES,
     flex: 1,
     renderCell: (params) => (
-      <Box sx={{display: "flex", gap: 0.5, flexWrap: "wrap"}}>
+      <Box sx={{display: "flex", alignItems: "center", gap: 0.5, flexWrap: "wrap", height: "100%"}}>
         {(params.value as string[]).map((c: string) => (
           <Chip key={c} label={c} size="small" variant="outlined" sx={{fontSize: 10, height: 20}}/>
         ))}

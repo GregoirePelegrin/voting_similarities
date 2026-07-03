@@ -1,8 +1,7 @@
 import React from "react";
-import {Card, CardContent, Typography, Box, Tooltip} from "@mui/material";
+import {Card, CardContent, Typography, Box} from "@mui/material";
 import {BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, Cell, ReferenceLine} from "recharts";
 import {CategoryAlignmentOut} from "../../api/types";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {CATEGORY_ALIGNMENT} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
 import {redGreyGreenGradient} from "../../utils/colors";
@@ -41,12 +40,7 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments
   return (
     <Card>
       <CardContent>
-        <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
-          <Typography variant="h6">{CATEGORY_ALIGNMENT.HEADING}</Typography>
-          <Tooltip title={CATEGORY_ALIGNMENT.TOOLTIP}>
-            <InfoOutlinedIcon sx={{fontSize: 18, color: "text.secondary"}}/>
-          </Tooltip>
-        </Box>
+        <Typography variant="h6" sx={{mb: 2}}>{CATEGORY_ALIGNMENT.HEADING}</Typography>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" tickFormatter={(v: number) => `${v.toFixed(0)}%`}/>
