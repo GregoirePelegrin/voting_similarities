@@ -3,6 +3,13 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
+# Use .env.production for deployment, fall back to .env for dev
+ENV_FILE=".env.production"
+if [ ! -f "$ENV_FILE" ]; then
+  ENV_FILE=".env"
+fi
+echo "=== Using environment file: $ENV_FILE ==="
+
 HTTP_PROXY="${HTTP_PROXY:-}"
 HTTPS_PROXY="${HTTPS_PROXY:-}"
 
@@ -31,7 +38,7 @@ echo "=== Starting backend ==="
 podman run -d \
   --name voting-backend \
   --network host \
-  --env-file .env \
+  --env-file "$ENV_FILE" \
   -v ./data:/app/data:Z \
   voting-backend:latest
 
