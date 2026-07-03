@@ -2,41 +2,46 @@
 
 A web application for analyzing and comparing how voters and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with Bayesian shrinkage, Classical MDS for 2D visualization, and information gain for explainability.
 
-## Production Startup (podman + PostgreSQL)
+## Production Startup (podman)
 
 ```bash
-# Prerequisites: a running PostgreSQL container with the `voting_similarities` database
-# e.g.: podman run -d --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres:16
+# Requires: HTTP proxy on http://127.0.0.1:3128 (for pip/npm inside containers)
 
-# 1. Build images
-podman build -t voting-backend:latest --build-arg PIP_TRUSTED_HOST=127.0.0.1 -f backend/Dockerfile .
-podman build -t voting-frontend:latest --build-arg NPM_CONFIG_PROXY=http://127.0.0.1:3128 -f frontend/Dockerfile .
+# Build and deploy both containers
+HTTP_PROXY=http://127.0.0.1:3128 HTTPS_PROXY=http://127.0.0.1:3128 bash deploy.sh
 
-# 2. Start backend (uses host networking to reach local PostgreSQL)
-podman run -d --name voting-backend --network host \
-  --env-file prod.env \
-  voting-backend:latest
-
-# 3. Run database migrations (runs automatically on startup, or manually:)
-podman exec voting-backend alembic upgrade head
-
-# 4. Seed and compute similarities (only on fresh database)
-podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/seed.py
-podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/compute_similarities.py
-
-# 5. Start frontend
-podman run -d --name voting-frontend -p 8080:80 voting-frontend:latest
+# On a fresh database, seed and compute similarities:
+podman exec voting-backend python /app/scripts/seed.py
+podman exec voting-backend python /app/scripts/compute_similarities.py
 ```
 
-Then open http://localhost:8080 in your browser. The backend API runs on http://localhost:8000.
+Then open http://localhost:8080. Backend API at http://localhost:8000, docs at http://localhost:8000/docs.
+
+**Note:** Port 80 is blocked on this host, so the frontend serves on port 8080. Host networking is used because podman cannot route `localhost:8000` between bridge containers on this system.
 
 ### Resetting the database
 
 ```bash
 podman exec voting-backend alembic downgrade base
 podman exec voting-backend alembic upgrade head
-podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/seed.py
-podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/compute_similarities.py
+podman exec voting-backend python /app/scripts/seed.py
+podman exec voting-backend python /app/scripts/compute_similarities.py
+```
+
+### Manual rebuild (without deploy.sh)
+
+```bash
+HTTP_PROXY=http://127.0.0.1:3128 HTTPS_PROXY=http://127.0.0.1:3128 \
+podman build --network host --build-arg PIP_TRUSTED_HOST="files.pythonhosted.org pypi.org" \
+  -t voting-backend:latest -f backend/Dockerfile .
+
+HTTP_PROXY=http://127.0.0.1:3128 HTTPS_PROXY=http://127.0.0.1:3128 \
+podman build --network host -t voting-frontend:latest -f frontend/Dockerfile .
+
+podman rm -f voting-backend voting-frontend 2>/dev/null
+
+podman run -d --name voting-backend --network host --env-file .env voting-backend:latest
+podman run -d --name voting-frontend --network host voting-frontend:latest
 ```
 
 ---
@@ -45,8 +50,8 @@ podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/compute_simila
 
 ### Prerequisites
 
-- **Python 3.11+** (with pip or conda)
-- **Node.js 16+** (with npm)
+- **Python 3.11+** (with pip)
+- **Node.js 18+** (with npm)
 - **Git**
 
 ### 1. Clone the repository
@@ -61,10 +66,9 @@ cd voting_similarities
 #### Install dependencies
 
 ```bash
-pip install fastapi "uvicorn[standard]" "sqlalchemy[asyncio]" aiosqlite asyncpg alembic numpy pydantic pydantic-settings
-
-# Dev dependencies (optional, for linting)
-pip install ruff pytest pytest-asyncio httpx
+pip install -e .
+# or using pyproject.toml directly:
+pip install -e ".[dev]"
 ```
 
 #### Configure
@@ -101,16 +105,10 @@ The API is available at http://localhost:8000. Swagger docs at http://localhost:
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
-The app opens at http://localhost:3000 and proxies API calls to `http://localhost:8000` by default.
-
-To point to a different backend:
-
-```bash
-REACT_APP_API_URL=http://my-server:8000 npm start
-```
+The app opens at http://localhost:5173 and proxies API calls to `http://localhost:8000` by default (configured in `vite.config.ts`).
 
 ---
 
@@ -120,6 +118,7 @@ REACT_APP_API_URL=http://my-server:8000 npm start
 |---|---|---|
 | GET | `/health` | Health check |
 | GET | `/categories` | List all categories |
+| GET | `/categories/discriminativeness` | All categories ranked by discriminative power |
 | GET | `/questions` | List all questions with their categories and has_passed |
 | GET | `/questions/{id}` | Question detail with per-group answer stats |
 | GET | `/voters?page=&page_size=&group_id=` | Paginated voters list |
@@ -128,9 +127,9 @@ REACT_APP_API_URL=http://my-server:8000 npm start
 | GET | `/groups` | List all groups with cohesivity |
 | GET | `/groups/{id}?category=` | Group detail with cohesivity, similar groups, per-category |
 | GET | `/groups/{id}/determinant-categories` | Categories ranked by information gain for this group |
-| GET | `/categories/discriminativeness` | All categories ranked by discriminative power |
 | GET | `/embeddings/voters?category=` | MDS 2D coordinates + barycenters for voters |
 | GET | `/embeddings/groups?category=` | MDS 2D coordinates for groups |
+| GET | `/config` | Similarity metric configuration parameters |
 
 ---
 
@@ -154,50 +153,52 @@ REACT_APP_API_URL=http://my-server:8000 npm start
 | `SIMILARITY_W_MISMATCH` | `0.5` | Penalty for disagreement |
 | `SIMILARITY_BAYESIAN_M` | `10` | Bayesian shrinkage strength |
 
-### Frontend (environment variables)
+### Frontend
 
-| Variable | Default | Description |
-|---|---|---|
-| `REACT_APP_API_URL` | `http://localhost:8000` | Backend API base URL (set at build time) |
+The frontend is a Vite + React SPA with no runtime environment variables. The API base URL is hardcoded in `vite.config.ts` (default: `http://localhost:8000`).
 
 ---
 
 ## Project Structure
 
 ```
-├── .env.example          # Template for dev environment variables
-├── prod.env              # Production environment variables
+├── .env.example           # Template for dev environment variables
+├── prod.env               # Production environment variables
+├── deploy.sh              # Container build + deploy script
 ├── .gitignore
-├── pyproject.toml        # Python project config + ruff settings
+├── pyproject.toml         # Python project config + ruff settings
 ├── backend/
-│   ├── Dockerfile        # Multi-stage Python 3.12-slim image
-│   ├── alembic.ini       # Alembic migration config
+│   ├── Dockerfile         # Multi-stage Python 3.12-slim image
+│   ├── alembic.ini        # Alembic migration config
 │   ├── app/
-│   │   ├── main.py       # FastAPI app + lifecycle hooks
-│   │   ├── config.py     # pydantic-settings configuration
-│   │   ├── database.py   # SQLAlchemy engine + session
-│   │   ├── models.py     # All SQLAlchemy models
-│   │   ├── schemas.py    # Pydantic response schemas
-│   │   ├── similarity.py # Similarity metric + batch computation
-│   │   ├── embedding.py  # Classical MDS implementation
+│   │   ├── main.py        # FastAPI app + lifecycle hooks
+│   │   ├── config.py      # pydantic-settings configuration
+│   │   ├── database.py    # SQLAlchemy engine + session
+│   │   ├── models.py      # All SQLAlchemy models
+│   │   ├── schemas.py     # Pydantic response schemas
+│   │   ├── similarity.py  # Similarity metric + batch computation
+│   │   ├── embedding.py   # Classical MDS implementation
 │   │   └── api/
-│   │       ├── health.py # /health endpoint
-│   │       └── routes.py # All API endpoints
+│   │       ├── health.py  # /health endpoint
+│   │       └── routes.py  # All API endpoints
 │   ├── scripts/
 │   │   ├── seed.py               # Generate sample data (safe: refuses if data exists)
-│   │   └── compute_similarities.py # Batch computation job
-│   ├── migrations/       # Alembic migration files
+│   │   └── compute_similarities.py # Batch computation + schema auto-creation
+│   ├── migrations/        # Alembic migration files
 │   └── database_handling.md  # Detailed DB operations guide
 └── frontend/
-    ├── Dockerfile        # Multi-stage Node 20 + nginx image
-    ├── nginx.conf        # Nginx config with SPA fallback
+    ├── Dockerfile         # Multi-stage Node 22 + nginx image
+    ├── nginx.conf         # Nginx config (port 8080, SPA fallback)
     ├── package.json
+    ├── vite.config.ts     # Vite config + API proxy
     └── src/
         ├── app.tsx        # Root component + routing
         ├── api/           # API client functions + types
         ├── stores/        # MobX state stores
         ├── pages/         # Route pages
-        └── components/    # Reusable UI components
+        ├── components/    # Reusable UI components
+        ├── constants/     # French locale strings
+        └── utils/         # Color utilities, helpers
 ```
 
 ---
@@ -208,8 +209,8 @@ REACT_APP_API_URL=http://my-server:8000 npm start
 # Backend
 ruff check backend/
 
-# Frontend
-cd frontend && CI=true npm run build
+# Frontend (build = typecheck + bundle)
+cd frontend && npm run build
 ```
 
 ---
@@ -234,4 +235,6 @@ Classical Multidimensional Scaling projects the similarity matrix into 2D. Unlik
 
 - **Information gain**: measures how much knowing answers in a category reduces uncertainty about group membership
 - **Category alignment**: for a given voter, how well each category aligns them with their own group versus other groups
+- **Precision (accuracy)**: for a given group, the rate at which a category correctly predicts group membership
+- **KL divergence**: measures how much a group's vote distribution differs from the overall average, per category
 - **Variance score**: how much a category polarizes groups (descriptive complement to IG)
