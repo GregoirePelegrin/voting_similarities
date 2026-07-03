@@ -5,6 +5,7 @@ import {CategoryAlignmentOut} from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {CATEGORY_ALIGNMENT} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
+import {redGreyGreenGradient} from "../../utils/colors";
 
 import {SortMode} from "../../stores/ui-store";
 
@@ -53,11 +54,9 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments
             <RTooltip content={<CustomTooltip/>}/>
             <ReferenceLine x={0} stroke="rgba(255,255,255,0.15)"/>
             <Bar dataKey="alignment_pct" radius={[0, 4, 4, 0]} barSize={20}>
-              {data.map((d, i) => {
-                const hue = (d.alignment + 1) * 60;
-                const lightness = 32 + Math.abs(d.alignment) * 18;
-                return <Cell key={i} fill={`hsl(${hue}, 75%, ${lightness}%)`}/>;
-              })}
+              {data.map((d, i) => (
+                <Cell key={i} fill={redGreyGreenGradient((d.alignment + 1) / 2)}/>
+              ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

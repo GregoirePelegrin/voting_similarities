@@ -61,6 +61,7 @@ export interface SimilarVoterOut {
   id: number;
   firstname: string;
   lastname: string;
+  group_color: string;
   similarity: number;
   confidence: number;
   shared_count: number;

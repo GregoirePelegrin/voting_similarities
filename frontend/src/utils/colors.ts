@@ -12,7 +12,7 @@ const hexToRgb = (hex_in: string): number[] => {
 }
 
 const rgbToHex = (r: number, g: number, b: number): string => {
-  return ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
+  return "#" + ((r << 16) + (g << 8) + b).toString(16).padStart(6, '0');
 }
 
 const rgbToHsv = (r: number, g: number, b: number): number[] => {
@@ -21,8 +21,9 @@ const rgbToHsv = (r: number, g: number, b: number): number[] => {
   b /= 255;
   const v: number = Math.max(r, g, b);
   const n: number = Math.min(r, g, b);
-  const h: number = n === 0 ? 0 : n && v === r ? (g - b) / n : v === g ? 2 + (b - r) / n : 4 + (r - g) / n;
-  return [60 * (h < 0 ? h + 6 : h), v && (n / v) * 100, v * 100];
+  const d: number = v - n;
+  const h: number = d === 0 ? 0 : v === r ? (g - b) / d : v === g ? 2 + (b - r) / d : 4 + (r - g) / d;
+  return [60 * (h < 0 ? h + 6 : h), v && (1 - n / v) * 100, v * 100];
 }
 
 const hsvToRgb = (h: number, s: number, v: number): number[] => {
@@ -53,3 +54,14 @@ const sigmoidInterpolator = (value: number, h1: number, s1: number, v1: number, 
     ];
   }
 }
+
+const RED_HSV = rgbToHsv(0xAD, 0x17, 0x17);
+const GREY_HSV = rgbToHsv(0x80, 0x80, 0x80);
+const GREEN_HSV = rgbToHsv(0x31, 0x8C, 0x34);
+
+export const redGreyGreenGradient = (value: number): string => {
+  const clamped = Math.max(0, Math.min(1, value));
+  const [h, s, v] = sigmoidInterpolator(clamped, ...RED_HSV, ...GREY_HSV, ...GREEN_HSV);
+  const [r, g, b] = hsvToRgb(h, s, v);
+  return rgbToHex(Math.round(r), Math.round(g), Math.round(b));
+};

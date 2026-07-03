@@ -40,10 +40,6 @@ const VoterDetailPage: React.FC = observer(() => {
   }, [voterId, uiStore.retryVersion]);
 
   const voter = votersStore.selectedVoter;
-  const voterColorMap = React.useMemo(
-    () => new Map(votersStore.voters.map((v) => [v.id, v.group_color])),
-    [votersStore.voters]
-  );
 
   if (!voter) {
     return (
@@ -106,7 +102,6 @@ const VoterDetailPage: React.FC = observer(() => {
             title={VOTER_DETAIL.MOST_SIMILAR}
             voters={voter.similar_voters}
             color={DATA_COLORS.primary}
-            getGroupColor={(id) => voterColorMap.get(id)}
           />
         </Grid>
         <Grid size={{xs: 12, md: 6}}>
@@ -115,7 +110,6 @@ const VoterDetailPage: React.FC = observer(() => {
             voters={voter.dissimilar_voters}
             color={DATA_COLORS.negative}
             showSign
-            getGroupColor={(id) => voterColorMap.get(id)}
           />
         </Grid>
         <Grid size={{xs: 12}}>

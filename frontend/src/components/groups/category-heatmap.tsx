@@ -5,6 +5,7 @@ import {SimilarGroupOut} from "../../api/types";
 import rootStore from "../../stores/root-store";
 import {CATEGORY_HEATMAP} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
+import {redGreyGreenGradient} from "../../utils/colors";
 
 interface CategoryHeatmapProps {
   similarGroups: SimilarGroupOut[];
@@ -87,7 +88,7 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
                               width: 28,
                               height: 28,
                               borderRadius: 1,
-                              bgcolor: val != null ? `hsl(${val * 120}, 75%, ${32 + val * 18}%)` : "rgba(255,255,255,0.03)",
+                              bgcolor: val != null ? redGreyGreenGradient(val) : "rgba(255,255,255,0.03)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",

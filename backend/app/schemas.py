@@ -75,6 +75,7 @@ class SimilarVoterOut(BaseModel):
     id: int
     firstname: str
     lastname: str
+    group_color: str
     similarity: float
     confidence: float
     shared_count: int

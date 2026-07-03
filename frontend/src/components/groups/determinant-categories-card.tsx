@@ -4,6 +4,7 @@ import {DeterminantCategoryOut} from "../../api/types";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {DETERMINANT_CATEGORIES} from "../../constants/fr";
 import {SortMode} from "../../stores/ui-store";
+import {redGreyGreenGradient} from "../../utils/colors";
 
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
@@ -63,7 +64,7 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
                   bgcolor: "rgba(255,255,255,0.08)",
                   "& .MuiLinearProgress-bar": {
                     borderRadius: 4,
-                    bgcolor: `hsl(${cat.normalized_ig * 120}, 75%, ${32 + cat.normalized_ig * 18}%)`,
+                    bgcolor: redGreyGreenGradient(cat.normalized_ig),
                   },
                 }}
               />

@@ -10,10 +10,9 @@ interface SimilarVotersCardProps {
   voters: SimilarVoterOut[];
   color: string;
   showSign?: boolean;
-  getGroupColor?: (voterId: number) => string | undefined;
 }
 
-const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: votersList, color, showSign, getGroupColor}) => {
+const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: votersList, color, showSign}) => {
   const navigate = useNavigate();
   if (!votersList || votersList.length === 0) return null;
   return (
@@ -24,7 +23,7 @@ const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: vot
         </Typography>
         <Box>
           {votersList.map((p) => {
-            const barColor = getGroupColor?.(p.id) || (showSign && p.similarity < 0 ? "#E15759" : color);
+            const barColor = p.group_color || (showSign && p.similarity < 0 ? "#E15759" : color);
             return (
               <Box
                 key={p.id}

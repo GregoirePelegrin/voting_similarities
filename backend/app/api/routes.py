@@ -336,22 +336,32 @@ async def get_voter(
     similar = voter_sims[:5]
     dissimilar = list(reversed(voter_sims[-5:])) if len(voter_sims) >= 5 else voter_sims
 
-    # Batch fetch voter names
+    # Batch fetch voter names and groups
     all_sim_ids = {s[0] for s in similar + dissimilar}
     voter_map = {}
     if all_sim_ids:
         p_result = await db.execute(
-            select(Voter.id, Voter.firstname, Voter.lastname).where(
+            select(Voter.id, Voter.firstname, Voter.lastname, Voter.group_id).where(
                 Voter.id.in_(all_sim_ids)
             )
         )
-        voter_map = {r[0]: (r[1], r[2]) for r in p_result.all()}
+        voter_map = {r[0]: (r[1], r[2], r[3]) for r in p_result.all()}
+
+    # Batch fetch group colors for the voters' groups
+    all_group_ids = {v[2] for v in voter_map.values()}
+    group_color_map = {}
+    if all_group_ids:
+        g_result = await db.execute(
+            select(Group.id, Group.color).where(Group.id.in_(all_group_ids))
+        )
+        group_color_map = dict(g_result.all())
 
     similar_voters = [
         SimilarVoterOut(
             id=oid,
             firstname=voter_map[oid][0],
             lastname=voter_map[oid][1],
+            group_color=group_color_map.get(voter_map[oid][2], "#808080"),
             similarity=sim,
             confidence=conf,
             shared_count=sc,
@@ -364,6 +374,7 @@ async def get_voter(
             id=oid,
             firstname=voter_map[oid][0],
             lastname=voter_map[oid][1],
+            group_color=group_color_map.get(voter_map[oid][2], "#808080"),
             similarity=sim,
             confidence=conf,
             shared_count=sc,
