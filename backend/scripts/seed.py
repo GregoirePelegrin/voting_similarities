@@ -1,11 +1,11 @@
 """Seed script: generate realistic sample data.
 
-Creates ~12 groups, ~12 categories, ~100 questions, ~700 voters,
+Creates ~12 groups, ~12 categories, ~100 votes, ~700 voters,
 and answers with realistic correlated voting patterns.
 
-- Each group gets a latent voting profile (probability of voting Yes per question)
+- Each group gets a latent voting profile (probability of voting Yes per vote)
 - Individual members draw from their group profile with noise
-- Some questions are controversial (near 50/50)
+- Some votes are controversial (near 50/50)
 - Answer sparsity: each person has a random response rate (30-80%)
 """
 
@@ -17,11 +17,12 @@ import numpy as np
 from app.config import settings
 from app.models import (
     Answer,
+    Base,
     Category,
     Commission,
     Group,
     Voter,
-    Question,
+    Vote,
     Role,
 )
 from sqlalchemy import func, select
@@ -30,7 +31,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 SEED = 42
 NUM_GROUPS = 12
 NUM_CATEGORIES = 12
-NUM_QUESTIONS = 100
+NUM_VOTES = 100
 NUM_VOTERS = 700
 MIN_RESPONSE_RATE = 0.30
 MAX_RESPONSE_RATE = 0.80
@@ -80,7 +81,7 @@ GROUP_COLORS = [
     "#8CD17D",
 ]
 
-QUESTION_TEMPLATES = [
+VOTE_TEMPLATES = [
     "Should {topic} be prioritized in the next strategic plan?",
     "Is the current approach to {topic} sufficient?",
     "Should we increase funding for {topic}?",
@@ -100,6 +101,9 @@ async def seed_data():
 
     engine = create_async_engine(settings.DATABASE_URL, echo=False)
 
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
 
     async with session_factory() as session:
@@ -107,7 +111,7 @@ async def seed_data():
             (Voter, "voters"),
             (Group, "groups"),
             (Category, "categories"),
-            (Question, "questions"),
+            (Vote, "votes"),
         ]:
             count = (await session.execute(
                 select(func.count()).select_from(table)
@@ -150,45 +154,45 @@ async def seed_data():
         session.add_all(commissions)
         await session.flush()
 
-        # --- Questions ---
-        # Each question belongs to 1-3 categories
-        questions = []
-        for _i in range(NUM_QUESTIONS):
-            template = rng.choice(QUESTION_TEMPLATES)
+        # --- Votes ---
+        # Each vote belongs to 1-3 categories
+        votes = []
+        for _i in range(NUM_VOTES):
+            template = rng.choice(VOTE_TEMPLATES)
             num_cats = rng.choices([1, 2, 3], weights=[5, 3, 1])[0]
             chosen_cats = rng.sample(categories, num_cats)
             topic = rng.choice([c.name for c in chosen_cats])
             text = template.format(topic=topic)
-            q = Question(text=text)
-            q.categories = chosen_cats
-            questions.append(q)
+            v = Vote(text=text)
+            v.categories = chosen_cats
+            votes.append(v)
 
-        session.add_all(questions)
+        session.add_all(votes)
         await session.flush()
 
         # --- Group latent profiles ---
-        # For each group, generate a probability of voting Yes per question.
+        # For each group, generate a probability of voting Yes per vote.
         # Some groups are more "pro" on certain categories, others more "anti".
         # This creates realistic intra-group similarity.
-        group_profiles = np_rng.uniform(0.2, 0.8, size=(NUM_GROUPS, NUM_QUESTIONS))
+        group_profiles = np_rng.uniform(0.2, 0.8, size=(NUM_GROUPS, NUM_VOTES))
 
         # Add category-level bias: each group has a stance per category
-        # that shifts all questions in that category
+        # that shifts all votes in that category
         cat_bias = np_rng.uniform(-0.3, 0.3, size=(NUM_GROUPS, NUM_CATEGORIES))
         for g_idx in range(NUM_GROUPS):
-            for q_idx, q in enumerate(questions):
-                cat_ids = [c.id for c in q.categories]
+            for v_idx, v in enumerate(votes):
+                cat_ids = [c.id for c in v.categories]
                 avg_bias = np.mean([cat_bias[g_idx, cid - 1] for cid in cat_ids])
-                group_profiles[g_idx, q_idx] = np.clip(
-                    group_profiles[g_idx, q_idx] + avg_bias, 0.05, 0.95
+                group_profiles[g_idx, v_idx] = np.clip(
+                    group_profiles[g_idx, v_idx] + avg_bias, 0.05, 0.95
                 )
 
-        # Make some questions controversial (near 50/50) by centering
-        # the group profiles around 0.5 for those questions
-        controversial_qs = rng.sample(range(NUM_QUESTIONS), k=int(NUM_QUESTIONS * 0.15))
-        for q_idx in controversial_qs:
-            group_profiles[:, q_idx] = np.clip(
-                group_profiles[:, q_idx] * 0.4 + 0.3, 0.1, 0.9
+        # Make some votes controversial (near 50/50) by centering
+        # the group profiles around 0.5 for those votes
+        controversial_vs = rng.sample(range(NUM_VOTES), k=int(NUM_VOTES * 0.15))
+        for v_idx in controversial_vs:
+            group_profiles[:, v_idx] = np.clip(
+                group_profiles[:, v_idx] * 0.4 + 0.3, 0.1, 0.9
             )
 
         # --- People ---
@@ -244,7 +248,7 @@ async def seed_data():
                 voter_idx += 1
 
                 # Per-voter noise: shift the group profile slightly
-                personal_noise = np_rng.normal(0, 0.15, size=NUM_QUESTIONS)
+                personal_noise = np_rng.normal(0, 0.15, size=NUM_VOTES)
                 personal_probs = np.clip(
                     group_profiles[g_idx] + personal_noise, 0.05, 0.95
                 )
@@ -252,16 +256,16 @@ async def seed_data():
                 # Response rate for this voter
                 response_rate = rng.uniform(MIN_RESPONSE_RATE, MAX_RESPONSE_RATE)
 
-                for q_idx, question in enumerate(questions):
+                for v_idx, vote in enumerate(votes):
                     if rng.random() > response_rate:
                         continue
-                    value = bool(np_rng.random() < personal_probs[q_idx])
+                    value = bool(np_rng.random() < personal_probs[v_idx])
                     days_offset = rng.randint(0, 365)
                     answered_at = base_date + timedelta(days=days_offset)
                     all_answers.append(
                         Answer(
                             voter_id=voter.id,
-                            question_id=question.id,
+                            vote_id=vote.id,
                             value=value,
                             answered_at=answered_at,
                         )
@@ -270,23 +274,23 @@ async def seed_data():
         session.add_all(all_answers)
         await session.flush()
 
-        # --- Compute has_passed for each question ---
-        for q in questions:
+        # --- Compute has_passed for each vote ---
+        for v in votes:
             yes_count = (
                 await session.execute(
                     select(func.count())
                     .select_from(Answer)
-                    .where(Answer.question_id == q.id, Answer.value)
+                    .where(Answer.vote_id == v.id, Answer.value)
                 )
             ).scalar()
             no_count = (
                 await session.execute(
                     select(func.count())
                     .select_from(Answer)
-                    .where(Answer.question_id == q.id, ~Answer.value)
+                    .where(Answer.vote_id == v.id, ~Answer.value)
                 )
             ).scalar()
-            q.has_passed = (yes_count or 0) > (no_count or 0)
+            v.has_passed = (yes_count or 0) > (no_count or 0)
 
         await session.commit()
 
@@ -295,8 +299,8 @@ async def seed_data():
         n_groups = result.scalar()
         result = await session.execute(select(func.count()).select_from(Voter))
         n_voters = result.scalar()
-        result = await session.execute(select(func.count()).select_from(Question))
-        n_questions = result.scalar()
+        result = await session.execute(select(func.count()).select_from(Vote))
+        n_votes = result.scalar()
         result = await session.execute(select(func.count()).select_from(Category))
         n_categories = result.scalar()
         result = await session.execute(select(func.count()).select_from(Answer))
@@ -305,11 +309,11 @@ async def seed_data():
         print("Seeded database with:")
         print(f"  Groups:    {n_groups}")
         print(f"  Voters:    {n_voters}")
-        print(f"  Questions: {n_questions}")
+        print(f"  Votes:     {n_votes}")
         print(f"  Categories:{n_categories}")
         print(f"  Answers:   {n_answers}")
         print(f"  Avg answers/voter: {n_answers / n_voters:.1f}")
-        print(f"  Avg response rate:  {n_answers / (n_voters * n_questions) * 100:.1f}%")
+        print(f"  Avg response rate:  {n_answers / (n_voters * n_votes) * 100:.1f}%")
 
     await engine.dispose()
 

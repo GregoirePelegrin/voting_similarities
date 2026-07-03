@@ -21,6 +21,7 @@ interface VotersScatterProps {
   points: EmbeddingPointOut[];
   barycenters: BarycenterOut[];
   stress: number;
+  categoriesLabel?: string;
 }
 
 const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
@@ -48,7 +49,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycenters, stress}) => {
+const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycenters, stress, categoriesLabel}) => {
   const navigate = useNavigate();
 
   const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
@@ -63,6 +64,11 @@ const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycente
           sx={{bgcolor: stressColor + "20", color: stressColor, borderColor: stressColor + "60"}}
           variant="outlined"
         />
+        {categoriesLabel && (
+          <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+            {categoriesLabel}
+          </Typography>
+        )}
       </Box>
       <ResponsiveContainer width="100%" height={500}>
         <ScatterChart margin={{top: 10, right: 20, bottom: 10, left: 20}}>

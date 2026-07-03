@@ -10,17 +10,23 @@ interface SimilarVotersCardProps {
   voters: SimilarVoterOut[];
   color: string;
   showSign?: boolean;
+  categoriesLabel?: string;
 }
 
-const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: votersList, color, showSign}) => {
+const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: votersList, color, showSign, categoriesLabel}) => {
   const navigate = useNavigate();
   if (!votersList || votersList.length === 0) return null;
   return (
     <Card sx={{height: "100%"}}>
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2, color}}>
-          {title}
-        </Typography>
+        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
+          <Typography variant="h6" sx={{color}}>{title}</Typography>
+          {categoriesLabel && (
+            <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+              {categoriesLabel}
+            </Typography>
+          )}
+        </Box>
         <Box>
           {votersList.map((p) => {
             const barColor = p.group_color || (showSign && p.similarity < 0 ? "#E15759" : color);

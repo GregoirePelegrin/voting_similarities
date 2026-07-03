@@ -72,13 +72,14 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('group_id', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('categories_key', sa.String(length=50), nullable=True),
     sa.Column('x', sa.Float(), nullable=False),
     sa.Column('y', sa.Float(), nullable=False),
     sa.Column('stress', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
     sa.ForeignKeyConstraint(['group_id'], ['groups.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('group_id', 'category_id')
+    sa.UniqueConstraint('group_id', 'category_id', 'categories_key')
     )
     op.create_table('group_group_similarity',
     sa.Column('group_a_id', sa.Integer(), nullable=False),
@@ -122,13 +123,14 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('voter_id', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('categories_key', sa.String(length=50), nullable=True),
     sa.Column('x', sa.Float(), nullable=False),
     sa.Column('y', sa.Float(), nullable=False),
     sa.Column('stress', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
     sa.ForeignKeyConstraint(['voter_id'], ['voters.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('voter_id', 'category_id')
+    sa.UniqueConstraint('voter_id', 'category_id', 'categories_key')
     )
     op.create_table('voter_group_similarity',
     sa.Column('voter_id', sa.Integer(), nullable=False),

@@ -1,6 +1,6 @@
 import UiStore from "./ui-store";
 import CategoriesStore from "./categories-store";
-import QuestionsStore from "./questions-store";
+import VotesStore from "./votes-store";
 import VotersStore from "./voters-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
@@ -10,7 +10,7 @@ import {ERROR_DIALOG} from "../constants/fr";
 class RootStore {
   uiStore: UiStore;
   categoriesStore: CategoriesStore;
-  questionsStore: QuestionsStore;
+  votesStore: VotesStore;
   votersStore: VotersStore;
   groupsStore: GroupsStore;
   embeddingsStore: EmbeddingsStore;
@@ -19,7 +19,7 @@ class RootStore {
   constructor() {
     this.uiStore = new UiStore();
     this.categoriesStore = new CategoriesStore(this.uiStore);
-    this.questionsStore = new QuestionsStore(this.uiStore);
+    this.votesStore = new VotesStore(this.uiStore);
     this.votersStore = new VotersStore(this.uiStore);
     this.groupsStore = new GroupsStore(this.uiStore);
     this.embeddingsStore = new EmbeddingsStore(this.uiStore);

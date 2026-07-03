@@ -10,14 +10,20 @@ import GroupsScatter from "../components/map/groups-scatter";
 import MethodologyPanel from "../components/map/methodology-panel";
 
 const MapPage: React.FC = observer(() => {
-  const {embeddingsStore, uiStore, similarityConfig} = rootStore;
+  const {embeddingsStore, uiStore, categoriesStore, similarityConfig} = rootStore;
 
   useEffect(() => {
-    embeddingsStore.fetchVotersEmbedding(uiStore.selectedCategory);
-    embeddingsStore.fetchGroupsEmbedding(uiStore.selectedCategory);
-  }, [uiStore.selectedCategory, uiStore.retryVersion]);
+    embeddingsStore.fetchVotersEmbedding(uiStore.selectedCategories);
+    embeddingsStore.fetchGroupsEmbedding(uiStore.selectedCategories);
+  }, [uiStore.categoriesKey, uiStore.retryVersion]);
 
   const isLoading = !embeddingsStore.votersEmbedding && !embeddingsStore.groupsEmbedding;
+  const categoriesLabel = (() => {
+    const names = uiStore.selectedCategories
+      .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
+      .filter((n): n is string => !!n);
+    return names.length > 0 ? `Sur les questions ${names.join(" ET ")}` : undefined;
+  })();
 
   return (
     <AnimatedPage>
@@ -35,6 +41,7 @@ const MapPage: React.FC = observer(() => {
                 points={embeddingsStore.votersEmbedding.points}
                 barycenters={embeddingsStore.votersEmbedding.barycenters}
                 stress={embeddingsStore.votersEmbedding.stress}
+                categoriesLabel={categoriesLabel}
               />
             ) : (
               <CardSkeleton/>
@@ -46,6 +53,7 @@ const MapPage: React.FC = observer(() => {
               <GroupsScatter
                 points={embeddingsStore.groupsEmbedding.points}
                 stress={embeddingsStore.groupsEmbedding.stress}
+                categoriesLabel={categoriesLabel}
               />
             ) : (
               <CardSkeleton/>

@@ -7,10 +7,12 @@ export function getGroups(): Promise<GroupListOut[]> {
 
 export function getGroup(
   id: number,
-  category?: number | null
+  categories?: number[]
 ): Promise<GroupDetailOut> {
   const params = new URLSearchParams();
-  if (category != null) params.set("category", String(category));
+  if (categories && categories.length > 0) {
+    categories.forEach(c => params.append("categories", String(c)));
+  }
   const qs = params.toString();
   return apiFetch(`/groups/${id}${qs ? "?" + qs : ""}`);
 }

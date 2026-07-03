@@ -1,10 +1,10 @@
 export const NAV = {
-  TITLE: "Similitudes de Vote",
-  MAP: "Carte",
-  VOTERS: "Votants",
-  GROUPS: "Groupes",
   CATEGORIES: "Catégories",
-  QUESTIONS: "Questions",
+  GROUPS: "Groupes",
+  MAP: "Carte",
+  TITLE: "Similitudes de Vote",
+  VOTERS: "Votants",
+  VOTES: "Votes",
 };
 
 export const ERROR_DIALOG = {
@@ -14,8 +14,13 @@ export const ERROR_DIALOG = {
   API_CONNECTION: "API non disponible. Assurez-vous que le serveur est en marche"
 };
 
+export const EMBEDDINGS = {
+  NO_DATA_BODY:
+    "Ces catégories ne partagent que {count} vote(s) commun(s), ce qui est insuffisant pour une analyse pertinente.",
+};
+
 export const CATEGORY_FILTER = {
-  LABEL: "Catégorie",
+  LABEL: "Catégories",
   ALL: "Toutes les catégories",
 };
 
@@ -51,7 +56,7 @@ export const ANSWER_GRID = {
 };
 
 export const SIMILAR_VOTERS = {
-  SHARED: "partagées",
+  SHARED: "partagés",
 };
 
 export const GROUP_COMPARISON = {
@@ -59,7 +64,7 @@ export const GROUP_COMPARISON = {
   TOOLTIP:
     "Mesure la similarité du profil de vote de ce votant avec chaque groupe. " +
     "La similarité est basée sur un chevauchement asymétrique pondéré avec lissage bayésien. " +
-    "La confiance reflète le nombre de questions communes auxquelles il a été répondu.",
+    "La confiance reflète le nombre de votes communs auxquels il a été répondu.",
   SIMILARITY: "Similarité",
   CONFIDENCE: "Confiance"
 };
@@ -126,15 +131,15 @@ export const GROUP_DETAIL = {
   COHESION: "Cohésion",
 };
 
-export const QUESTIONS_TABLE = {
+export const VOTES_TABLE = {
   ID: "ID",
-  QUESTION: "Question",
+  VOTE: "Vote",
   PASSED: "Adopté",
   NOT_PASSED: "Rejeté",
   CATEGORIES: "Catégories",
 };
 
-export const QUESTION_DETAIL = {
+export const VOTE_DETAIL = {
   PASSED: "Adopté",
   NOT_PASSED: "Rejeté",
   GROUP_BREAKDOWN: "Répartition par groupe",
@@ -194,8 +199,8 @@ export const METHODOLOGY = {
     "parfaitement les relations de similarité entre des centaines de votants.",
   LIMITS_BODY_STRESS: "Le **stress** mesure cette perte d'information.",
   LIMITS_BODY_SAME_QUESTIONS:
-    "Par ailleurs, la similarité entre deux votants est calculée uniquement sur les questions " +
-    "auxquelles **tous deux ont répondu**. Les motions sans réponse sont ignorées dans leur " +
+    "Par ailleurs, la similarité entre deux votants est calculée uniquement sur les votes " +
+    "auxquels **tous deux ont répondu**. Les motions sans réponse sont ignorées dans leur " +
     "score.",
 
   // ── Partie 2 : technique ──
@@ -210,18 +215,18 @@ export const METHODOLOGY = {
   YES_YES_LABEL: "Oui-Oui",
   NO_NO_LABEL: "Non-Non",
   DISAGREE_LABEL: "Désaccord",
-  YES_YES_DESC: "questions où les deux ont voté Oui — poids {w_yes}",
-  NO_NO_DESC: "questions où les deux ont voté Non — poids {w_no}",
-  DISAGREE_DESC: "questions où ils ont voté différemment — pénalité −{w_mismatch}",
+  YES_YES_DESC: "votes où les deux ont voté Oui — poids {w_yes}",
+  NO_NO_DESC: "votes où les deux ont voté Non — poids {w_no}",
+  DISAGREE_DESC: "votes où ils ont voté différemment — pénalité −{w_mismatch}",
 
   SHRINKAGE_HEADING: "Lissage bayésien (shrinkage)",
   SHRINKAGE_BODY:
     "Les paires de votants qui partagent peu de questions ont un score peu fiable. Un **lissage " +
     "bayésien** (shrinkage) mélange leur score brut avec la similarité moyenne de toutes les " +
     "paires, selon la formule :\n\n" +
-    "confiance = questions partagées / (questions partagées + 10)\n" +
+    "confiance = votes partagés / (votes partagés + 10)\n" +
     "score lissé = confiance × score brut + (1 − confiance) × moyenne globale\n\n" +
-    "Avec m = {m}, pour {m} questions partagées le score brut compte pour 50 % ; pour 90 questions, " +
+    "Avec m = {m}, pour {m} votes partagés le score brut compte pour 50 % ; pour 90 questions, " +
     "il compte pour 90 %. Cela évite des extrêmes artificiels entre votants qui se chevauchent " +
     "à peine.",
 
@@ -248,7 +253,7 @@ export const METHODOLOGY = {
   PER_CATEGORY_HEADING: "Vues par catégorie",
   PER_CATEGORY_BODY:
     "Lorsque vous sélectionnez une catégorie, un MDS distinct est calculé avec uniquement " +
-    "les questions de cette catégorie. La disposition peut changer considérablement d'une " +
+    "les votes de cette catégorie. La disposition peut changer considérablement d'une " +
     "catégorie à l'autre — des votants proches sur un sujet peuvent s'éloigner sur un autre.",
 };
 
@@ -266,7 +271,7 @@ export const METRICS = {
         "Le gain d'information mesure à quel point connaître les réponses d'un votant dans " +
         "une catégorie donnée réduit l'incertitude sur son appartenance à un groupe. " +
         "Il est calculé via l'information mutuelle normalisée (NMI) entre la variable " +
-        "« catégorie de question » et la variable « groupe d'appartenance ». " +
+        "« catégorie de vote » et la variable « groupe d'appartenance ». " +
         "Plus le score est élevé, plus la catégorie est discriminante : les groupes " +
         "ont tendance à voter différemment sur ces questions. " +
         "La variance indique la dispersion de ce pouvoir discriminant entre les groupes.",
@@ -278,7 +283,7 @@ export const METRICS = {
       body:
         "La cohésion mesure la similarité moyenne des votes entre les membres d'un même groupe. " +
         "Un score de 100 % signifie que tous les membres votent exactement de la même manière " +
-        "sur toutes les questions. Un score faible révèle des divergences internes au groupe.",
+        "sur tous les votes. Un score faible révèle des divergences internes au groupe.",
     },
   },
   VOTER_DETAIL: {
@@ -289,13 +294,13 @@ export const METRICS = {
         "et la moyenne du groupe. La similarité est asymétrique : on pondère davantage " +
         "les accords « Oui‑Oui » que les « Non‑Non », car deux « oui » sur une même motion " +
         "reflètent une conviction partagée plus forte. " +
-        "Un lissage bayésien (shrinkage) fiabilise le score quand le nombre de questions " +
-        "communes est faible. La confiance indique la proportion de questions partagées.",
+        "Un lissage bayésien (shrinkage) fiabilise le score quand le nombre de votes " +
+        "communs est faible. La confiance indique la proportion de votes partagés.",
     },
     CATEGORY_ALIGNMENT: {
       heading: "Alignement par catégorie",
       body:
-        "Compare, pour chaque catégorie de questions, la similarité du votant avec son " +
+        "Compare, pour chaque catégorie de votes, la similarité du votant avec son " +
         "propre groupe par rapport à sa similarité moyenne avec les autres groupes. " +
         "Un alignement positif signifie que le votant vote davantage comme son groupe " +
         "que comme les autres groupes. Négatif, il s'en démarque.",

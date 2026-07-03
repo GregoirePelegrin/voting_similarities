@@ -30,9 +30,9 @@ class VotersStore {
     }
   }
 
-  async fetchVoter(id: number, category?: number | null) {
+  async fetchVoter(id: number, categories?: number[]) {
     try {
-      const data = await getVoter(id, category ?? undefined);
+      const data = await getVoter(id, categories);
       runInAction(() => {
         this.selectedVoter = data;
       });

@@ -9,9 +9,10 @@ import {SortMode} from "../../stores/ui-store";
 interface SimilarGroupsListProps {
   groups: SimilarGroupOut[];
   sortMode?: SortMode;
+  categoriesLabel?: string;
 }
 
-const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({groups, sortMode = "value"}) => {
+const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({groups, sortMode = "value", categoriesLabel}) => {
   const navigate = useNavigate();
   if (!groups || groups.length === 0) return null;
   const sorted = [...groups].sort((a, b) =>
@@ -20,7 +21,14 @@ const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({groups, sortMode =
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>{SIMILAR_GROUPS.HEADING}</Typography>
+        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
+          <Typography variant="h6">{SIMILAR_GROUPS.HEADING}</Typography>
+          {categoriesLabel && (
+            <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+              {categoriesLabel}
+            </Typography>
+          )}
+        </Box>
         <Box>
           {sorted.map((g) => (
             <Box key={g.id} sx={{mb: 1.5, cursor: "pointer"}} onClick={() => navigate(`/groups/${g.id}`)}>

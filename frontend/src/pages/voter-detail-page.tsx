@@ -18,21 +18,20 @@ import {DATA_COLORS} from "../theme";
 
 const VoterDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {votersStore, uiStore} = rootStore;
+  const {votersStore, uiStore, categoriesStore} = rootStore;
   const voterId = Number(id);
 
   useEffect(() => {
     if (voterId) {
-      uiStore.setCategory(null);
       votersStore.clearVoterDetail();
     }
   }, [voterId]);
 
   useEffect(() => {
     if (voterId) {
-      votersStore.fetchVoter(voterId, uiStore.selectedCategory);
+      votersStore.fetchVoter(voterId, uiStore.selectedCategories);
     }
-  }, [voterId, uiStore.selectedCategory, uiStore.retryVersion]);
+  }, [voterId, uiStore.categoriesKey, uiStore.retryVersion]);
 
   useEffect(() => {
     if (voterId) {
@@ -41,6 +40,12 @@ const VoterDetailPage: React.FC = observer(() => {
   }, [voterId, uiStore.retryVersion]);
 
   const voter = votersStore.selectedVoter;
+  const categoriesLabel = (() => {
+    const names = uiStore.selectedCategories
+      .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
+      .filter((n): n is string => !!n);
+    return names.length > 0 ? `Sur les questions ${names.join(" ET ")}` : undefined;
+  })();
 
   if (!voter) {
     return (
@@ -103,6 +108,7 @@ const VoterDetailPage: React.FC = observer(() => {
             title={VOTER_DETAIL.MOST_SIMILAR}
             voters={voter.similar_voters}
             color={DATA_COLORS.primary}
+            categoriesLabel={categoriesLabel}
           />
         </Grid>
         <Grid size={{xs: 12, md: 6}}>
@@ -111,10 +117,11 @@ const VoterDetailPage: React.FC = observer(() => {
             voters={voter.dissimilar_voters}
             color={DATA_COLORS.negative}
             showSign
+            categoriesLabel={categoriesLabel}
           />
         </Grid>
         <Grid size={{xs: 12}}>
-          <GroupComparisonBars comparisons={voter.group_comparisons} sortMode={uiStore.sortMode}/>
+          <GroupComparisonBars comparisons={voter.group_comparisons} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
         </Grid>
         <Grid size={{xs: 12}}>
           <CategoryAlignmentCard alignments={votersStore.categoryAlignment} sortMode={uiStore.sortMode}/>

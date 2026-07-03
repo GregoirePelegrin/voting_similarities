@@ -53,13 +53,16 @@ def compute_group_group_matrix(
     gg_similarity: dict[tuple[int, int], float],
     cat_gg_similarity: dict[int, dict[tuple[int, int], float]] | None = None,
     category_id: int | None = None,
+    categories_key: str | None = None,
 ) -> np.ndarray:
     n = len(group_ids)
     gid_to_idx = {gid: i for i, gid in enumerate(group_ids)}
     mat = np.zeros((n, n))
     np.fill_diagonal(mat, 1.0)
 
-    if category_id is not None and cat_gg_similarity and category_id in cat_gg_similarity:
+    if categories_key is not None and cat_gg_similarity and categories_key in cat_gg_similarity:
+        source = cat_gg_similarity[categories_key]
+    elif category_id is not None and cat_gg_similarity and category_id in cat_gg_similarity:
         source = cat_gg_similarity[category_id]
     else:
         source = gg_similarity

@@ -1,9 +1,5 @@
-import asyncio
 import logging
-from pathlib import Path
 
-from alembic import command
-from alembic.config import Config as AlembicConfig
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -14,6 +10,7 @@ from app.api.health import router as health_router
 from app.api.routes import router as api_router
 from app.config import settings
 from app.database import async_session, engine
+from app.models import Base
 
 logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO))
 logger = logging.getLogger(__name__)
@@ -36,7 +33,7 @@ app.include_router(api_router)
 @app.on_event("startup")
 async def on_startup():
     _log_config()
-    await _run_migrations()
+    await _create_tables()
     await _check_database()
 
 
@@ -63,16 +60,10 @@ def _log_config():
     )
 
 
-def _run_migrations_sync():
-    backend_dir = Path(__file__).resolve().parent.parent
-    alembic_cfg = AlembicConfig(str(backend_dir / "alembic.ini"))
-    alembic_cfg.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
-    command.upgrade(alembic_cfg, "head")
-
-
-async def _run_migrations():
-    await asyncio.to_thread(_run_migrations_sync)
-    logger.info("Migrations up to date")
+async def _create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Database tables created/verified")
 
 
 async def _check_database():

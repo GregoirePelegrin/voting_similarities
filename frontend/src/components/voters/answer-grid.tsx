@@ -28,9 +28,9 @@ function getSegmentLabel(answer: AnswerOut): string {
 function getSegmentTitle(answer: AnswerOut): string {
   const label = getSegmentLabel(answer);
   const outcome = answer.has_passed ? ANSWER_GRID.PASSED : ANSWER_GRID.NOT_PASSED;
-  return answer.question_text
-    ? `${answer.question_text} — ${label}${answer.answered ? ` · ${outcome}` : ""}`
-    : `Q${answer.question_id}: ${label}`;
+  return answer.vote_text
+    ? `${answer.vote_text} — ${label}${answer.answered ? ` · ${outcome}` : ""}`
+    : `Q${answer.vote_id}: ${label}`;
 }
 
 const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
@@ -61,7 +61,7 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
         >
           {answers.map((a, idx) => (
             <Box
-              key={a.question_id}
+              key={a.vote_id}
               sx={{
                 width: 15,
                 height: 15,
@@ -72,7 +72,7 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
               }}
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
-              onClick={() => navigate(`/questions/${a.question_id}`)}
+              onClick={() => navigate(`/votes/${a.vote_id}`)}
             />
           ))}
         </Box>

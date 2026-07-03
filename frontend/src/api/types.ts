@@ -3,7 +3,7 @@ export interface CategoryOut {
   name: string;
 }
 
-export interface QuestionOut {
+export interface VoteOut {
   id: number;
   text: string;
   description: string | null;
@@ -21,7 +21,7 @@ export interface GroupAnswerStatsOut {
   yes_rate: number;
 }
 
-export interface QuestionDetailOut {
+export interface VoteDetailOut {
   id: number;
   text: string;
   description: string | null;
@@ -35,10 +35,10 @@ export interface QuestionDetailOut {
 }
 
 export interface AnswerOut {
-  question_id: number;
+  vote_id: number;
   value: boolean;
   answered: boolean;
-  question_text: string | null;
+  vote_text: string | null;
   has_passed: boolean | null;
 }
 
@@ -154,14 +154,18 @@ export interface BarycenterOut {
 export interface VotersEmbeddingOut {
   stress: number;
   category_id: number | null;
+  categories_key: string | null;
   points: EmbeddingPointOut[];
   barycenters: BarycenterOut[];
+  shared_votes?: number;
 }
 
 export interface GroupsEmbeddingOut {
   stress: number;
   category_id: number | null;
+  categories_key: string | null;
   points: EmbeddingPointOut[];
+  shared_votes?: number;
 }
 
 export interface GroupBreakdownOut {

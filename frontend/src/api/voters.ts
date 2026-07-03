@@ -16,10 +16,12 @@ export function getVoters(
 
 export function getVoter(
   id: number,
-  category?: number | null
+  categories?: number[]
 ): Promise<VoterDetailOut> {
   const params = new URLSearchParams();
-  if (category != null) params.set("category", String(category));
+  if (categories && categories.length > 0) {
+    categories.forEach(c => params.append("categories", String(c)));
+  }
   const qs = params.toString();
   return apiFetch(`/voters/${id}${qs ? "?" + qs : ""}`);
 }

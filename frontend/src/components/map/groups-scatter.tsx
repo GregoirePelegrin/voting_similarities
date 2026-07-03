@@ -20,6 +20,7 @@ import {DATA_COLORS} from "../../theme";
 interface GroupsScatterProps {
   points: EmbeddingPointOut[];
   stress: number;
+  categoriesLabel?: string;
 }
 
 const CustomTooltip: React.FC<any> = ({active, payload}) => {
@@ -35,7 +36,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress}) => {
+const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress, categoriesLabel}) => {
   const navigate = useNavigate();
 
   const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
@@ -50,6 +51,11 @@ const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress}) 
           sx={{bgcolor: stressColor + "20", color: stressColor, borderColor: stressColor + "60"}}
           variant="outlined"
         />
+        {categoriesLabel && (
+          <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+            {categoriesLabel}
+          </Typography>
+        )}
       </Box>
       <ResponsiveContainer width="100%" height={350}>
         <ScatterChart margin={{top: 10, right: 20, bottom: 10, left: 20}}>

@@ -14,9 +14,9 @@ class EmbeddingsStore {
     makeAutoObservable(this);
   }
 
-  async fetchVotersEmbedding(category?: number | null) {
+  async fetchVotersEmbedding(categories?: number[]) {
     try {
-      const data = await getVotersEmbeddings(category);
+      const data = await getVotersEmbeddings(categories);
       runInAction(() => {
         this.votersEmbedding = data;
       });
@@ -25,9 +25,9 @@ class EmbeddingsStore {
     }
   }
 
-  async fetchGroupsEmbedding(category?: number | null) {
+  async fetchGroupsEmbedding(categories?: number[]) {
     try {
-      const data = await getGroupsEmbeddings(category);
+      const data = await getGroupsEmbeddings(categories);
       runInAction(() => {
         this.groupsEmbedding = data;
       });

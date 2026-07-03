@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import itertools
 import os
 import sys
 
@@ -26,10 +27,13 @@ from app.similarity import (
     compute_cohesivity_records,
     compute_group_group_records,
     compute_pairwise,
+    compute_pairwise_for_combination,
     compute_per_category_pairwise,
     compute_voter_group_records,
     compute_voter_voter_data,
+    get_intersection_vote_indices,
     load_answer_data,
+    make_categories_key,
 )
 from sqlalchemy import delete, insert, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -40,6 +44,7 @@ CHUNK_SIZE = 5000
 def _vv_data_to_rows(vv_data, offset, size):
     end = min(offset + size, len(vv_data.voter_a_ids))
     has_cats = bool(vv_data.cat_similarities)
+    has_cat_shares = bool(vv_data.cat_shared_counts)
     rows = []
     for k in range(offset, end):
         row = {
@@ -55,8 +60,27 @@ def _vv_data_to_rows(vv_data, offset, size):
                 str(cat_id): float(cat_arr[k])
                 for cat_id, cat_arr in vv_data.cat_similarities.items()
             }
+        if has_cat_shares:
+            row["per_category_shared"] = {
+                str(cat_id): int(cat_arr[k])
+                for cat_id, cat_arr in vv_data.cat_shared_counts.items()
+            }
         rows.append(row)
     return rows
+
+
+def enumerate_category_combinations(data) -> list[list[int]]:
+    cat_ids = sorted(data.category_votes.keys())
+    combos = [[cid] for cid in cat_ids]
+    for a, b in itertools.combinations(cat_ids, 2):
+        inter = get_intersection_vote_indices(data, [a, b])
+        if len(inter) >= 2:
+            combos.append([a, b])
+    for a, b, c in itertools.combinations(cat_ids, 3):
+        inter = get_intersection_vote_indices(data, [a, b, c])
+        if len(inter) >= 2:
+            combos.append([a, b, c])
+    return combos
 
 
 async def run(config: SimilarityConfig):
@@ -69,7 +93,7 @@ async def run(config: SimilarityConfig):
     async with session_factory() as session:
         print("Loading answer data...")
         data = await load_answer_data(session)
-        print(f"  {len(data.voter_ids)} voters, {len(data.question_ids)} questions")
+        print(f"  {len(data.voter_ids)} voters, {len(data.vote_ids)} votes")
 
         print("Computing pairwise similarity...")
         raw_sim, shared_count = compute_pairwise(
@@ -81,8 +105,23 @@ async def run(config: SimilarityConfig):
         print(f"  Global mean raw similarity: {global_mean:.4f}")
 
         print("Computing per-category similarities...")
-        cat_similarities = compute_per_category_pairwise(data, config)
+        cat_similarities, cat_shared_counts = compute_per_category_pairwise(data, config)
         print(f"  {len(cat_similarities)} categories")
+
+        print("Computing multi-category combinations...")
+        all_combos = enumerate_category_combinations(data)
+        combo_count = 0
+        for combo in all_combos:
+            if len(combo) <= 1:
+                continue
+            key = make_categories_key(combo)
+            sim, shared = compute_pairwise_for_combination(data, combo, config)
+            if sim is None:
+                continue
+            cat_similarities[key] = sim
+            cat_shared_counts[key] = shared
+            combo_count += 1
+        print(f"  {combo_count} multi-category combinations")
 
         print("Clearing existing similarity data...")
         await session.execute(delete(VoterVoterSim))
@@ -93,7 +132,8 @@ async def run(config: SimilarityConfig):
 
         print("Storing voter-voter similarity...")
         vv_data = compute_voter_voter_data(
-            data, raw_sim, similarity, shared_count, confidence, cat_similarities
+            data, raw_sim, similarity, shared_count, confidence, cat_similarities,
+            cat_shared_counts=cat_shared_counts,
         )
         n_vv = len(vv_data.voter_a_ids)
         print(f"  {n_vv} pairs")
@@ -103,7 +143,7 @@ async def run(config: SimilarityConfig):
         await session.flush()
 
         print("Storing voter-group similarity...")
-        vg_records = compute_voter_group_records(data, similarity, cat_similarities, config)
+        vg_records = compute_voter_group_records(data, similarity, cat_similarities, cat_shared_counts, config)
         print(f"  {len(vg_records)} pairs")
         for i in range(0, len(vg_records), CHUNK_SIZE):
             await session.execute(insert(VoterGroupSim), vg_records[i : i + CHUNK_SIZE])
@@ -148,14 +188,18 @@ async def run(config: SimilarityConfig):
             await session.execute(insert(VoterEmbedding), ve_rows[i : i + CHUNK_SIZE])
         await session.flush()
 
-        for cat_id, cat_sim in cat_similarities.items():
-            print(f"  Voter embedding for category {cat_id}...")
+        for cat_key, cat_sim in cat_similarities.items():
+            is_combo = isinstance(cat_key, str)
+            categories_key_val = make_categories_key([cat_key]) if not is_combo else cat_key
+            label = categories_key_val if is_combo else f"category {cat_key}"
+            print(f"  Voter embedding for {label}...")
             cat_coords, cat_stress = classical_mds(cat_sim)
             print(f"    stress: {cat_stress:.4f}")
             cat_ve_rows = [
                 {
                     "voter_id": int(voter_ids[i]),
-                    "category_id": cat_id,
+                    "category_id": cat_key if not is_combo else None,
+                    "categories_key": categories_key_val,
                     "x": float(cat_coords[i, 0]),
                     "y": float(cat_coords[i, 1]),
                     "stress": cat_stress,
@@ -190,14 +234,18 @@ async def run(config: SimilarityConfig):
         await session.execute(insert(GroupEmbedding), ge_rows)
         await session.flush()
 
-        for cat_id in cat_similarities:
-            print(f"  Group embedding for category {cat_id}...")
+        for cat_key in cat_similarities:
+            is_combo = isinstance(cat_key, str)
+            categories_key_val = str(cat_key) if not is_combo else cat_key
+            label = categories_key_val if is_combo else f"category {cat_key}"
+            print(f"  Group embedding for {label}...")
+            per_cat_lookup = str(cat_key)
             cat_gg = np.zeros((len(group_ids), len(group_ids)))
             np.fill_diagonal(cat_gg, 1.0)
             for rec in gg_records:
-                if rec["per_category"] and str(cat_id) in rec["per_category"]:
+                if rec["per_category"] and per_cat_lookup in rec["per_category"]:
                     i, j = gid_to_idx[rec["group_a_id"]], gid_to_idx[rec["group_b_id"]]
-                    val = rec["per_category"][str(cat_id)]
+                    val = rec["per_category"][per_cat_lookup]
                     cat_gg[i, j] = val
                     cat_gg[j, i] = val
             cat_g_coords, cat_g_stress = classical_mds(cat_gg)
@@ -205,7 +253,8 @@ async def run(config: SimilarityConfig):
             cat_ge_rows = [
                 {
                     "group_id": group_ids[i],
-                    "category_id": cat_id,
+                    "category_id": cat_key if not is_combo else None,
+                    "categories_key": categories_key_val,
                     "x": float(cat_g_coords[i, 0]),
                     "y": float(cat_g_coords[i, 1]),
                     "stress": cat_g_stress,
@@ -240,7 +289,7 @@ async def run(config: SimilarityConfig):
         h_group = -float(np.sum(p_group * np.log(p_group + 1e-15)))
 
         cd_rows = []
-        for cat_id in sorted(cat_similarities.keys()):
+        for cat_id in sorted(cat_id for cat_id in cat_similarities if not isinstance(cat_id, str)):
             cat_sim = cat_similarities[cat_id]
 
             predictions = np.zeros(len(data.voter_ids), dtype=int)

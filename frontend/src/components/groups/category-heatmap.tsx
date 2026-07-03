@@ -10,9 +10,10 @@ import {redGreyGreenGradient} from "../../utils/colors";
 interface CategoryHeatmapProps {
   similarGroups: SimilarGroupOut[];
   groupColor: string;
+  categoriesLabel?: string;
 }
 
-const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups, groupColor}) => {
+const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups, groupColor, categoriesLabel}) => {
   const {categoriesStore} = rootStore;
 
   const rows = similarGroups
@@ -20,7 +21,9 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
       const catSims: Record<string, number> = {};
       if (sg.per_category) {
         for (const [cid, sim] of Object.entries(sg.per_category)) {
-          const cat = categoriesStore.categories.find((c) => c.id === Number(cid));
+          const catId = Number(cid);
+          if (!Number.isInteger(catId)) continue;
+          const cat = categoriesStore.categories.find((c) => c.id === catId);
           catSims[cat?.name ?? cid] = sim;
         }
       }
@@ -35,7 +38,14 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>{CATEGORY_HEATMAP.HEADING}</Typography>
+        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
+          <Typography variant="h6">{CATEGORY_HEATMAP.HEADING}</Typography>
+          {categoriesLabel && (
+            <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+              {categoriesLabel}
+            </Typography>
+          )}
+        </Box>
         <Box sx={{overflowX: "auto"}}>
           <Box sx={{minWidth: Math.max(600, catNames.length * 60)}}>
             <table style={{width: "100%", borderCollapse: "collapse"}}>

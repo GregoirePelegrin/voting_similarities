@@ -15,21 +15,20 @@ import {GROUP_DETAIL, SORT, METRICS} from "../constants/fr";
 
 const GroupDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {groupsStore, uiStore} = rootStore;
+  const {groupsStore, uiStore, categoriesStore} = rootStore;
   const groupId = Number(id);
 
   useEffect(() => {
     if (groupId) {
-      uiStore.setCategory(null);
       groupsStore.clearGroupDetail();
     }
   }, [groupId]);
 
   useEffect(() => {
     if (groupId) {
-      groupsStore.fetchGroup(groupId, uiStore.selectedCategory);
+      groupsStore.fetchGroup(groupId, uiStore.selectedCategories);
     }
-  }, [groupId, uiStore.selectedCategory, uiStore.retryVersion]);
+  }, [groupId, uiStore.categoriesKey, uiStore.retryVersion]);
 
   useEffect(() => {
     if (groupId) {
@@ -38,6 +37,12 @@ const GroupDetailPage: React.FC = observer(() => {
   }, [groupId, uiStore.retryVersion]);
 
   const group = groupsStore.selectedGroup;
+  const categoriesLabel = (() => {
+    const names = uiStore.selectedCategories
+      .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
+      .filter((n): n is string => !!n);
+    return names.length > 0 ? `Sur les questions ${names.join(" ET ")}` : undefined;
+  })();
 
   if (!group) {
     return (
@@ -81,10 +86,10 @@ const GroupDetailPage: React.FC = observer(() => {
           </Card>
         </Grid>
         <Grid size={{xs: 12, md: 8}}>
-          <SimilarGroupsList groups={group.similar_groups} sortMode={uiStore.sortMode}/>
+          <SimilarGroupsList groups={group.similar_groups} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
         </Grid>
         <Grid size={{xs: 12}}>
-          <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color}/>
+          <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color} categoriesLabel={categoriesLabel}/>
         </Grid>
         <Grid size={{xs: 12}}>
           <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode}/>

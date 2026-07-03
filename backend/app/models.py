@@ -19,10 +19,10 @@ class Base(DeclarativeBase):
     pass
 
 
-question_category = Table(
-    "question_category",
+vote_category = Table(
+    "vote_category",
     Base.metadata,
-    Column("question_id", Integer, ForeignKey("questions.id"), primary_key=True),
+    Column("vote_id", Integer, ForeignKey("votes.id"), primary_key=True),
     Column("category_id", Integer, ForeignKey("categories.id"), primary_key=True),
 )
 
@@ -78,31 +78,31 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False, unique=True)
 
-    questions = relationship("Question", secondary=question_category, back_populates="categories")
+    votes = relationship("Vote", secondary=vote_category, back_populates="categories")
 
 
-class Question(Base):
-    __tablename__ = "questions"
+class Vote(Base):
+    __tablename__ = "votes"
 
     id = Column(Integer, primary_key=True)
     text = Column(Text, nullable=False)
     description = Column(Text, nullable=True)
     has_passed = Column(Boolean, nullable=False, default=False)
 
-    categories = relationship("Category", secondary=question_category, back_populates="questions")
-    answers = relationship("Answer", back_populates="question")
+    categories = relationship("Category", secondary=vote_category, back_populates="votes")
+    answers = relationship("Answer", back_populates="vote")
 
 
 class Answer(Base):
     __tablename__ = "answers"
 
     voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
-    question_id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
+    vote_id = Column(Integer, ForeignKey("votes.id"), primary_key=True)
     value = Column(Boolean, nullable=False)
     answered_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     voter = relationship("Voter", back_populates="answers")
-    question = relationship("Question", back_populates="answers")
+    vote = relationship("Vote", back_populates="answers")
 
 
 class VoterVoterSim(Base):
@@ -115,6 +115,7 @@ class VoterVoterSim(Base):
     shared_count = Column(Integer, nullable=False)
     confidence = Column(Float, nullable=False)
     per_category = Column(JSON, nullable=True)
+    per_category_shared = Column(JSON, nullable=True)
 
 
 class VoterGroupSim(Base):
@@ -126,6 +127,7 @@ class VoterGroupSim(Base):
     shared_count = Column(Integer, nullable=False)
     confidence = Column(Float, nullable=False)
     per_category = Column(JSON, nullable=True)
+    per_category_shared = Column(JSON, nullable=True)
 
 
 class GroupGroupSim(Base):
@@ -151,6 +153,7 @@ class VoterEmbedding(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     voter_id = Column(Integer, ForeignKey("voters.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    categories_key = Column(String(50), nullable=True)
     x = Column(Float, nullable=False)
     y = Column(Float, nullable=False)
     stress = Column(Float, nullable=False)
@@ -162,6 +165,7 @@ class GroupEmbedding(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    categories_key = Column(String(50), nullable=True)
     x = Column(Float, nullable=False)
     y = Column(Float, nullable=False)
     stress = Column(Float, nullable=False)

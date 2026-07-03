@@ -16,9 +16,9 @@ from app.models import (
     VoterEmbedding,
     VoterGroupSim,
     VoterVoterSim,
-    Question,
+    Vote,
     Role,
-    question_category,
+    vote_category,
 )
 from app.schemas import (
     AnswerOut,
@@ -38,13 +38,19 @@ from app.schemas import (
     VotersEmbeddingOut,
     VoterDetailOut,
     VoterOut,
-    QuestionDetailOut,
-    QuestionOut,
+    VoteDetailOut,
+    VoteOut,
     SimilarGroupOut,
     SimilarVoterOut,
 )
 
 router = APIRouter()
+
+
+def _build_categories_key(categories: list[int] | None) -> str | None:
+    if not categories:
+        return None
+    return "_".join(str(c) for c in sorted(categories))
 
 
 @router.get("/categories", response_model=list[CategoryOut])
@@ -53,48 +59,48 @@ async def list_categories(db: AsyncSession = Depends(get_db)):
     return result.scalars().all()
 
 
-@router.get("/questions", response_model=list[QuestionOut])
-async def list_questions(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Question).order_by(Question.id))
-    questions = result.scalars().all()
+@router.get("/votes", response_model=list[VoteOut])
+async def list_votes(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Vote).order_by(Vote.id))
+    votes = result.scalars().all()
 
-    qc_result = await db.execute(
+    vc_result = await db.execute(
         select(
-            question_category.c.question_id,
-            question_category.c.category_id,
-        ).order_by(question_category.c.question_id, question_category.c.category_id)
+            vote_category.c.vote_id,
+            vote_category.c.category_id,
+        ).order_by(vote_category.c.vote_id, vote_category.c.category_id)
     )
-    qid_to_cats: dict[int, list[int]] = {}
-    for qid, cid in qc_result.all():
-        qid_to_cats.setdefault(qid, []).append(cid)
+    vid_to_cats: dict[int, list[int]] = {}
+    for vid, cid in vc_result.all():
+        vid_to_cats.setdefault(vid, []).append(cid)
 
     return [
-        QuestionOut(
-            id=q.id,
-            text=q.text,
-            description=q.description,
-            has_passed=q.has_passed,
-            category_ids=qid_to_cats.get(q.id, []),
+        VoteOut(
+            id=v.id,
+            text=v.text,
+            description=v.description,
+            has_passed=v.has_passed,
+            category_ids=vid_to_cats.get(v.id, []),
         )
-        for q in questions
+        for v in votes
     ]
 
 
-@router.get("/questions/{question_id}", response_model=QuestionDetailOut)
-async def get_question(
-    question_id: int,
+@router.get("/votes/{vote_id}", response_model=VoteDetailOut)
+async def get_vote(
+    vote_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    question = await db.get(Question, question_id)
-    if question is None:
-        raise HTTPException(status_code=404, detail="Question not found")
+    vote = await db.get(Vote, vote_id)
+    if vote is None:
+        raise HTTPException(status_code=404, detail="Vote not found")
 
-    qc_result = await db.execute(
-        select(question_category.c.category_id).where(
-            question_category.c.question_id == question_id
+    vc_result = await db.execute(
+        select(vote_category.c.category_id).where(
+            vote_category.c.vote_id == vote_id
         )
     )
-    cat_ids = [r[0] for r in qc_result.all()]
+    cat_ids = [r[0] for r in vc_result.all()]
 
     cat_result = await db.execute(select(Category).where(Category.id.in_(cat_ids)))
     cat_names = [c.name for c in cat_result.scalars().all()]
@@ -103,14 +109,14 @@ async def get_question(
         await db.execute(
             select(func.count())
             .select_from(Answer)
-            .where(Answer.question_id == question_id, Answer.value)
+            .where(Answer.vote_id == vote_id, Answer.value)
         )
     ).scalar() or 0
     total_no = (
         await db.execute(
             select(func.count())
             .select_from(Answer)
-            .where(Answer.question_id == question_id, ~Answer.value)
+            .where(Answer.vote_id == vote_id, ~Answer.value)
         )
     ).scalar() or 0
 
@@ -139,7 +145,7 @@ async def get_question(
                     select(func.count())
                     .select_from(Answer)
                     .where(
-                        Answer.question_id == question_id,
+                        Answer.vote_id == vote_id,
                         Answer.value,
                         Answer.voter_id.in_(member_ids),
                     )
@@ -150,7 +156,7 @@ async def get_question(
                     select(func.count())
                     .select_from(Answer)
                     .where(
-                        Answer.question_id == question_id,
+                        Answer.vote_id == vote_id,
                         ~Answer.value,
                         Answer.voter_id.in_(member_ids),
                     )
@@ -172,11 +178,11 @@ async def get_question(
             )
         )
 
-    return QuestionDetailOut(
-        id=question.id,
-        text=question.text,
-        description=question.description,
-        has_passed=question.has_passed,
+    return VoteDetailOut(
+        id=vote.id,
+        text=vote.text,
+        description=vote.description,
+        has_passed=vote.has_passed,
         category_ids=cat_ids,
         category_names=cat_names,
         total_yes=total_yes,
@@ -250,7 +256,8 @@ async def list_voters(
 @router.get("/voters/{voter_id}", response_model=VoterDetailOut)
 async def get_voter(
     voter_id: int,
-    category: int | None = None,
+    category: int | None = Query(None, deprecated=True),
+    categories: list[int] | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     voter = await db.get(Voter, voter_id)
@@ -259,57 +266,63 @@ async def get_voter(
 
     group = await db.get(Group, voter.group_id)
 
+    # Resolve categories (backward compat with old `category` param)
+    if categories is None and category is not None:
+        categories = [category]
+    cat_key = _build_categories_key(categories)
+
     # Answers
-    all_qid_query = select(Question.id).order_by(Question.id)
-    if category is not None:
-        cat_qids = (
+    all_vid_query = select(Vote.id).order_by(Vote.id)
+    if categories:
+        cat_vids = (
             await db.execute(
-                select(question_category.c.question_id).where(
-                    question_category.c.category_id == category
-                )
+                select(vote_category.c.vote_id)
+                .where(vote_category.c.category_id.in_(categories))
+                .group_by(vote_category.c.vote_id)
+                .having(func.count(vote_category.c.category_id.distinct()) == len(categories))
             )
         )
-        qids_in_cat = [r[0] for r in cat_qids.all()]
-        all_qid_query = select(Question.id).where(
-            Question.id.in_(qids_in_cat)
-        ).order_by(Question.id)
+        vids_in_cat = [r[0] for r in cat_vids.all()]
+        all_vid_query = select(Vote.id).where(
+            Vote.id.in_(vids_in_cat)
+        ).order_by(Vote.id)
 
-    all_qid_result = await db.execute(all_qid_query)
-    all_qids = [r[0] for r in all_qid_result.all()]
+    all_vid_result = await db.execute(all_vid_query)
+    all_vids = [r[0] for r in all_vid_result.all()]
 
     answer_query = (
-        select(Answer.question_id, Answer.value)
+        select(Answer.vote_id, Answer.value)
         .where(Answer.voter_id == voter_id)
-        .order_by(Answer.question_id)
+        .order_by(Answer.vote_id)
     )
-    if category is not None:
-        answer_query = answer_query.where(Answer.question_id.in_(qids_in_cat))
+    if categories:
+        answer_query = answer_query.where(Answer.vote_id.in_(vids_in_cat))
 
     answer_result = await db.execute(answer_query)
     answer_rows = answer_result.all()
     answer_map = {r[0]: r[1] for r in answer_rows}
 
-    q_text_map = {}
-    q_passed_map = {}
-    if all_qids:
-        q_result = await db.execute(
-            select(Question.id, Question.text, Question.has_passed).where(
-                Question.id.in_(all_qids)
+    v_text_map = {}
+    v_passed_map = {}
+    if all_vids:
+        v_result = await db.execute(
+            select(Vote.id, Vote.text, Vote.has_passed).where(
+                Vote.id.in_(all_vids)
             )
         )
-        for qid, qtext, qpassed in q_result.all():
-            q_text_map[qid] = qtext
-            q_passed_map[qid] = qpassed
+        for vid, vtext, vpassed in v_result.all():
+            v_text_map[vid] = vtext
+            v_passed_map[vid] = vpassed
 
     answers = [
         AnswerOut(
-            question_id=qid,
-            value=answer_map.get(qid, False),
-            answered=qid in answer_map,
-            question_text=q_text_map.get(qid),
-            has_passed=q_passed_map.get(qid),
+            vote_id=vid,
+            value=answer_map.get(vid, False),
+            answered=vid in answer_map,
+            vote_text=v_text_map.get(vid),
+            has_passed=v_passed_map.get(vid),
         )
-        for qid in all_qids
+        for vid in all_vids
     ]
 
     # Voter-voter similarity
@@ -321,15 +334,17 @@ async def get_voter(
     )
     sim_rows = sim_result.scalars().all()
 
-    cat_key = str(category) if category is not None else None
     voter_sims = []
     other_ids = set()
     for row in sim_rows:
         other_id = row.voter_b_id if row.voter_a_id == voter_id else row.voter_a_id
         sim = row.similarity
+        sc = row.shared_count
         if cat_key is not None and row.per_category and cat_key in row.per_category:
             sim = row.per_category[cat_key]
-        voter_sims.append((other_id, sim, row.confidence, row.shared_count))
+            if row.per_category_shared and cat_key in row.per_category_shared:
+                sc = row.per_category_shared[cat_key]
+        voter_sims.append((other_id, sim, row.confidence, sc))
         other_ids.add(other_id)
 
     voter_sims.sort(key=lambda x: x[1], reverse=True)
@@ -406,8 +421,11 @@ async def get_voter(
     group_comparisons = []
     for pg in pg_rows:
         sim = pg.similarity
+        sc = pg.shared_count
         if cat_key is not None and pg.per_category and cat_key in pg.per_category:
             sim = pg.per_category[cat_key]
+            if pg.per_category_shared and cat_key in pg.per_category_shared:
+                sc = pg.per_category_shared[cat_key]
 
         group_comparisons.append(
             GroupComparisonOut(
@@ -416,7 +434,7 @@ async def get_voter(
                 group_color=group_color_map.get(pg.group_id, "#808080"),
                 similarity=sim,
                 confidence=pg.confidence,
-                shared_count=pg.shared_count,
+                shared_count=sc,
             )
         )
 
@@ -447,10 +465,10 @@ async def get_voter(
     )
     own_member_ids = [r[0] for r in own_member_ids_result.all()]
 
-    answer_rate = len(answer_map) / len(all_qids) if all_qids else 0.0
+    answer_rate = len(answer_map) / len(all_vids) if all_vids else 0.0
 
     group_avg_answer_rate = 0.0
-    if own_member_ids and all_qids:
+    if own_member_ids and all_vids:
         member_answer_counts = (
             await db.execute(
                 select(Answer.voter_id, func.count())
@@ -458,20 +476,20 @@ async def get_voter(
                 .group_by(Answer.voter_id)
             )
         ).all()
-        rates = [cnt / len(all_qids) for _, cnt in member_answer_counts]
+        rates = [cnt / len(all_vids) for _, cnt in member_answer_counts]
         unanswered_members = len(own_member_ids) - len(rates)
         if unanswered_members > 0:
             rates.extend([0.0] * unanswered_members)
         group_avg_answer_rate = sum(rates) / len(rates) if rates else 0.0
 
-    if own_member_ids and all_qids:
-        for qid in all_qids:
+    if own_member_ids and all_vids:
+        for vid in all_vids:
             yes_count = (
                 await db.execute(
                     select(func.count())
                     .select_from(Answer)
                     .where(
-                        Answer.question_id == qid,
+                        Answer.vote_id == vid,
                         Answer.value,
                         Answer.voter_id.in_(own_member_ids),
                     )
@@ -482,12 +500,12 @@ async def get_voter(
                     select(func.count())
                     .select_from(Answer)
                     .where(
-                        Answer.question_id == qid,
+                        Answer.vote_id == vid,
                         Answer.voter_id.in_(own_member_ids),
                     )
                 )
             ).scalar() or 0
-            group_yes_rates[str(qid)] = (
+            group_yes_rates[str(vid)] = (
                 yes_count / total_count if total_count > 0 else 0.0
             )
 
@@ -550,12 +568,18 @@ async def list_groups(db: AsyncSession = Depends(get_db)):
 @router.get("/groups/{group_id}", response_model=GroupDetailOut)
 async def get_group(
     group_id: int,
-    category: int | None = None,
+    category: int | None = Query(None, deprecated=True),
+    categories: list[int] | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     group = await db.get(Group, group_id)
     if group is None:
         raise HTTPException(status_code=404, detail="Group not found")
+
+    # Resolve categories (backward compat with old `category` param)
+    if categories is None and category is not None:
+        categories = [category]
+    cat_key = _build_categories_key(categories)
 
     member_count = (
         await db.execute(
@@ -571,8 +595,7 @@ async def get_group(
     cohesivity = cohesivity_row.cohesivity if cohesivity_row else 0.0
     per_category = cohesivity_row.per_category if cohesivity_row else None
 
-    if category is not None and per_category:
-        cat_key = str(category)
+    if cat_key is not None and per_category:
         cohesivity = per_category.get(cat_key, cohesivity)
         per_category = {cat_key: per_category.get(cat_key, 0.0)}
 
@@ -606,8 +629,7 @@ async def get_group(
     for row in gg_rows:
         other_gid = row.group_b_id if row.group_a_id == group_id else row.group_a_id
 
-        if category is not None and row.per_category:
-            cat_key = str(category)
+        if cat_key is not None and row.per_category:
             sim = row.per_category.get(cat_key, row.similarity)
             pc = {cat_key: row.per_category.get(cat_key, 0.0)}
         else:
@@ -626,20 +648,21 @@ async def get_group(
 
     similar_groups.sort(key=lambda x: x.similarity, reverse=True)
 
-    if category is not None:
-        cat_qids = (
+    if categories:
+        cat_vids = (
             await db.execute(
-                select(question_category.c.question_id).where(
-                    question_category.c.category_id == category
-                )
+                select(vote_category.c.vote_id)
+                .where(vote_category.c.category_id.in_(categories))
+                .group_by(vote_category.c.vote_id)
+                .having(func.count(vote_category.c.category_id.distinct()) == len(categories))
             )
         )
-        qids_in_cat = [r[0] for r in cat_qids.all()]
+        vids_in_cat = [r[0] for r in cat_vids.all()]
 
-    total_questions_query = select(func.count()).select_from(Question)
-    if category is not None:
-        total_questions_query = total_questions_query.where(Question.id.in_(qids_in_cat))
-    total_questions = (await db.execute(total_questions_query)).scalar() or 1
+    total_votes_query = select(func.count()).select_from(Vote)
+    if categories:
+        total_votes_query = total_votes_query.where(Vote.id.in_(vids_in_cat))
+    total_votes = (await db.execute(total_votes_query)).scalar() or 1
 
     group_answer_rate = 0.0
     if member_count and member_count > 0:
@@ -652,12 +675,12 @@ async def get_group(
                 select(Answer.voter_id, func.count())
                 .where(Answer.voter_id.in_(member_ids))
             )
-            if category is not None:
-                answer_query = answer_query.where(Answer.question_id.in_(qids_in_cat))
+            if categories:
+                answer_query = answer_query.where(Answer.vote_id.in_(vids_in_cat))
             member_answer_counts = (
                 await db.execute(answer_query.group_by(Answer.voter_id))
             ).all()
-            rates = [cnt / total_questions for _, cnt in member_answer_counts]
+            rates = [cnt / total_votes for _, cnt in member_answer_counts]
             unanswered_members = len(member_ids) - len(rates)
             if unanswered_members > 0:
                 rates.extend([0.0] * unanswered_members)
@@ -677,15 +700,37 @@ async def get_group(
 
 @router.get("/embeddings/voters", response_model=VotersEmbeddingOut)
 async def get_voters_embeddings(
-    category: int | None = None,
+    category: int | None = Query(None, deprecated=True),
+    categories: list[int] | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
-    emb_query = select(VoterEmbedding).where(VoterEmbedding.category_id == category)
+    # Resolve categories (backward compat with old `category` param)
+    if categories is None and category is not None:
+        categories = [category]
+    cat_key = _build_categories_key(categories)
+
+    emb_query = select(VoterEmbedding).where(VoterEmbedding.categories_key == cat_key)
     emb_result = await db.execute(emb_query.order_by(VoterEmbedding.voter_id))
     emb_rows = emb_result.scalars().all()
 
     if not emb_rows:
-        raise HTTPException(status_code=404, detail="No embeddings found for this category")
+        shared = 0
+        if categories:
+            vids_result = await db.execute(
+                select(vote_category.c.vote_id)
+                .where(vote_category.c.category_id.in_(categories))
+                .group_by(vote_category.c.vote_id)
+                .having(func.count(vote_category.c.category_id.distinct()) == len(categories))
+            )
+            shared = len(vids_result.scalars().all())
+        return VotersEmbeddingOut(
+            stress=0.0,
+            category_id=category,
+            categories_key=cat_key,
+            points=[],
+            barycenters=[],
+            shared_votes=shared,
+        )
 
     voter_ids = [e.voter_id for e in emb_rows]
 
@@ -759,6 +804,7 @@ async def get_voters_embeddings(
     return VotersEmbeddingOut(
         stress=stress,
         category_id=category,
+        categories_key=cat_key,
         points=points,
         barycenters=barycenters,
     )
@@ -766,15 +812,36 @@ async def get_voters_embeddings(
 
 @router.get("/embeddings/groups", response_model=GroupsEmbeddingOut)
 async def get_groups_embeddings(
-    category: int | None = None,
+    category: int | None = Query(None, deprecated=True),
+    categories: list[int] | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
-    emb_query = select(GroupEmbedding).where(GroupEmbedding.category_id == category)
+    # Resolve categories (backward compat with old `category` param)
+    if categories is None and category is not None:
+        categories = [category]
+    cat_key = _build_categories_key(categories)
+
+    emb_query = select(GroupEmbedding).where(GroupEmbedding.categories_key == cat_key)
     emb_result = await db.execute(emb_query.order_by(GroupEmbedding.group_id))
     emb_rows = emb_result.scalars().all()
 
     if not emb_rows:
-        raise HTTPException(status_code=404, detail="No embeddings found for this category")
+        shared = 0
+        if categories:
+            vids_result = await db.execute(
+                select(vote_category.c.vote_id)
+                .where(vote_category.c.category_id.in_(categories))
+                .group_by(vote_category.c.vote_id)
+                .having(func.count(vote_category.c.category_id.distinct()) == len(categories))
+            )
+            shared = len(vids_result.scalars().all())
+        return GroupsEmbeddingOut(
+            stress=0.0,
+            category_id=category,
+            categories_key=cat_key,
+            points=[],
+            shared_votes=shared,
+        )
 
     group_ids = [e.group_id for e in emb_rows]
 
@@ -801,6 +868,7 @@ async def get_groups_embeddings(
     return GroupsEmbeddingOut(
         stress=stress,
         category_id=category,
+        categories_key=cat_key,
         points=points,
     )
 

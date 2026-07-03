@@ -2,17 +2,17 @@ import React, {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
-import QuestionsTable from "../components/questions/questions-table";
+import VotesTable from "../components/votes/votes-table";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 
-const QuestionsListPage: React.FC = observer(() => {
-  const {questionsStore, uiStore} = rootStore;
+const VotesListPage: React.FC = observer(() => {
+  const {votesStore, uiStore} = rootStore;
 
   useEffect(() => {
-    questionsStore.fetchQuestions();
+    votesStore.fetchVotes();
   }, [uiStore.retryVersion]);
 
-  if (uiStore.loading && questionsStore.questions.length === 0) {
+  if (uiStore.loading && votesStore.votes.length === 0) {
     return (
       <AnimatedPage>
         <CardSkeleton/>
@@ -22,9 +22,9 @@ const QuestionsListPage: React.FC = observer(() => {
 
   return (
     <AnimatedPage>
-      <QuestionsTable/>
+      <VotesTable/>
     </AnimatedPage>
   );
 });
 
-export default QuestionsListPage;
+export default VotesListPage;

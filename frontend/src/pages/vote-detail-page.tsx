@@ -5,27 +5,27 @@ import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
-import {QUESTION_DETAIL} from "../constants/fr";
+import {VOTE_DETAIL} from "../constants/fr";
 import {DATA_COLORS} from "../theme";
 
-const QuestionDetailPage: React.FC = observer(() => {
+const VoteDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
-  const {questionsStore, uiStore} = rootStore;
-  const questionId = Number(id);
+  const {votesStore, uiStore} = rootStore;
+  const voteId = Number(id);
 
   useEffect(() => {
-    if (questionId) {
-      questionsStore.clearQuestionDetail();
+    if (voteId) {
+      votesStore.clearVoteDetail();
     }
-  }, [questionId]);
+  }, [voteId]);
 
   useEffect(() => {
-    if (questionId) {
-      questionsStore.fetchQuestion(questionId);
+    if (voteId) {
+      votesStore.fetchVote(voteId);
     }
-  }, [questionId, uiStore.retryVersion]);
+  }, [voteId, uiStore.retryVersion]);
 
-  const q = questionsStore.selectedQuestion;
+  const q = votesStore.selectedVote;
 
   if (!q) {
     return (
@@ -46,7 +46,7 @@ const QuestionDetailPage: React.FC = observer(() => {
         )}
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>
           <Chip
-            label={q.has_passed ? QUESTION_DETAIL.PASSED : QUESTION_DETAIL.NOT_PASSED}
+            label={q.has_passed ? VOTE_DETAIL.PASSED : VOTE_DETAIL.NOT_PASSED}
             size="small"
             sx={{
               bgcolor: q.has_passed ? "rgba(89,161,79,0.2)" : "rgba(225,87,89,0.2)",
@@ -58,13 +58,13 @@ const QuestionDetailPage: React.FC = observer(() => {
           ))}
         </Box>
         <Typography variant="body2" color="text.secondary">
-          {QUESTION_DETAIL.YES_LABEL}: {q.total_yes} · {QUESTION_DETAIL.NO_LABEL}: {q.total_no} · {QUESTION_DETAIL.MISSING_LABEL}: {q.total_missing}
+          {VOTE_DETAIL.YES_LABEL}: {q.total_yes} · {VOTE_DETAIL.NO_LABEL}: {q.total_no} · {VOTE_DETAIL.MISSING_LABEL}: {q.total_missing}
         </Typography>
       </Box>
 
       <Card sx={{p: 3}}>
         <CardContent>
-          <Typography variant="h6" sx={{mb: 2}}>{QUESTION_DETAIL.GROUP_BREAKDOWN}</Typography>
+          <Typography variant="h6" sx={{mb: 2}}>{VOTE_DETAIL.GROUP_BREAKDOWN}</Typography>
           {q.group_stats.map((gs) => (
             <Box key={gs.group_id} sx={{mb: 1.5}}>
               <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
@@ -73,7 +73,7 @@ const QuestionDetailPage: React.FC = observer(() => {
                   <Typography variant="body2">{gs.group_name}</Typography>
                 </Box>
                 <Typography variant="caption" color="text.secondary">
-                  {gs.yes_count} {QUESTION_DETAIL.YES_LABEL} / {gs.no_count} {QUESTION_DETAIL.NO_LABEL} / {gs.missing_count} {QUESTION_DETAIL.MISSING_LABEL}
+                   {gs.yes_count} {VOTE_DETAIL.YES_LABEL} / {gs.no_count} {VOTE_DETAIL.NO_LABEL} / {gs.missing_count} {VOTE_DETAIL.MISSING_LABEL}
                 </Typography>
               </Box>
               <Box sx={{display: "flex", height: 10, borderRadius: 1, overflow: "hidden"}}>
@@ -81,7 +81,7 @@ const QuestionDetailPage: React.FC = observer(() => {
                 <Box sx={{flexGrow: 1, bgcolor: "rgba(255,255,255,0.08)"}}/>
               </Box>
               <Typography variant="caption" color="text.secondary">
-                {(gs.yes_rate * 100).toFixed(0)}% {QUESTION_DETAIL.PCT_YES}
+                {(gs.yes_rate * 100).toFixed(0)}% {VOTE_DETAIL.PCT_YES}
               </Typography>
             </Box>
           ))}
@@ -91,4 +91,4 @@ const QuestionDetailPage: React.FC = observer(() => {
   );
 });
 
-export default QuestionDetailPage;
+export default VoteDetailPage;

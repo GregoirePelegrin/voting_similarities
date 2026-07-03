@@ -7,7 +7,7 @@ class CategoryOut(BaseModel):
     name: str
 
 
-class QuestionOut(BaseModel):
+class VoteOut(BaseModel):
     id: int
     text: str
     description: str | None = None
@@ -25,7 +25,7 @@ class GroupAnswerStatsOut(BaseModel):
     yes_rate: float
 
 
-class QuestionDetailOut(BaseModel):
+class VoteDetailOut(BaseModel):
     id: int
     text: str
     description: str | None = None
@@ -39,10 +39,10 @@ class QuestionDetailOut(BaseModel):
 
 
 class AnswerOut(BaseModel):
-    question_id: int
+    vote_id: int
     value: bool
     answered: bool = True
-    question_text: str | None = None
+    vote_text: str | None = None
     has_passed: bool | None = None
 
 
@@ -168,14 +168,18 @@ class BarycenterOut(BaseModel):
 class VotersEmbeddingOut(BaseModel):
     stress: float
     category_id: int | None = None
+    categories_key: str | None = None
     points: list[EmbeddingPointOut]
     barycenters: list[BarycenterOut]
+    shared_votes: int = 0
 
 
 class GroupsEmbeddingOut(BaseModel):
     stress: float
     category_id: int | None = None
+    categories_key: str | None = None
     points: list[EmbeddingPointOut]
+    shared_votes: int = 0
 
 
 class GroupBreakdownOut(BaseModel):

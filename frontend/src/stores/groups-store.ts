@@ -27,12 +27,12 @@ class GroupsStore {
     }
   }
 
-  async fetchGroup(id: number, category?: number | null) {
+  async fetchGroup(id: number, categories?: number[]) {
     try {
-      const data = await getGroup(id, category ?? undefined);
+      const data = await getGroup(id, categories);
       runInAction(() => {
         this.selectedGroup = data;
-        if (category == null) {
+        if (!categories || categories.length === 0) {
           this.heatmapSimilarGroups = data.similar_groups;
         }
       });
