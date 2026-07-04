@@ -69,6 +69,20 @@ def _vv_data_to_rows(vv_data, offset, size):
     return rows
 
 
+def align_mds_to_reference(
+    coords: np.ndarray, reference: np.ndarray
+) -> np.ndarray:
+    """Flip sign of each component to maximize Pearson correlation with reference."""
+    coords = coords.copy()
+    for k in range(coords.shape[1]):
+        bc = reference[:, k]
+        gc = coords[:, k]
+        if bc.std() > 1e-10 and gc.std() > 1e-10:
+            if np.corrcoef(bc, gc)[0, 1] < 0:
+                coords[:, k] *= -1
+    return coords
+
+
 def enumerate_category_combinations(data) -> list[list[int]]:
     cat_ids = sorted(data.category_votes.keys())
     combos = [[cid] for cid in cat_ids]
@@ -188,6 +202,7 @@ async def run(config: SimilarityConfig):
             await session.execute(insert(VoterEmbedding), ve_rows[i : i + CHUNK_SIZE])
         await session.flush()
 
+        cat_barycenters: dict = {}
         for cat_key, cat_sim in cat_similarities.items():
             is_combo = isinstance(cat_key, str)
             categories_key_val = make_categories_key([cat_key]) if not is_combo else cat_key
@@ -195,6 +210,14 @@ async def run(config: SimilarityConfig):
             print(f"  Voter embedding for {label}...")
             cat_coords, cat_stress = classical_mds(cat_sim)
             print(f"    stress: {cat_stress:.4f}")
+            # Save per-category group barycenters for aligning group embeddings
+            cat_bary = np.zeros((len(group_ids), 2))
+            for i, gid in enumerate(group_ids):
+                members = data.group_members.get(gid, [])
+                if members:
+                    idx = [int(np.where(voter_ids == m)[0][0]) for m in members]
+                    cat_bary[i] = cat_coords[idx].mean(axis=0)
+            cat_barycenters[cat_key] = cat_bary
             cat_ve_rows = [
                 {
                     "voter_id": int(voter_ids[i]),
@@ -221,6 +244,14 @@ async def run(config: SimilarityConfig):
         print("  Global group embedding...")
         g_coords, g_stress = classical_mds(gg_sim_matrix)
         print(f"    stress: {g_stress:.4f}")
+        # Align group MDS orientation to voter MDS group barycenters
+        group_barycenters = np.zeros((len(group_ids), 2))
+        for i, gid in enumerate(group_ids):
+            members = data.group_members.get(gid, [])
+            if members:
+                idx = [int(np.where(voter_ids == m)[0][0]) for m in members]
+                group_barycenters[i] = global_coords[idx].mean(axis=0)
+        g_coords = align_mds_to_reference(g_coords, group_barycenters)
         ge_rows = [
             {
                 "group_id": group_ids[i],
@@ -249,6 +280,9 @@ async def run(config: SimilarityConfig):
                     cat_gg[i, j] = val
                     cat_gg[j, i] = val
             cat_g_coords, cat_g_stress = classical_mds(cat_gg)
+            cat_ref = cat_barycenters.get(cat_key)
+            if cat_ref is not None:
+                cat_g_coords = align_mds_to_reference(cat_g_coords, cat_ref)
             print(f"    stress: {cat_g_stress:.4f}")
             cat_ge_rows = [
                 {

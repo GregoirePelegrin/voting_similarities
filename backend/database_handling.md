@@ -59,19 +59,44 @@ podman exec voting-backend alembic downgrade base \
   && podman exec voting-backend alembic upgrade head
 ```
 
-After resetting, re-seed and re-compute similarities:
+### Development (seed data)
 
 ```bash
-# Development
 PYTHONPATH=.. python scripts/seed.py
 PYTHONPATH=.. python scripts/compute_similarities.py
-
-# Production
-podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/seed.py
-podman exec -e PYTHONPATH=/app voting-backend python /app/scripts/compute_similarities.py
 ```
 
 > **Note:** The seed script refuses to run if any data already exists. You must reset the database (downgrade + upgrade) before seeding.
+
+### Production (real data from parliament DB)
+
+The recommended approach is to use `bash deploy.sh` from the project root (see `README.md`), then run the ingestion pipeline:
+
+```bash
+# Drop and recreate the target database
+podman exec parliament_analysis_postgres psql -U postgres -d postgres \
+  -c "DROP DATABASE IF EXISTS voting_similarities WITH (FORCE)"
+podman exec parliament_analysis_postgres psql -U postgres -d postgres \
+  -c "CREATE DATABASE voting_similarities"
+
+# Ingest from parliament DB → voting_similarities
+# (reads from parliament, writes to voting_similarities — parliament is never modified)
+podman run --rm --network host \
+  -e DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/voting_similarities \
+  -e PYTHONPATH=/app \
+  -v $(pwd)/backend/scripts/ingest_real_data.py:/app/scripts/ingest_real_data.py:Z \
+  localhost/voting-backend \
+  python3 /app/scripts/ingest_real_data.py
+
+# Compute similarities + embeddings
+podman run --rm --network host \
+  --env-file .env.production \
+  -e PYTHONPATH=/app \
+  localhost/voting-backend \
+  python3 /app/scripts/compute_similarities.py
+```
+
+> The ingestion script uses `Base.metadata.drop_all` / `create_all` so tables are rebuilt from the current models automatically — no manual migrations needed.
 
 ## Computing Similarity Scores
 

@@ -19,6 +19,7 @@ from datetime import UTC, datetime
 from sqlalchemy import text, select, func, insert
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+BATCH_SIZE = 50_000
 PARLIAMENT_DB_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/parliament"
 INSERT_SQL = text("""INSERT INTO answers (voter_id, vote_id, value, answered, present)
                      VALUES (:voter_id, :vote_id, :value, :answered, :present)""")
@@ -199,7 +200,6 @@ async def ingest():
                 "value": value,
                 "answered": answered,
                 "present": True,
-                "answered_at": None,
             })
             total_answers += 1
             if answered:
@@ -208,13 +208,13 @@ async def ingest():
                 total_abstention += 1
 
             if len(batch) >= BATCH_SIZE:
-                await session.execute(insert(Answer), batch)
+                await session.execute(INSERT_SQL, batch)
                 batch.clear()
                 await session.flush()
                 print(f"  Inserted {total_answers} answers...")
 
         if batch:
-            await session.execute(insert(Answer), batch)
+            await session.execute(INSERT_SQL, batch)
             batch.clear()
             await session.flush()
         print(f"  Done: {total_answers} answers (voted={total_voted}, abstention={total_abstention}, absent={total_absent})")

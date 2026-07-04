@@ -27,6 +27,10 @@ def classical_mds(
     top_vals = eigenvalues[:n_components]
     top_vecs = eigenvectors[:, :n_components]
 
+    for k in range(n_components):
+        if top_vecs[0, k] < 0:
+            top_vecs[:, k] *= -1
+
     top_vals = np.maximum(top_vals, 0.0)
 
     coords = top_vecs * np.sqrt(top_vals)

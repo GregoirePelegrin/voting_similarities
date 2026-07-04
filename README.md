@@ -2,29 +2,56 @@
 
 A web application for analyzing and comparing how voters and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with Bayesian shrinkage, Classical MDS for 2D visualization, and information gain for explainability.
 
-## Production Startup (podman)
+## Production Startup (podman — single command)
 
 ```bash
-# Build and deploy both containers
+# Build images and deploy both containers
 bash deploy.sh
-
-# On a fresh database, seed and compute similarities:
-podman exec voting-backend python /app/scripts/seed.py
-podman exec voting-backend python /app/scripts/compute_similarities.py
 ```
 
-Then open http://localhost:8080. Backend API at http://localhost:8000, docs at http://localhost:8000/docs.
+This builds the backend and frontend images, stops any existing containers, and starts new ones using `.env.production` (or `.env` as fallback). After deployment:
+- Open **http://localhost:8080** (frontend)
+- Backend API at **http://localhost:8000**
+- API docs at **http://localhost:8000/docs**
 
-**Note:** Host networking is used so the backend can reach services on the host (e.g. a local database). The frontend nginx listens on port 8080 instead of 80 (no privileged port binding inside the container).
+**Note:** Host networking is used so the backend can reach services on the host (e.g. a local PostgreSQL database). The frontend nginx listens on port 8080 instead of 80 (no privileged port binding inside the container).
 
-### Resetting the database
+### Initial data load (fresh database)
+
+On a fresh PostgreSQL database, run the ingestion and computation scripts **from the project root**:
 
 ```bash
-podman exec voting-backend alembic downgrade base
-podman exec voting-backend alembic upgrade head
-podman exec voting-backend python /app/scripts/seed.py
-podman exec voting-backend python /app/scripts/compute_similarities.py
+# 1. Ingest real data from the parliament database
+podman run --rm --network host \
+  -e DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/voting_similarities \
+  -e PYTHONPATH=/app \
+  -v $(pwd)/backend/scripts/ingest_real_data.py:/app/scripts/ingest_real_data.py:Z \
+  localhost/voting-backend \
+  python3 /app/scripts/ingest_real_data.py
+
+# 2. Pre-compute similarities + embeddings
+podman run --rm --network host \
+  --env-file .env.production \
+  -e PYTHONPATH=/app \
+  localhost/voting-backend \
+  python3 /app/scripts/compute_similarities.py
 ```
+
+Then restart the backend for the new data: `podman restart voting-backend`.
+
+### Resetting the database and re-importing
+
+```bash
+# 1. Drop and recreate the database
+podman exec parliament_analysis_postgres psql -U postgres -d postgres \
+  -c "DROP DATABASE IF EXISTS voting_similarities WITH (FORCE)"
+podman exec parliament_analysis_postgres psql -U postgres -d postgres \
+  -c "CREATE DATABASE voting_similarities"
+
+# 2. Re-run ingestion + compute (commands above)
+```
+
+> The ingestion script drops and recreates all tables automatically using `Base.metadata.drop_all/create_all`, so no manual migration steps are needed.
 
 ### Manual rebuild (without deploy.sh)
 
@@ -34,7 +61,7 @@ podman build -t voting-frontend:latest -f frontend/Dockerfile .
 
 podman rm -f voting-backend voting-frontend 2>/dev/null
 
-podman run -d --name voting-backend --network host --env-file .env voting-backend:latest
+podman run -d --name voting-backend --network host --env-file .env.production voting-backend:latest
 podman run -d --name voting-frontend --network host voting-frontend:latest
 ```
 
