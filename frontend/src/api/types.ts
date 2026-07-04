@@ -109,6 +109,7 @@ export interface VoterDetailOut {
   similar_voters: SimilarVoterOut[];
   dissimilar_voters: SimilarVoterOut[];
   group_comparisons: GroupComparisonOut[];
+  total_votes: number;
 }
 
 export interface PaginatedVotersOut {
@@ -140,6 +141,7 @@ export interface GroupDetailOut {
   present_count: number;
   per_category: Record<string, number> | null;
   similar_groups: SimilarGroupOut[];
+  total_votes: number;
 }
 
 export interface EmbeddingPointOut {

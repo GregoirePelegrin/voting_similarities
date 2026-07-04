@@ -94,9 +94,9 @@ const VoterDetailPage: React.FC = observer(() => {
           </Box>
           <Box sx={{display: "flex", gap: 2, alignItems: "center"}}>
             <CohesivityGauge value={voter.answer_rate} color={voter.group.color} size={80}
-                             label={VOTER_DETAIL.ANSWER_RATE} sampleSize={voter.answered_count}/>
+                             label={VOTER_DETAIL.ANSWER_RATE} sampleSize={voter.answered_count} total={voter.total_votes}/>
             <CohesivityGauge value={voter.presence_rate} color={voter.group.color} size={80}
-                             label={VOTER_DETAIL.PRESENCE_RATE} sampleSize={voter.present_count}/>
+                             label={VOTER_DETAIL.PRESENCE_RATE} sampleSize={voter.present_count} total={voter.total_votes}/>
             <CohesivityGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.GROUP_AVG}/>
             <CohesivityGauge value={voter.group_avg_presence_rate} color={voter.group.color} size={80}

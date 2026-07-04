@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Typography, CircularProgress} from "@mui/material";
+import {Box, Typography, CircularProgress, Tooltip} from "@mui/material";
 
 interface CohesivityGaugeProps {
   value: number;
@@ -7,49 +7,62 @@ interface CohesivityGaugeProps {
   size?: number;
   label?: string;
   sampleSize?: number;
+  total?: number;
 }
 
-const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 120, label = "Cohesivity", sampleSize}) => {
+const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 120, label = "Cohesivity", sampleSize, total}) => {
   const pct = Math.max(0, Math.min(1, value)) * 100;
 
+  const tooltip = (
+    <>
+      <Box sx={{fontWeight: 500}}>{label}</Box>
+      <Box>{pct.toFixed(1)}%</Box>
+      {sampleSize !== undefined && total !== undefined && (
+        <Box>{sampleSize} / {total}</Box>
+      )}
+    </>
+  );
+
   return (
-    <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 1}}>
-      <Box sx={{position: "relative", display: "inline-flex"}}>
-        <CircularProgress
-          variant="determinate"
-          value={100}
-          size={size}
-          thickness={5}
-          sx={{color: "rgba(255,255,255,0.06)"}}
-        />
-        <CircularProgress
-          variant="determinate"
-          value={pct}
-          size={size}
-          thickness={5}
-          sx={{color, position: "absolute", left: 0, top: 0}}
-        />
-        <Box
-          sx={{
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: "absolute",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography variant="h5" sx={{fontVariantNumeric: "tabular-nums"}}>
-            {pct.toFixed(0)}%
-          </Typography>
+    <Tooltip title={tooltip} arrow placement="top">
+      <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 1}}>
+        <Box sx={{position: "relative", display: "inline-flex"}}>
+          <CircularProgress
+            variant="determinate"
+            value={100}
+            size={size}
+            thickness={5}
+            sx={{color: "rgba(255,255,255,0.06)"}}
+          />
+          <CircularProgress
+            variant="determinate"
+            value={pct}
+            size={size}
+            thickness={5}
+            sx={{color, position: "absolute", left: 0, top: 0}}
+          />
+          <Box
+            sx={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              position: "absolute",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="h5" sx={{fontVariantNumeric: "tabular-nums"}}>
+              {pct.toFixed(0)}%
+            </Typography>
+          </Box>
         </Box>
+        <Typography variant="caption" color="text.secondary">
+          {label}
+        </Typography>
       </Box>
-      <Typography variant="caption" color="text.secondary">
-        {label}
-      </Typography>
-    </Box>
+    </Tooltip>
   );
 };
 

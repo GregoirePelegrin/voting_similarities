@@ -556,6 +556,10 @@ async def get_voter(
             if row.total_count > 0
         }
 
+    db_total_votes = (
+        await db.execute(select(func.count()).select_from(Vote))
+    ).scalar() or 0
+
     return VoterDetailOut(
         id=voter.id,
         firstname=voter.firstname,
@@ -577,6 +581,7 @@ async def get_voter(
         similar_voters=similar_voters,
         dissimilar_voters=dissimilar_voters,
         group_comparisons=group_comparisons,
+        total_votes=db_total_votes,
     )
 
 
@@ -762,6 +767,10 @@ async def get_group(
         group_answered = 0
         group_present = 0
 
+    db_total_votes = (
+        await db.execute(select(func.count()).select_from(Vote))
+    ).scalar() or 0
+
     return GroupDetailOut(
         id=group.id,
         name=group.name,
@@ -774,6 +783,7 @@ async def get_group(
         present_count=group_present,
         per_category=per_category,
         similar_groups=similar_groups,
+        total_votes=db_total_votes,
     )
 
 

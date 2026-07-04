@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Card, CardContent, Typography, Box, Tooltip} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {AnswerOut} from "../../api/types";
@@ -35,30 +35,47 @@ function getSegmentLabel(answer: AnswerOut): string {
   return majority ? ANSWER_GRID.NO_DIFF_GROUP : ANSWER_GRID.NO_SAME_GROUP;
 }
 
-function getSegmentTitle(answer: AnswerOut): string {
-  const label = getSegmentLabel(answer);
+function getSegmentTooltip(answer: AnswerOut): React.ReactNode {
+  const title = answer.vote_text ?? `V${answer.vote_id}`;
   const outcome = answer.has_passed ? ANSWER_GRID.PASSED : ANSWER_GRID.NOT_PASSED;
-  return answer.vote_text
-    ? `${answer.vote_text} — ${label}${answer.answered ? ` · ${outcome}` : ""}`
-    : `V${answer.vote_id}: ${label}`;
+  if (!answer.present) {
+    return (
+      <>
+        <Box sx={{fontWeight: 500, mb: 0.5}}>{title}</Box>
+        <Box>{ANSWER_GRID.ABSENT}</Box>
+        <Box sx={{color: "text.secondary", mt: 0.25}}>{outcome}</Box>
+      </>
+    );
+  }
+  if (!answer.answered) {
+    return (
+      <>
+        <Box sx={{fontWeight: 500, mb: 0.5}}>{title}</Box>
+        <Box>{ANSWER_GRID.ABSTENTION}</Box>
+        <Box sx={{color: "text.secondary", mt: 0.25}}>{outcome}</Box>
+      </>
+    );
+  }
+  const label = getSegmentLabel(answer);
+  return (
+    <>
+      <Box sx={{fontWeight: 500, mb: 0.5}}>{title}</Box>
+      <Box>{label}</Box>
+      <Box sx={{color: "text.secondary", mt: 0.25}}>{outcome}</Box>
+    </>
+  );
 }
 
 const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
   const navigate = useNavigate();
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   if (!answers || answers.length === 0) return null;
-
-  const hovered = hoveredIdx !== null ? answers[hoveredIdx] : null;
 
   return (
     <Card>
       <CardContent>
-        <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
+        <Box sx={{mb: 2}}>
           <Typography variant="h6">{ANSWER_GRID.HEADING}</Typography>
-          <Typography variant="caption" color="text.secondary">
-            {answers.filter((a) => a.answered).length} / {answers.filter((a) => a.present).length}
-          </Typography>
         </Box>
 
         <Box
@@ -69,27 +86,20 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
             cursor: "pointer",
           }}
         >
-          {answers.map((a, idx) => (
-            <Box
-              key={a.vote_id}
-              sx={{
-                width: 15,
-                height: 15,
-                bgcolor: getSegmentColor(a),
-                opacity: hoveredIdx === idx ? 1 : 0.85,
-                transition: "opacity 0.15s",
-                "&:hover": {opacity: 1},
-              }}
-              onMouseEnter={() => setHoveredIdx(idx)}
-              onMouseLeave={() => setHoveredIdx(null)}
-              onClick={() => navigate(`/votes/${a.vote_id}`)}
-            />
+          {answers.map((a) => (
+            <Tooltip key={a.vote_id} title={getSegmentTooltip(a)} arrow placement="top" followCursor>
+              <Box
+                sx={{
+                  width: 15,
+                  height: 15,
+                  bgcolor: getSegmentColor(a),
+                  "&:hover": {opacity: 0.7},
+                }}
+                onClick={() => navigate(`/votes/${a.vote_id}`)}
+              />
+            </Tooltip>
           ))}
         </Box>
-
-        <Typography variant="caption" color="text.secondary" sx={{mt: 0.5, display: "block", minHeight: "1.5em"}}>
-          {hovered ? getSegmentTitle(hovered) : "\u00A0"}
-        </Typography>
 
         <Box sx={{display: "flex", gap: 2, mt: 1.5, flexWrap: "wrap"}}>
           {[

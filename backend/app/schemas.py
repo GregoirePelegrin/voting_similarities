@@ -123,6 +123,7 @@ class VoterDetailOut(BaseModel):
     similar_voters: list[SimilarVoterOut]
     dissimilar_voters: list[SimilarVoterOut]
     group_comparisons: list[GroupComparisonOut]
+    total_votes: int = 0
 
 
 class PaginatedVotersOut(BaseModel):
@@ -154,6 +155,7 @@ class GroupDetailOut(BaseModel):
     present_count: int = 0
     per_category: dict[str, float] | None = None
     similar_groups: list[SimilarGroupOut]
+    total_votes: int = 0
 
 
 class EmbeddingPointOut(BaseModel):
