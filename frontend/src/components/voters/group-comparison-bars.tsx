@@ -38,8 +38,8 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
   );
 
   return (
-    <Card>
-      <CardContent>
+    <Card sx={{height: "100%", display: "flex", flexDirection: "column"}}>
+      <CardContent sx={{display: "flex", flexDirection: "column", flex: 1}}>
         <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
           <Typography variant="h6">{heading || GROUP_COMPARISON.HEADING}</Typography>
           {categoriesLabel && (
@@ -48,8 +48,9 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
             </Typography>
           )}
         </Box>
-        <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
-          <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
+        <Box sx={{flex: 1, minHeight: 0}}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
             <YAxis type="category" dataKey="group_name" width={90} tick={{fill: DATA_COLORS.neutral, fontSize: 12}}/>
             <RTooltip content={<CustomTooltip/>}/>
@@ -60,6 +61,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        </Box>
       </CardContent>
     </Card>
   );

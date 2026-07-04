@@ -470,11 +470,14 @@ async def get_voter(
     )
     own_member_ids = [r[0] for r in own_member_ids_result.all()]
 
+    total_votes = len(all_vids)
     present_count = len(answer_present)
     answered_count = sum(1 for v in answer_answered.values() if v)
-    answer_rate = answered_count / present_count if present_count else 0.0
+    answer_rate = answered_count / total_votes if total_votes else 0.0
+    presence_rate = present_count / total_votes if total_votes else 0.0
 
     group_avg_answer_rate = 0.0
+    group_avg_presence_rate = 0.0
     if own_member_ids and all_vids:
         member_counts = (
             await db.execute(
@@ -488,14 +491,19 @@ async def get_voter(
             )
         ).all()
         rates = [
-            row.answered_count / row.present_count
+            row.answered_count / total_votes
             for row in member_counts
-            if row.present_count > 0
+        ]
+        presence_rates = [
+            row.present_count / total_votes
+            for row in member_counts
         ]
         unanswered_members = len(own_member_ids) - len(member_counts)
         if unanswered_members > 0:
             rates.extend([0.0] * unanswered_members)
+            presence_rates.extend([0.0] * unanswered_members)
         group_avg_answer_rate = sum(rates) / len(rates) if rates else 0.0
+        group_avg_presence_rate = sum(presence_rates) / len(presence_rates) if presence_rates else 0.0
 
     if own_member_ids and all_vids:
         for vid in all_vids:
@@ -540,6 +548,8 @@ async def get_voter(
         group_yes_rates=group_yes_rates if group_yes_rates else None,
         answer_rate=answer_rate,
         group_avg_answer_rate=group_avg_answer_rate,
+        presence_rate=presence_rate,
+        group_avg_presence_rate=group_avg_presence_rate,
         similar_voters=similar_voters,
         dissimilar_voters=dissimilar_voters,
         group_comparisons=group_comparisons,
@@ -684,6 +694,7 @@ async def get_group(
     total_votes = (await db.execute(total_votes_query)).scalar() or 1
 
     group_answer_rate = 0.0
+    group_presence_rate = 0.0
     if member_count and member_count > 0:
         member_ids_result = await db.execute(
             select(Voter.id).where(Voter.group_id == group_id)
@@ -705,14 +716,19 @@ async def get_group(
                 )
             ).all()
             rates = [
-                row.answered_count / row.present_count
+                row.answered_count / total_votes
                 for row in member_counts
-                if row.present_count > 0
+            ]
+            presence_rates = [
+                row.present_count / total_votes
+                for row in member_counts
             ]
             no_answer_members = len(member_ids) - len(member_counts)
             if no_answer_members > 0:
                 rates.extend([0.0] * no_answer_members)
+                presence_rates.extend([0.0] * no_answer_members)
             group_answer_rate = sum(rates) / len(rates) if rates else 0.0
+            group_presence_rate = sum(presence_rates) / len(presence_rates) if presence_rates else 0.0
 
     return GroupDetailOut(
         id=group.id,
@@ -721,6 +737,7 @@ async def get_group(
         member_count=member_count,
         cohesivity=cohesivity,
         answer_rate=group_answer_rate,
+        presence_rate=group_presence_rate,
         per_category=per_category,
         similar_groups=similar_groups,
     )

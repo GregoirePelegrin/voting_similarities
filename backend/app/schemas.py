@@ -115,6 +115,8 @@ class VoterDetailOut(BaseModel):
     group_yes_rates: dict[str, float] | None = None
     answer_rate: float = 0.0
     group_avg_answer_rate: float = 0.0
+    presence_rate: float = 0.0
+    group_avg_presence_rate: float = 0.0
     similar_voters: list[SimilarVoterOut]
     dissimilar_voters: list[SimilarVoterOut]
     group_comparisons: list[GroupComparisonOut]
@@ -144,6 +146,7 @@ class GroupDetailOut(BaseModel):
     member_count: int
     cohesivity: float
     answer_rate: float = 0.0
+    presence_rate: float = 0.0
     per_category: dict[str, float] | None = None
     similar_groups: list[SimilarGroupOut]
 

@@ -79,9 +79,10 @@ const GroupDetailPage: React.FC = observer(() => {
 
       <Grid container spacing={3}>
         <Grid size={{xs: 12, md: 4}}>
-          <Card>
+          <Card sx={{height: "100%"}}>
             <CardContent sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2}}>
               <CohesivityGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION}/>
+              <CohesivityGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE}/>
               <CohesivityGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE}/>
             </CardContent>
           </Card>

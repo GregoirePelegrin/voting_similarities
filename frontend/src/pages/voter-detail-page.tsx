@@ -93,11 +93,15 @@ const VoterDetailPage: React.FC = observer(() => {
               circonscription={voter.circonscription}
             />
           </Box>
-          <Box sx={{display: "flex", gap: 3, alignItems: "center"}}>
-            <CohesivityGauge value={voter.answer_rate} color={voter.group.color} size={90}
+          <Box sx={{display: "flex", gap: 2, alignItems: "center"}}>
+            <CohesivityGauge value={voter.answer_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.ANSWER_RATE}/>
-            <CohesivityGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={90}
+            <CohesivityGauge value={voter.presence_rate} color={voter.group.color} size={80}
+                             label={VOTER_DETAIL.PRESENCE_RATE}/>
+            <CohesivityGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.GROUP_AVG}/>
+            <CohesivityGauge value={voter.group_avg_presence_rate} color={voter.group.color} size={80}
+                             label={VOTER_DETAIL.GROUP_AVG_PRESENCE}/>
           </Box>
         </CardContent>
       </Card>

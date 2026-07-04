@@ -41,7 +41,7 @@ const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 1
           }}
         >
           <Typography variant="h5" sx={{fontVariantNumeric: "tabular-nums"}}>
-            {pct.toFixed(1)}%
+            {pct.toFixed(0)}%
           </Typography>
         </Box>
       </Box>

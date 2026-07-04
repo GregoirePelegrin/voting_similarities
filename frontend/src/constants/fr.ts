@@ -83,7 +83,9 @@ export const VOTER_DETAIL = {
   MOST_SIMILAR: "Les plus proches",
   LEAST_SIMILAR: "Les moins proches",
   ANSWER_RATE: "Taux de réponse",
-  GROUP_AVG: "Moy. groupe",
+  PRESENCE_RATE: "Taux de présence",
+  GROUP_AVG: "Moy. groupe réponse",
+  GROUP_AVG_PRESENCE: "Moy. groupe présence",
   MEMBERS: "membres",
 };
 
@@ -130,6 +132,7 @@ export const SORT = {
 export const GROUP_DETAIL = {
   MEMBERS: "membres",
   ANSWER_RATE: "Taux de réponse",
+  PRESENCE_RATE: "Taux de présence",
   COHESION: "Cohésion",
 };
 

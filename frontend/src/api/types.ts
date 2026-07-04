@@ -101,6 +101,8 @@ export interface VoterDetailOut {
   group_yes_rates: Record<string, number> | null;
   answer_rate: number;
   group_avg_answer_rate: number;
+  presence_rate: number;
+  group_avg_presence_rate: number;
   similar_voters: SimilarVoterOut[];
   dissimilar_voters: SimilarVoterOut[];
   group_comparisons: GroupComparisonOut[];
@@ -130,6 +132,7 @@ export interface GroupDetailOut {
   member_count: number;
   cohesivity: number;
   answer_rate: number;
+  presence_rate: number;
   per_category: Record<string, number> | null;
   similar_groups: SimilarGroupOut[];
 }
