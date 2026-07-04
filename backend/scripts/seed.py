@@ -31,10 +31,12 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 SEED = 42
 NUM_GROUPS = 12
 NUM_CATEGORIES = 12
-NUM_VOTES = 100
+NUM_VOTES = 200
 NUM_VOTERS = 700
-MIN_RESPONSE_RATE = 0.30
-MAX_RESPONSE_RATE = 0.80
+MIN_ABSENT_RATE = 0.05
+MAX_ABSENT_RATE = 0.15
+MIN_ABSTENTION_RATE = 0.05
+MAX_ABSTENTION_RATE = 0.15
 
 CATEGORY_NAMES = [
     "Governance",
@@ -236,11 +238,18 @@ async def seed_data():
         await session.flush()
 
         # --- Answers ---
-        # Each person draws from their group's profile with per-person noise
-        # and has a random response rate (sparsity)
+        # Each person draws from their group's profile with per-person noise.
+        # For each vote, a voter can be:
+        #   - Absent (present=False): no Answer row created
+        #   - Abstention (present=True, answered=False): Answer row with value=False
+        #   - Vote (present=True, answered=True): Pour or Contre
         voter_idx = 0
         all_answers = []
         base_date = datetime(2025, 1, 1)
+
+        total_absent = 0
+        total_abstention = 0
+        total_voted = 0
 
         for g_idx, _group in enumerate(groups):
             for _p_idx in range(group_sizes[g_idx]):
@@ -253,21 +262,37 @@ async def seed_data():
                     group_profiles[g_idx] + personal_noise, 0.05, 0.95
                 )
 
-                # Response rate for this voter
-                response_rate = rng.uniform(MIN_RESPONSE_RATE, MAX_RESPONSE_RATE)
+                # Per-voter absent and abstention rates
+                absent_rate = rng.uniform(MIN_ABSENT_RATE, MAX_ABSENT_RATE)
+                abstention_rate = rng.uniform(MIN_ABSTENTION_RATE, MAX_ABSTENTION_RATE)
 
                 for v_idx, vote in enumerate(votes):
-                    if rng.random() > response_rate:
+                    if rng.random() < absent_rate:
+                        total_absent += 1
                         continue
+                    if rng.random() < abstention_rate:
+                        total_abstention += 1
+                        all_answers.append(
+                            Answer(
+                                voter_id=voter.id,
+                                vote_id=vote.id,
+                                value=False,
+                                answered=False,
+                                present=True,
+                                answered_at=base_date + timedelta(days=rng.randint(0, 365)),
+                            )
+                        )
+                        continue
+                    total_voted += 1
                     value = bool(np_rng.random() < personal_probs[v_idx])
-                    days_offset = rng.randint(0, 365)
-                    answered_at = base_date + timedelta(days=days_offset)
                     all_answers.append(
                         Answer(
                             voter_id=voter.id,
                             vote_id=vote.id,
                             value=value,
-                            answered_at=answered_at,
+                            answered=True,
+                            present=True,
+                            answered_at=base_date + timedelta(days=rng.randint(0, 365)),
                         )
                     )
 
@@ -280,14 +305,14 @@ async def seed_data():
                 await session.execute(
                     select(func.count())
                     .select_from(Answer)
-                    .where(Answer.vote_id == v.id, Answer.value)
+                    .where(Answer.vote_id == v.id, Answer.answered, Answer.value)
                 )
             ).scalar()
             no_count = (
                 await session.execute(
                     select(func.count())
                     .select_from(Answer)
-                    .where(Answer.vote_id == v.id, ~Answer.value)
+                    .where(Answer.vote_id == v.id, Answer.answered, ~Answer.value)
                 )
             ).scalar()
             v.has_passed = (yes_count or 0) > (no_count or 0)
@@ -312,6 +337,9 @@ async def seed_data():
         print(f"  Votes:     {n_votes}")
         print(f"  Categories:{n_categories}")
         print(f"  Answers:   {n_answers}")
+        print(f"  Absent:    {total_absent}")
+        print(f"  Abstention:{total_abstention}")
+        print(f"  Voted:     {total_voted}")
         print(f"  Avg answers/voter: {n_answers / n_voters:.1f}")
         print(f"  Avg response rate:  {n_answers / (n_voters * n_votes) * 100:.1f}%")
 

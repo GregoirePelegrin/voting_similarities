@@ -12,6 +12,7 @@ interface GroupComparisonBarsProps {
   comparisons: GroupComparisonOut[];
   sortMode?: SortMode;
   categoriesLabel?: string;
+  heading?: string;
 }
 
 const CustomTooltip: React.FC<any> = ({active, payload}) => {
@@ -27,7 +28,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, sortMode = "value", categoriesLabel}) => {
+const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, sortMode = "value", categoriesLabel, heading}) => {
   const navigate = useNavigate();
   if (!comparisons || comparisons.length === 0) return null;
   const data = [...comparisons].sort((a, b) =>
@@ -40,7 +41,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
     <Card>
       <CardContent>
         <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
-          <Typography variant="h6">{GROUP_COMPARISON.HEADING}</Typography>
+          <Typography variant="h6">{heading || GROUP_COMPARISON.HEADING}</Typography>
           {categoriesLabel && (
             <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
               {categoriesLabel}
@@ -49,7 +50,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
         </Box>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
-            <XAxis type="number" domain={[0, "auto"]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
+            <XAxis type="number" tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
             <YAxis type="category" dataKey="group_name" width={90} tick={{fill: DATA_COLORS.neutral, fontSize: 12}}/>
             <RTooltip content={<CustomTooltip/>}/>
             <Bar dataKey="similarity" radius={[0, 4, 4, 0]} barSize={20}>

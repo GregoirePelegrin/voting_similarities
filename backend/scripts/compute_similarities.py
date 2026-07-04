@@ -150,7 +150,7 @@ async def run(config: SimilarityConfig):
         await session.flush()
 
         print("Storing group-group similarity...")
-        gg_records = compute_group_group_records(data, similarity, cat_similarities)
+        gg_records = compute_group_group_records(data, similarity, cat_similarities, config)
         print(f"  {len(gg_records)} pairs")
         for i in range(0, len(gg_records), CHUNK_SIZE):
             await session.execute(insert(GroupGroupSim), gg_records[i : i + CHUNK_SIZE])

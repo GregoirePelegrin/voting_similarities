@@ -51,7 +51,10 @@ async def load_answer_data(session: AsyncSession) -> AnswerData:
     yes_matrix = np.zeros((n_voters, n_votes), dtype=np.float64)
     no_matrix = np.zeros((n_voters, n_votes), dtype=np.float64)
 
-    result = await session.execute(select(Answer.voter_id, Answer.vote_id, Answer.value))
+    result = await session.execute(
+        select(Answer.voter_id, Answer.vote_id, Answer.value)
+        .where(Answer.answered)
+    )
     for pid, vid, value in result.all():
         i = voter_id_to_idx[pid]
         j = vote_id_to_idx[vid]
@@ -302,7 +305,7 @@ def compute_pairwise_for_combination(
     return sim, shared
 
 
-def compute_group_group_records(data, similarity, cat_similarities):
+def compute_group_group_records(data, similarity, cat_similarities, config):
     group_ids = list(data.group_members.keys())
     records = []
 
@@ -320,6 +323,11 @@ def compute_group_group_records(data, similarity, cat_similarities):
                 similarity, group_indices[ga_id], group_indices[gb_id]
             )
 
+            n_a = len(group_indices[ga_id])
+            n_b = len(group_indices[gb_id])
+            shared_count = min(n_a, n_b)
+            confidence = shared_count / (shared_count + config.m) if shared_count > 0 else 0.0
+
             per_category = {}
             for cat_id, cat_sim in cat_similarities.items():
                 cat_avg = _avg_cross_group(
@@ -332,6 +340,8 @@ def compute_group_group_records(data, similarity, cat_similarities):
                     "group_a_id": int(ga_id),
                     "group_b_id": int(gb_id),
                     "similarity": avg_sim,
+                    "shared_count": shared_count,
+                    "confidence": confidence,
                     "per_category": per_category if per_category else None,
                 }
             )

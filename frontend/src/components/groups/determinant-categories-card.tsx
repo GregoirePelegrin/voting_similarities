@@ -1,67 +1,71 @@
 import React from "react";
-import {Card, CardContent, Typography, Box, LinearProgress, Tooltip} from "@mui/material";
+import {Card, CardContent, Typography, Box} from "@mui/material";
+import {BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer, Cell} from "recharts";
 import {DeterminantCategoryOut} from "../../api/types";
 import {DETERMINANT_CATEGORIES} from "../../constants/fr";
 import {SortMode} from "../../stores/ui-store";
 import {redGreyGreenGradient} from "../../utils/colors";
+import {DATA_COLORS} from "../../theme";
 
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
   sortMode?: SortMode;
 }
 
+const CustomTooltip: React.FC<any> = ({active, payload}) => {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  return (
+    <Box sx={{bgcolor: "#2A3142", p: 1.5, borderRadius: 1, boxShadow: 2}}>
+      <Typography variant="body2" sx={{fontWeight: 500}}>{d.category_name}</Typography>
+      <Typography variant="caption" color="text.secondary">
+        Gain d'info. normalisé : {(d.normalized_ig * 100).toFixed(1)}%
+      </Typography>
+      <br/>
+      <Typography variant="caption" color="text.secondary">
+        {DETERMINANT_CATEGORIES.KL_DIVERGENCE} : {d.kl_divergence.toFixed(4)}
+      </Typography>
+      <br/>
+      <Typography variant="caption" color="text.secondary">
+        Précision : {(d.accuracy * 100).toFixed(1)}% · Info. Gain brut : {d.info_gain.toFixed(4)}
+      </Typography>
+      {d.most_confused_with_name && (
+        <>
+          <br/>
+          <Typography variant="caption" color="text.secondary">
+            {DETERMINANT_CATEGORIES.MOST_CONFUSED} : {d.most_confused_with_name}
+          </Typography>
+        </>
+      )}
+    </Box>
+  );
+};
+
 const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories, sortMode = "value"}) => {
   if (!categories || categories.length === 0) return null;
 
-  const sorted = [...categories].sort((a, b) =>
-    sortMode === "name"
-      ? a.category_name.localeCompare(b.category_name)
-      : b.accuracy - a.accuracy
-  );
+  const data = [...categories].sort((a, b) =>
+      sortMode === "name"
+        ? a.category_name.localeCompare(b.category_name)
+        : b.normalized_ig - a.normalized_ig
+    );
 
   return (
     <Card>
       <CardContent>
         <Typography variant="h6" sx={{mb: 2}}>{DETERMINANT_CATEGORIES.HEADING}</Typography>
-
-        {sorted.map((cat) => (
-          <Tooltip key={cat.category_id} followCursor title={
-            <Box sx={{display: "flex", flexDirection: "column"}}>
-              {cat.most_confused_with_name && (
-                <Typography variant="caption">
-                  {DETERMINANT_CATEGORIES.MOST_CONFUSED} : {cat.most_confused_with_name}
-                </Typography>
-              )}
-              <Typography variant="caption">
-                {DETERMINANT_CATEGORIES.KL_DIVERGENCE} : {cat.kl_divergence.toFixed(3)}
-              </Typography>
-            </Box>
-          }>
-            <Box sx={{mb: 2}}>
-              <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
-                <Typography variant="body2" sx={{fontWeight: 500}}>
-                  {cat.category_name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {(cat.accuracy * 100).toFixed(0)}% {DETERMINANT_CATEGORIES.PRECISION_LABEL}
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={cat.accuracy * 100}
-                sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  bgcolor: "rgba(255,255,255,0.08)",
-                  "& .MuiLinearProgress-bar": {
-                    borderRadius: 4,
-                    bgcolor: redGreyGreenGradient(cat.accuracy),
-                  },
-                }}
-              />
-            </Box>
-          </Tooltip>
-        ))}
+        <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
+          <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
+            <XAxis type="number" domain={[0, 1]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
+            <YAxis type="category" dataKey="category_name" width={90} tick={{fill: DATA_COLORS.neutral, fontSize: 12}}/>
+            <RTooltip content={<CustomTooltip/>}/>
+            <Bar dataKey="normalized_ig" radius={[0, 4, 4, 0]} barSize={20}>
+              {data.map((d, i) => (
+                <Cell key={i} fill={redGreyGreenGradient(d.normalized_ig)}/>
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );

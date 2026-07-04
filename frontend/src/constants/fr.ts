@@ -43,6 +43,8 @@ export const VOTER_INFO = {
 export const ANSWER_GRID = {
   HEADING: "Réponses",
   NO_ANSWER: "Pas de réponse",
+  ABSENT: "Absent·e",
+  ABSTENTION: "Abstention",
   YES_SAME_GROUP: "Oui — comme le groupe",
   YES_DIFF_GROUP: "Oui — différent du groupe",
   NO_DIFF_GROUP: "Non — différent du groupe",

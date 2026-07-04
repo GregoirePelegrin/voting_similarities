@@ -42,6 +42,7 @@ class AnswerOut(BaseModel):
     vote_id: int
     value: bool
     answered: bool = True
+    present: bool = True
     vote_text: str | None = None
     has_passed: bool | None = None
 
@@ -131,6 +132,8 @@ class SimilarGroupOut(BaseModel):
     name: str
     color: str
     similarity: float
+    confidence: float = 0.0
+    shared_count: int = 0
     per_category: dict[str, float] | None = None
 
 

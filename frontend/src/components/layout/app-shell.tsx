@@ -32,7 +32,7 @@ const navItems = [
   {label: NAV.VOTERS, icon: <PeopleIcon/>, path: "/voters"},
   {label: NAV.GROUPS, icon: <GroupsIcon/>, path: "/groups"},
   {label: NAV.CATEGORIES, icon: <CategoryIcon/>, path: "/categories"},
-  {label: NAV.QUESTIONS, icon: <QuizIcon/>, path: "/votes"},
+  {label: NAV.VOTES, icon: <QuizIcon/>, path: "/votes"},
 ];
 
 const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({open, onClose}) => {

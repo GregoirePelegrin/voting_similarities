@@ -10,7 +10,8 @@ interface AnswerGridProps {
 }
 
 function getSegmentColor(answer: AnswerOut): string {
-  if (!answer.answered) return DATA_COLORS.missing;
+  if (!answer.present) return DATA_COLORS.absent;
+  if (!answer.answered) return DATA_COLORS.abstention;
   if (answer.value) {
     return answer.has_passed ? DATA_COLORS.yesSame : DATA_COLORS.yesDifferent;
   }
@@ -18,7 +19,8 @@ function getSegmentColor(answer: AnswerOut): string {
 }
 
 function getSegmentLabel(answer: AnswerOut): string {
-  if (!answer.answered) return ANSWER_GRID.NO_ANSWER;
+  if (!answer.present) return ANSWER_GRID.ABSENT;
+  if (!answer.answered) return ANSWER_GRID.ABSTENTION;
   if (answer.value) {
     return answer.has_passed ? ANSWER_GRID.YES_SAME_GROUP : ANSWER_GRID.YES_DIFF_GROUP;
   }
@@ -30,7 +32,7 @@ function getSegmentTitle(answer: AnswerOut): string {
   const outcome = answer.has_passed ? ANSWER_GRID.PASSED : ANSWER_GRID.NOT_PASSED;
   return answer.vote_text
     ? `${answer.vote_text} — ${label}${answer.answered ? ` · ${outcome}` : ""}`
-    : `Q${answer.vote_id}: ${label}`;
+    : `V${answer.vote_id}: ${label}`;
 }
 
 const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
@@ -47,7 +49,7 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6">{ANSWER_GRID.HEADING}</Typography>
           <Typography variant="caption" color="text.secondary">
-            ({answers.filter((a) => a.answered).length} / {answers.length})
+            {answers.filter((a) => a.answered).length} / {answers.filter((a) => a.present).length}
           </Typography>
         </Box>
 
@@ -87,7 +89,8 @@ const AnswerGrid: React.FC<AnswerGridProps> = ({answers}) => {
             {color: DATA_COLORS.noSame, label: ANSWER_GRID.NO_SAME},
             {color: DATA_COLORS.yesDifferent, label: ANSWER_GRID.YES_DIFF},
             {color: DATA_COLORS.noDifferent, label: ANSWER_GRID.NO_DIFF},
-            {color: DATA_COLORS.missing, label: ANSWER_GRID.NO_ANSWER},
+            {color: DATA_COLORS.abstention, label: ANSWER_GRID.ABSTENTION},
+            {color: DATA_COLORS.absent, label: ANSWER_GRID.ABSENT},
           ].map((item) => (
             <Box key={item.label} sx={{display: "flex", alignItems: "center", gap: 0.5}}>
               <Box sx={{width: 10, height: 10, borderRadius: 0.5, bgcolor: item.color}}/>

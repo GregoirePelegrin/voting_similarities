@@ -72,6 +72,8 @@ export const DATA_COLORS = {
   noSame: "#E15759",
   noDifferent: "#B07AA1",
   missing: "#555555",
+  absent: "#2D2D2D",
+  abstention: "#9E9E9E",
   positive: "#59A14F",
   negative: "#E15759",
   warning: "#EDC948",

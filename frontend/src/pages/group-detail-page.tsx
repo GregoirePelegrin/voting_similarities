@@ -9,9 +9,10 @@ import CohesivityGauge from "../components/shared/cohesivity-gauge";
 import SimilarGroupsList from "../components/groups/similar-groups-list";
 import CategoryHeatmap from "../components/groups/category-heatmap";
 import DeterminantCategoriesCard from "../components/groups/determinant-categories-card";
+import GroupComparisonBars from "../components/voters/group-comparison-bars";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 import MetricInfoCard from "../components/shared/metric-info-card";
-import {GROUP_DETAIL, SORT, METRICS} from "../constants/fr";
+import {GROUP_DETAIL, SORT, METRICS, SIMILAR_GROUPS} from "../constants/fr";
 
 const GroupDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
@@ -86,7 +87,19 @@ const GroupDetailPage: React.FC = observer(() => {
           </Card>
         </Grid>
         <Grid size={{xs: 12, md: 8}}>
-          <SimilarGroupsList groups={group.similar_groups} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
+          <GroupComparisonBars
+            comparisons={group.similar_groups.map(g => ({
+              group_id: g.id,
+              group_name: g.name,
+              group_color: g.color,
+              similarity: g.similarity,
+              confidence: g.confidence ?? 0,
+              shared_count: g.shared_count ?? 0,
+            }))}
+            heading={SIMILAR_GROUPS.HEADING}
+            sortMode={uiStore.sortMode}
+            categoriesLabel={categoriesLabel}
+          />
         </Grid>
         <Grid size={{xs: 12}}>
           <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color} categoriesLabel={categoriesLabel}/>

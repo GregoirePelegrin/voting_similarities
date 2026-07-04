@@ -109,14 +109,14 @@ async def get_vote(
         await db.execute(
             select(func.count())
             .select_from(Answer)
-            .where(Answer.vote_id == vote_id, Answer.value)
+            .where(Answer.vote_id == vote_id, Answer.answered, Answer.value)
         )
     ).scalar() or 0
     total_no = (
         await db.execute(
             select(func.count())
             .select_from(Answer)
-            .where(Answer.vote_id == vote_id, ~Answer.value)
+            .where(Answer.vote_id == vote_id, Answer.answered, ~Answer.value)
         )
     ).scalar() or 0
 
@@ -146,6 +146,7 @@ async def get_vote(
                     .select_from(Answer)
                     .where(
                         Answer.vote_id == vote_id,
+                        Answer.answered,
                         Answer.value,
                         Answer.voter_id.in_(member_ids),
                     )
@@ -157,6 +158,7 @@ async def get_vote(
                     .select_from(Answer)
                     .where(
                         Answer.vote_id == vote_id,
+                        Answer.answered,
                         ~Answer.value,
                         Answer.voter_id.in_(member_ids),
                     )
@@ -291,7 +293,7 @@ async def get_voter(
     all_vids = [r[0] for r in all_vid_result.all()]
 
     answer_query = (
-        select(Answer.vote_id, Answer.value)
+        select(Answer.vote_id, Answer.value, Answer.answered, Answer.present)
         .where(Answer.voter_id == voter_id)
         .order_by(Answer.vote_id)
     )
@@ -301,6 +303,8 @@ async def get_voter(
     answer_result = await db.execute(answer_query)
     answer_rows = answer_result.all()
     answer_map = {r[0]: r[1] for r in answer_rows}
+    answer_answered = {r[0]: r[2] for r in answer_rows}
+    answer_present = {r[0] for r in answer_rows if r[3]}
 
     v_text_map = {}
     v_passed_map = {}
@@ -318,7 +322,8 @@ async def get_voter(
         AnswerOut(
             vote_id=vid,
             value=answer_map.get(vid, False),
-            answered=vid in answer_map,
+            answered=answer_answered.get(vid, False),
+            present=vid in answer_present,
             vote_text=v_text_map.get(vid),
             has_passed=v_passed_map.get(vid),
         )
@@ -465,19 +470,29 @@ async def get_voter(
     )
     own_member_ids = [r[0] for r in own_member_ids_result.all()]
 
-    answer_rate = len(answer_map) / len(all_vids) if all_vids else 0.0
+    present_count = len(answer_present)
+    answered_count = sum(1 for v in answer_answered.values() if v)
+    answer_rate = answered_count / present_count if present_count else 0.0
 
     group_avg_answer_rate = 0.0
     if own_member_ids and all_vids:
-        member_answer_counts = (
+        member_counts = (
             await db.execute(
-                select(Answer.voter_id, func.count())
+                select(
+                    Answer.voter_id,
+                    func.count().filter(Answer.answered).label("answered_count"),
+                    func.count().filter(Answer.present).label("present_count"),
+                )
                 .where(Answer.voter_id.in_(own_member_ids))
                 .group_by(Answer.voter_id)
             )
         ).all()
-        rates = [cnt / len(all_vids) for _, cnt in member_answer_counts]
-        unanswered_members = len(own_member_ids) - len(rates)
+        rates = [
+            row.answered_count / row.present_count
+            for row in member_counts
+            if row.present_count > 0
+        ]
+        unanswered_members = len(own_member_ids) - len(member_counts)
         if unanswered_members > 0:
             rates.extend([0.0] * unanswered_members)
         group_avg_answer_rate = sum(rates) / len(rates) if rates else 0.0
@@ -490,6 +505,7 @@ async def get_voter(
                     .select_from(Answer)
                     .where(
                         Answer.vote_id == vid,
+                        Answer.answered,
                         Answer.value,
                         Answer.voter_id.in_(own_member_ids),
                     )
@@ -501,6 +517,7 @@ async def get_voter(
                     .select_from(Answer)
                     .where(
                         Answer.vote_id == vid,
+                        Answer.answered,
                         Answer.voter_id.in_(own_member_ids),
                     )
                 )
@@ -642,6 +659,8 @@ async def get_group(
                 name=group_map.get(other_gid, "Unknown"),
                 color=group_color_map.get(other_gid, "#808080"),
                 similarity=sim,
+                confidence=row.confidence,
+                shared_count=row.shared_count,
                 per_category=pc,
             )
         )
@@ -671,19 +690,28 @@ async def get_group(
         )
         member_ids = [r[0] for r in member_ids_result.all()]
         if member_ids:
-            answer_query = (
-                select(Answer.voter_id, func.count())
-                .where(Answer.voter_id.in_(member_ids))
-            )
+            base_filter = [Answer.voter_id.in_(member_ids)]
             if categories:
-                answer_query = answer_query.where(Answer.vote_id.in_(vids_in_cat))
-            member_answer_counts = (
-                await db.execute(answer_query.group_by(Answer.voter_id))
+                base_filter.append(Answer.vote_id.in_(vids_in_cat))
+            member_counts = (
+                await db.execute(
+                    select(
+                        Answer.voter_id,
+                        func.count().filter(Answer.answered).label("answered_count"),
+                        func.count().filter(Answer.present).label("present_count"),
+                    )
+                    .where(*base_filter)
+                    .group_by(Answer.voter_id)
+                )
             ).all()
-            rates = [cnt / total_votes for _, cnt in member_answer_counts]
-            unanswered_members = len(member_ids) - len(rates)
-            if unanswered_members > 0:
-                rates.extend([0.0] * unanswered_members)
+            rates = [
+                row.answered_count / row.present_count
+                for row in member_counts
+                if row.present_count > 0
+            ]
+            no_answer_members = len(member_ids) - len(member_counts)
+            if no_answer_members > 0:
+                rates.extend([0.0] * no_answer_members)
             group_answer_rate = sum(rates) / len(rates) if rates else 0.0
 
     return GroupDetailOut(

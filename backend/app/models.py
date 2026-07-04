@@ -99,7 +99,9 @@ class Answer(Base):
     voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     vote_id = Column(Integer, ForeignKey("votes.id"), primary_key=True)
     value = Column(Boolean, nullable=False)
-    answered_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    answered = Column(Boolean, nullable=False, default=True)
+    present = Column(Boolean, nullable=False, default=True)
+    answered_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
     voter = relationship("Voter", back_populates="answers")
     vote = relationship("Vote", back_populates="answers")
@@ -136,6 +138,8 @@ class GroupGroupSim(Base):
     group_a_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     group_b_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     similarity = Column(Float, nullable=False)
+    shared_count = Column(Integer, nullable=False, default=0)
+    confidence = Column(Float, nullable=False, default=0.0)
     per_category = Column(JSON, nullable=True)
 
 

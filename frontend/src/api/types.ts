@@ -38,6 +38,7 @@ export interface AnswerOut {
   vote_id: number;
   value: boolean;
   answered: boolean;
+  present: boolean;
   vote_text: string | null;
   has_passed: boolean | null;
 }
@@ -117,6 +118,8 @@ export interface SimilarGroupOut {
   name: string;
   color: string;
   similarity: number;
+  confidence?: number;
+  shared_count?: number;
   per_category: Record<string, number> | null;
 }
 
