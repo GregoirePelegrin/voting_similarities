@@ -4,7 +4,7 @@ import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {Box, Typography,} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
-import SimilarityBar from "../shared/similarity-bar";
+import PercentageBar from "../shared/percentage-bar";
 import {GROUPS_TABLE} from "../../constants/fr";
 
 const columns: GridColDef[] = [
@@ -29,7 +29,7 @@ const columns: GridColDef[] = [
     renderCell: (params) =>
       params.value != null ? (
         <Box sx={{display: "flex", alignItems: "center", width: "100%", height: "100%"}}>
-          <SimilarityBar value={params.value} color={params.row.color}/>
+          <PercentageBar value={params.value} color={params.row.color}/>
         </Box>
       ) : (
         <Typography variant="body2" color="text.secondary">-</Typography>

@@ -2,14 +2,14 @@ import React from "react";
 import {Box, Typography} from "@mui/material";
 import {DATA_COLORS} from "../../theme";
 
-interface SimilarityBarProps {
+interface PercentageBarProps {
   value: number;
   color?: string;
   label?: string;
   showSign?: boolean;
 }
 
-const SimilarityBar: React.FC<SimilarityBarProps> = ({value, color = DATA_COLORS.primary, label, showSign}) => {
+const PercentageBar: React.FC<PercentageBarProps> = ({value, color = DATA_COLORS.primary, label, showSign}) => {
   const pct = Math.max(0, Math.min(1, Math.abs(value))) * 100;
   const displayValue = showSign && value < 0
     ? `${(value * 100).toFixed(1)}%`
@@ -41,4 +41,4 @@ const SimilarityBar: React.FC<SimilarityBarProps> = ({value, color = DATA_COLORS
   );
 };
 
-export default SimilarityBar;
+export default PercentageBar;

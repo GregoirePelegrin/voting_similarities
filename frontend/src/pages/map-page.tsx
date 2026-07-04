@@ -5,7 +5,7 @@ import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 import CategoryFilter from "../components/shared/category-filter";
-import VotersScatter from "../components/map/voters-scatter";
+import EmbeddingScatter from "../components/map/embedding-scatter";
 import GroupsScatter from "../components/map/groups-scatter";
 import MethodologyPanel from "../components/map/methodology-panel";
 import {filterAnnotation} from "../constants/fr";
@@ -37,7 +37,7 @@ const MapPage: React.FC = observer(() => {
         <>
           {
             embeddingsStore.votersEmbedding ? (
-              <VotersScatter
+              <EmbeddingScatter
                 points={embeddingsStore.votersEmbedding.points}
                 barycenters={embeddingsStore.votersEmbedding.barycenters}
                 stress={embeddingsStore.votersEmbedding.stress}

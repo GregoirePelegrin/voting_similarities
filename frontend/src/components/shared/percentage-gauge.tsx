@@ -1,7 +1,7 @@
 import React from "react";
 import {Box, Typography, CircularProgress, Tooltip} from "@mui/material";
 
-interface CohesivityGaugeProps {
+interface PercentageGaugeProps {
   value: number;
   color: string;
   size?: number;
@@ -10,7 +10,7 @@ interface CohesivityGaugeProps {
   total?: number;
 }
 
-const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 120, label = "Cohesivity", sampleSize, total}) => {
+const PercentageGauge: React.FC<PercentageGaugeProps> = ({value, color, size = 120, label = "Cohesivity", sampleSize, total}) => {
   const pct = Math.max(0, Math.min(1, value)) * 100;
 
   const tooltip = (
@@ -66,4 +66,4 @@ const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 1
   );
 };
 
-export default CohesivityGauge;
+export default PercentageGauge;

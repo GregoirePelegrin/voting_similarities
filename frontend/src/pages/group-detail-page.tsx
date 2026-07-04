@@ -5,7 +5,7 @@ import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
 import AnimatedPage from "../components/shared/animated-page";
 import CategoryFilter from "../components/shared/category-filter";
-import CohesivityGauge from "../components/shared/cohesivity-gauge";
+import PercentageGauge from "../components/shared/percentage-gauge";
 import SimilarGroupsList from "../components/groups/similar-groups-list";
 import CategoryHeatmap from "../components/groups/category-heatmap";
 import DeterminantCategoriesCard from "../components/groups/determinant-categories-card";
@@ -80,9 +80,9 @@ const GroupDetailPage: React.FC = observer(() => {
         <Grid size={{xs: 12, md: 4}}>
           <Card sx={{height: "100%"}}>
             <CardContent sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2}}>
-              <CohesivityGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION} sampleSize={group.member_count} total={group.total_votes}/>
-              <CohesivityGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE} sampleSize={group.present_count} total={group.total_votes}/>
-              <CohesivityGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE} sampleSize={group.answered_count} total={group.total_votes}/>
+              <PercentageGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION} sampleSize={group.member_count} total={group.total_votes}/>
+              <PercentageGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE} sampleSize={group.present_count} total={group.total_votes}/>
+              <PercentageGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE} sampleSize={group.answered_count} total={group.total_votes}/>
             </CardContent>
           </Card>
         </Grid>

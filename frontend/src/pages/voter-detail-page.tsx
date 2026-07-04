@@ -10,7 +10,7 @@ import AnswerGrid from "../components/voters/answer-grid";
 import GroupComparisonBars from "../components/voters/group-comparison-bars";
 import CategoryAlignmentCard from "../components/voters/category-alignment-card";
 import VoterInfoCard from "../components/voters/voter-info-card";
-import CohesivityGauge from "../components/shared/cohesivity-gauge";
+import PercentageGauge from "../components/shared/percentage-gauge";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 import MetricInfoCard from "../components/shared/metric-info-card";
 import {VOTER_DETAIL, SORT, METRICS, filterAnnotation} from "../constants/fr";
@@ -93,13 +93,13 @@ const VoterDetailPage: React.FC = observer(() => {
             />
           </Box>
           <Box sx={{display: "flex", gap: 2, alignItems: "center"}}>
-            <CohesivityGauge value={voter.answer_rate} color={voter.group.color} size={80}
+            <PercentageGauge value={voter.answer_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.ANSWER_RATE} sampleSize={voter.answered_count} total={voter.total_votes}/>
-            <CohesivityGauge value={voter.presence_rate} color={voter.group.color} size={80}
+            <PercentageGauge value={voter.presence_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.PRESENCE_RATE} sampleSize={voter.present_count} total={voter.total_votes}/>
-            <CohesivityGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={80}
+            <PercentageGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.GROUP_AVG}/>
-            <CohesivityGauge value={voter.group_avg_presence_rate} color={voter.group.color} size={80}
+            <PercentageGauge value={voter.group_avg_presence_rate} color={voter.group.color} size={80}
                              label={VOTER_DETAIL.GROUP_AVG_PRESENCE}/>
           </Box>
         </CardContent>

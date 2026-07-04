@@ -18,7 +18,7 @@ import {VOTERS_SCATTER} from "../../constants/fr";
 import {APP_CONFIG} from "../../constants/config";
 import {DATA_COLORS} from "../../theme";
 
-interface VotersScatterProps {
+interface EmbeddingScatterProps {
   points: EmbeddingPointOut[];
   barycenters: BarycenterOut[];
   stress: number;
@@ -50,7 +50,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycenters, stress, categoriesLabel}) => {
+const EmbeddingScatter: React.FC<EmbeddingScatterProps> = observer(({points, barycenters, stress, categoriesLabel}) => {
   const navigate = useNavigate();
 
   const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
@@ -116,4 +116,4 @@ const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycente
   );
 });
 
-export default VotersScatter;
+export default EmbeddingScatter;

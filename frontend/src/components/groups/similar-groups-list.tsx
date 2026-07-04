@@ -2,7 +2,7 @@ import React from "react";
 import {useNavigate} from "react-router-dom";
 import {Card, CardContent, Typography, Box} from "@mui/material";
 import {SimilarGroupOut} from "../../api/types";
-import SimilarityBar from "../shared/similarity-bar";
+import PercentageBar from "../shared/percentage-bar";
 import {SIMILAR_GROUPS} from "../../constants/fr";
 import {SortMode} from "../../stores/ui-store";
 
@@ -39,7 +39,7 @@ const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({groups, sortMode =
                     {g.shared_count} {SIMILAR_GROUPS.SHARED} · {(g.confidence * 100).toFixed(0)}% {SIMILAR_GROUPS.CONFIDENCE}
                   </Typography>
                 </Box>
-                <SimilarityBar value={g.similarity} color={g.color}/>
+                <PercentageBar value={g.similarity} color={g.color}/>
             </Box>
           ))}
         </Box>

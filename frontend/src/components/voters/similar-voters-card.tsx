@@ -2,7 +2,7 @@ import React from "react";
 import {useNavigate} from "react-router-dom";
 import {Card, CardContent, Typography, Box} from "@mui/material";
 import {SimilarVoterOut} from "../../api/types";
-import SimilarityBar from "../shared/similarity-bar";
+import PercentageBar from "../shared/percentage-bar";
 import {SIMILAR_VOTERS} from "../../constants/fr";
 
 interface SimilarVotersCardProps {
@@ -42,7 +42,7 @@ const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: vot
                     {p.shared_count} {SIMILAR_VOTERS.SHARED} · {(p.confidence * 100).toFixed(0)}% {SIMILAR_VOTERS.CONFIDENCE}
                   </Typography>
                 </Box>
-                <SimilarityBar value={p.similarity} color={barColor} showSign={showSign}/>
+                <PercentageBar value={p.similarity} color={barColor} showSign={showSign}/>
               </Box>
             );
           })}
