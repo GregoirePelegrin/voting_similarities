@@ -8,6 +8,7 @@ import CategoryFilter from "../components/shared/category-filter";
 import VotersScatter from "../components/map/voters-scatter";
 import GroupsScatter from "../components/map/groups-scatter";
 import MethodologyPanel from "../components/map/methodology-panel";
+import {filterAnnotation} from "../constants/fr";
 
 const MapPage: React.FC = observer(() => {
   const {embeddingsStore, uiStore, categoriesStore, similarityConfig} = rootStore;
@@ -18,12 +19,11 @@ const MapPage: React.FC = observer(() => {
   }, [uiStore.categoriesKey, uiStore.retryVersion]);
 
   const isLoading = !embeddingsStore.votersEmbedding && !embeddingsStore.groupsEmbedding;
-  const categoriesLabel = (() => {
-    const names = uiStore.selectedCategories
+  const categoriesLabel = filterAnnotation(
+    uiStore.selectedCategories
       .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
-      .filter((n): n is string => !!n);
-    return names.length > 0 ? `Sur les questions ${names.join(" ET ")}` : undefined;
-  })();
+      .filter((n): n is string => !!n)
+  );
 
   return (
     <AnimatedPage>

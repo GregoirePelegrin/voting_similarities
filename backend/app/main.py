@@ -56,7 +56,7 @@ def _log_config():
         settings.SIMILARITY_W_YES,
         settings.SIMILARITY_W_NO,
         settings.SIMILARITY_W_MISMATCH,
-        settings.SIMILARITY_BAYESIAN_M,
+        settings.SIMILARITY_SHRINKAGE_M,
     )
 
 

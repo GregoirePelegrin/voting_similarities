@@ -1,6 +1,6 @@
 # Voting Similarities
 
-A web application for analyzing and comparing how voters and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with Bayesian shrinkage, Classical MDS for 2D visualization, and information gain for explainability.
+A web application for analyzing and comparing how voters and groups vote on yes/no questions. Uses a weighted asymmetric similarity metric with additive shrinkage toward the global mean, Classical MDS for 2D visualization, and information gain for explainability.
 
 ## Production Startup (podman — single command)
 
@@ -172,7 +172,7 @@ The app opens at http://localhost:5173 and proxies API calls to `http://localhos
 | `SIMILARITY_W_YES` | `1.0` | Weight for Yes-Yes agreement |
 | `SIMILARITY_W_NO` | `0.2` | Weight for No-No agreement |
 | `SIMILARITY_W_MISMATCH` | `0.5` | Penalty for disagreement |
-| `SIMILARITY_BAYESIAN_M` | `10` | Bayesian shrinkage strength |
+| `SIMILARITY_SHRINKAGE_M` | `10` | Shrinkage strength (shared votes before pair score dominates global mean) |
 
 ### Frontend
 
@@ -246,7 +246,7 @@ A weighted asymmetric overlap where Yes-Yes agreement counts more than No-No agr
 - **No-No**: weight 0.2 (weaker signal)
 - **Disagreement**: penalty -0.5
 
-Bayesian shrinkage blends each pair's raw score with the global mean, weighted by shared question count (parameter `m=10`), to handle sparse voting records.
+Additive shrinkage blends each pair's raw score with the global mean, weighted by shared question count (parameter `m=10`), to handle sparse voting records.
 
 ### MDS Visualization
 

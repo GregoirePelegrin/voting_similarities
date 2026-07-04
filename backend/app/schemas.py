@@ -45,6 +45,7 @@ class AnswerOut(BaseModel):
     present: bool = True
     vote_text: str | None = None
     has_passed: bool | None = None
+    group_majority_yes: bool | None = None
 
 
 class RoleOut(BaseModel):
@@ -114,6 +115,8 @@ class VoterDetailOut(BaseModel):
     answers: list[AnswerOut]
     group_yes_rates: dict[str, float] | None = None
     answer_rate: float = 0.0
+    answered_count: int = 0
+    present_count: int = 0
     group_avg_answer_rate: float = 0.0
     presence_rate: float = 0.0
     group_avg_presence_rate: float = 0.0
@@ -146,7 +149,9 @@ class GroupDetailOut(BaseModel):
     member_count: int
     cohesivity: float
     answer_rate: float = 0.0
+    answered_count: int = 0
     presence_rate: float = 0.0
+    present_count: int = 0
     per_category: dict[str, float] | None = None
     similar_groups: list[SimilarGroupOut]
 

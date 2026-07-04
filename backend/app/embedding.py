@@ -7,7 +7,7 @@ def classical_mds(
     n = similarity_matrix.shape[0]
     if n <= n_components:
         coords = np.zeros((n, n_components))
-        stress = 0.0
+        stress = 1.0
         return coords, stress
 
     dist = similarity_matrix.max() - similarity_matrix

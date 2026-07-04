@@ -11,5 +11,5 @@ async def get_config():
         "w_yes": settings.SIMILARITY_W_YES,
         "w_no": settings.SIMILARITY_W_NO,
         "w_mismatch": settings.SIMILARITY_W_MISMATCH,
-        "m": settings.SIMILARITY_BAYESIAN_M,
+        "m": settings.SIMILARITY_SHRINKAGE_M,
     }

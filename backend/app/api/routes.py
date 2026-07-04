@@ -308,6 +308,7 @@ async def get_voter(
 
     v_text_map = {}
     v_passed_map = {}
+    group_majority = {}
     if all_vids:
         v_result = await db.execute(
             select(Vote.id, Vote.text, Vote.has_passed).where(
@@ -318,6 +319,30 @@ async def get_voter(
             v_text_map[vid] = vtext
             v_passed_map[vid] = vpassed
 
+        # Precompute group majority per vote
+        gm_result = await db.execute(
+            select(
+                Answer.vote_id,
+                Answer.value,
+                func.count().label("cnt"),
+            )
+            .join(Voter, Voter.id == Answer.voter_id)
+            .where(Voter.group_id == group.id)
+            .where(Answer.vote_id.in_(all_vids))
+            .where(Answer.answered == True)
+            .where(Answer.present == True)
+            .group_by(Answer.vote_id, Answer.value)
+            .order_by(Answer.vote_id, func.count().desc())
+        )
+        vote_counts: dict[int, list[tuple[bool, int]]] = {}
+        for row in gm_result.all():
+            vote_counts.setdefault(row.vote_id, []).append((row.value, row.cnt))
+        for vid, counted in vote_counts.items():
+            if len(counted) == 1 or counted[0][1] > counted[1][1]:
+                group_majority[vid] = counted[0][0]
+            else:
+                group_majority[vid] = None
+
     answers = [
         AnswerOut(
             vote_id=vid,
@@ -326,6 +351,7 @@ async def get_voter(
             present=vid in answer_present,
             vote_text=v_text_map.get(vid),
             has_passed=v_passed_map.get(vid),
+            group_majority_yes=group_majority.get(vid),
         )
         for vid in all_vids
     ]
@@ -353,8 +379,10 @@ async def get_voter(
         other_ids.add(other_id)
 
     voter_sims.sort(key=lambda x: x[1], reverse=True)
-    similar = voter_sims[:5]
-    dissimilar = list(reversed(voter_sims[-5:])) if len(voter_sims) >= 5 else voter_sims
+    similar_raw = [(oid, sim, conf, sc) for oid, sim, conf, sc in voter_sims if sim >= 0]
+    dissimilar_raw = [(oid, sim, conf, sc) for oid, sim, conf, sc in voter_sims if sim < 0]
+    similar = similar_raw[:5]
+    dissimilar = sorted(dissimilar_raw, key=lambda x: x[1])[:5]
 
     # Batch fetch voter names and groups
     all_sim_ids = {s[0] for s in similar + dissimilar}
@@ -506,33 +534,27 @@ async def get_voter(
         group_avg_presence_rate = sum(presence_rates) / len(presence_rates) if presence_rates else 0.0
 
     if own_member_ids and all_vids:
-        for vid in all_vids:
-            yes_count = (
-                await db.execute(
-                    select(func.count())
-                    .select_from(Answer)
-                    .where(
-                        Answer.vote_id == vid,
-                        Answer.answered,
-                        Answer.value,
-                        Answer.voter_id.in_(own_member_ids),
-                    )
+        rate_rows = (
+            await db.execute(
+                select(
+                    Answer.vote_id,
+                    func.count().filter(Answer.value == True).label("yes_count"),
+                    func.count().label("total_count"),
                 )
-            ).scalar() or 0
-            total_count = (
-                await db.execute(
-                    select(func.count())
-                    .select_from(Answer)
-                    .where(
-                        Answer.vote_id == vid,
-                        Answer.answered,
-                        Answer.voter_id.in_(own_member_ids),
-                    )
+                .select_from(Answer)
+                .where(
+                    Answer.voter_id.in_(own_member_ids),
+                    Answer.vote_id.in_(all_vids),
+                    Answer.answered == True,
                 )
-            ).scalar() or 0
-            group_yes_rates[str(vid)] = (
-                yes_count / total_count if total_count > 0 else 0.0
+                .group_by(Answer.vote_id)
             )
+        ).all()
+        group_yes_rates = {
+            str(row.vote_id): (row.yes_count / row.total_count)
+            for row in rate_rows
+            if row.total_count > 0
+        }
 
     return VoterDetailOut(
         id=voter.id,
@@ -547,6 +569,8 @@ async def get_voter(
         answers=answers,
         group_yes_rates=group_yes_rates if group_yes_rates else None,
         answer_rate=answer_rate,
+        answered_count=answered_count,
+        present_count=present_count,
         group_avg_answer_rate=group_avg_answer_rate,
         presence_rate=presence_rate,
         group_avg_presence_rate=group_avg_presence_rate,
@@ -729,6 +753,14 @@ async def get_group(
                 presence_rates.extend([0.0] * no_answer_members)
             group_answer_rate = sum(rates) / len(rates) if rates else 0.0
             group_presence_rate = sum(presence_rates) / len(presence_rates) if presence_rates else 0.0
+            group_answered = sum(row.answered_count for row in member_counts)
+            group_present = sum(row.present_count for row in member_counts)
+        else:
+            group_answered = 0
+            group_present = 0
+    else:
+        group_answered = 0
+        group_present = 0
 
     return GroupDetailOut(
         id=group.id,
@@ -737,7 +769,9 @@ async def get_group(
         member_count=member_count,
         cohesivity=cohesivity,
         answer_rate=group_answer_rate,
+        answered_count=group_answered,
         presence_rate=group_presence_rate,
+        present_count=group_present,
         per_category=per_category,
         similar_groups=similar_groups,
     )

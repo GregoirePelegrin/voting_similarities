@@ -124,7 +124,7 @@ python scripts/compute_similarities.py --w-yes 1.0 --w-no 0.5 --w-mismatch 0.3 -
 
 1. Loads all answers into NumPy matrices (voters × questions)
 2. Computes pairwise weighted asymmetric overlap using matrix multiplication
-3. Applies Bayesian shrinkage toward the global mean (controlled by `--m`)
+3. Applies additive shrinkage toward the global mean (controlled by `--m`)
 4. Computes per-category similarity using only questions in each category
 5. Derives group-level metrics by averaging voter-voter similarities
 6. Stores results in the similarity tables (clears existing data first)

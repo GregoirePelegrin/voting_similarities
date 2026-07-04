@@ -24,6 +24,10 @@ export const CATEGORY_FILTER = {
   ALL: "Toutes les catégories",
 };
 
+export function filterAnnotation(names: string[]): string | undefined {
+  return names.length > 0 ? `Sur les questions ${names.join(" ET ")}` : undefined;
+}
+
 export const VOTERS_TABLE = {
   ID: "ID",
   FIRST_NAME: "Prénom",
@@ -51,14 +55,21 @@ export const ANSWER_GRID = {
   NO_SAME_GROUP: "Non — comme le groupe",
   PASSED: "Adopté",
   NOT_PASSED: "Rejeté",
-  YES_SAME: "Oui, comme le groupe",
-  NO_SAME: "Non, comme le groupe",
-  YES_DIFF: "Oui, différent",
-  NO_DIFF: "Non, différent",
+  YES_SAME: "Oui, a voté comme le groupe",
+  NO_SAME: "Non, a voté comme le groupe",
+  YES_DIFF: "Oui, a voté contre le groupe",
+  NO_DIFF: "Non, a voté contre le groupe",
+  YES_SAME_DESC: "Votant·e et groupe majoritaire ont voté Oui. La proposition a été adoptée.",
+  NO_SAME_DESC: "Votant·e et groupe majoritaire ont voté Non. La proposition a été rejetée.",
+  YES_DIFF_DESC: "Votant·e a voté Oui, mais la majorité du groupe a voté Non. La proposition a été adoptée.",
+  NO_DIFF_DESC: "Votant·e a voté Non, mais la majorité du groupe a voté Oui. La proposition a été rejetée.",
+  ABSTENTION_DESC: "Présent·e mais s'est abstenu·e (ni Oui ni Non).",
+  ABSENT_DESC: "Non présent·e lors du vote.",
 };
 
 export const SIMILAR_VOTERS = {
   SHARED: "partagés",
+  CONFIDENCE: "confiance",
 };
 
 export const GROUP_COMPARISON = {
@@ -77,6 +88,8 @@ export const CATEGORY_ALIGNMENT = {
   TOOLTIP:
     "Mesure l'alignement de ce votant avec son propre groupe par rapport aux autres groupes " +
     "pour chaque catégorie. Positif = le votant correspond à son groupe, négatif = il s'en démarque.",
+  OWN_GROUP: "Groupe propre",
+  AVG_OTHERS: "Moy. autres groupes",
 };
 
 export const VOTER_DETAIL = {
@@ -103,6 +116,8 @@ export const CATEGORIES_TABLE = {
 
 export const SIMILAR_GROUPS = {
   HEADING: "Groupes similaires",
+  SHARED: "partagés",
+  CONFIDENCE: "confiance",
 };
 
 export const DETERMINANT_CATEGORIES = {
@@ -160,10 +175,14 @@ export const VOTE_DETAIL = {
 export const VOTERS_SCATTER = {
   HEADING: "Votants",
   MEMBERS_BC: "membres (barycentre)",
+  X_LABEL: "Dimension 1",
+  Y_LABEL: "Dimension 2",
 };
 
 export const GROUPS_SCATTER = {
   HEADING: "Groupes",
+  X_LABEL: "Dimension 1",
+  Y_LABEL: "Dimension 2",
 };
 
 export const METHODOLOGY = {

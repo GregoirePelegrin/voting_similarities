@@ -11,6 +11,7 @@ import {SortMode} from "../../stores/ui-store";
 interface CategoryAlignmentCardProps {
   alignments: CategoryAlignmentOut[];
   sortMode?: SortMode;
+  categoriesLabel?: string;
 }
 
 const CustomTooltip: React.FC<any> = ({active, payload}) => {
@@ -22,11 +23,17 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
       <Typography variant="caption" color="text.secondary">
         {CATEGORY_ALIGNMENT.TOOLTIP_LABEL}: {d.alignment >= 0 ? "+" : ""}{(d.alignment * 100).toFixed(1)}%
       </Typography>
+      <Typography variant="caption" color="text.secondary" display="block">
+        {CATEGORY_ALIGNMENT.OWN_GROUP}: {(d.own_group_similarity * 100).toFixed(1)}%
+      </Typography>
+      <Typography variant="caption" color="text.secondary" display="block">
+        {CATEGORY_ALIGNMENT.AVG_OTHERS}: {(d.avg_other_group_similarity * 100).toFixed(1)}%
+      </Typography>
     </Box>
   );
 };
 
-const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments, sortMode = "value"}) => {
+const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments, sortMode = "value", categoriesLabel}) => {
   if (!alignments || alignments.length === 0) return null;
 
   const data = [...alignments]
@@ -41,6 +48,11 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments
     <Card>
       <CardContent>
         <Typography variant="h6" sx={{mb: 2}}>{CATEGORY_ALIGNMENT.HEADING}</Typography>
+        {categoriesLabel && (
+          <Typography variant="caption" color="text.secondary" sx={{ml: 2, fontStyle: "italic"}}>
+            {categoriesLabel}
+          </Typography>
+        )}
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" tickFormatter={(v: number) => `${v.toFixed(0)}%`}/>

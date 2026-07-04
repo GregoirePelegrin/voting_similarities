@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     SIMILARITY_W_YES: float = 1.0
     SIMILARITY_W_NO: float = 0.2
     SIMILARITY_W_MISMATCH: float = 0.5
-    SIMILARITY_BAYESIAN_M: int = 10
+    SIMILARITY_SHRINKAGE_M: int = 10
 
     model_config = {
         "env_file": str(_PROJECT_ROOT / ".env"),

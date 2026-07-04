@@ -10,6 +10,7 @@ import {DATA_COLORS} from "../../theme";
 interface DeterminantCategoriesCardProps {
   categories: DeterminantCategoryOut[];
   sortMode?: SortMode;
+  categoriesLabel?: string;
 }
 
 const CustomTooltip: React.FC<any> = ({active, payload}) => {
@@ -41,7 +42,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
   );
 };
 
-const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories, sortMode = "value"}) => {
+const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({categories, sortMode = "value", categoriesLabel}) => {
   if (!categories || categories.length === 0) return null;
 
   const data = [...categories].sort((a, b) =>
@@ -54,6 +55,11 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
     <Card>
       <CardContent>
         <Typography variant="h6" sx={{mb: 2}}>{DETERMINANT_CATEGORIES.HEADING}</Typography>
+        {categoriesLabel && (
+          <Typography variant="caption" color="text.secondary" sx={{ml: 2, fontStyle: "italic"}}>
+            {categoriesLabel}
+          </Typography>
+        )}
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" domain={[0, 1]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>

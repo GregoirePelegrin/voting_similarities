@@ -39,7 +39,7 @@ const SimilarVotersCard: React.FC<SimilarVotersCardProps> = ({title, voters: vot
                 <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
                   <Typography variant="body2">{p.firstname} {p.lastname}</Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {p.shared_count} {SIMILAR_VOTERS.SHARED}
+                    {p.shared_count} {SIMILAR_VOTERS.SHARED} · {(p.confidence * 100).toFixed(0)}% {SIMILAR_VOTERS.CONFIDENCE}
                   </Typography>
                 </Box>
                 <SimilarityBar value={p.similarity} color={barColor} showSign={showSign}/>

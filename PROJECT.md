@@ -112,11 +112,11 @@ This ensures:
 - Disagreement actively penalizes similarity
 - The score is normalized to [−1, 1] or [0, 1] depending on tuning
 
-### Handling sparse voting records (Bayesian shrinkage + threshold)
+### Handling sparse voting records (additive shrinkage + threshold)
 
 Some people may have answered very few questions, leading to unreliable similarity scores when their overlap with another person is small. We address this with a two-part strategy:
 
-**1. Bayesian shrinkage toward the global mean**
+**1. Shrinkage toward the global mean (additive smoothing)**
 
 Blend the raw pair similarity with the global average similarity, weighted by how much evidence (shared question count) the pair has:
 
@@ -136,7 +136,7 @@ The confidence value (`weight = shared_count / (shared_count + m)`) is stored as
 
 ### Group-level similarity
 
-Group-level similarity is computed by averaging member similarity scores (or using group centroid vectors with the same weighting). Group-group and person-group similarity also apply the same Bayesian shrinkage when the effective overlap is low.
+Group-level similarity is computed by averaging member similarity scores (or using group centroid vectors with the same weighting). Group-group and person-group similarity also apply the same shrinkage when the effective overlap is low.
 
 ---
 
@@ -280,7 +280,7 @@ The backend uses `pydantic-settings` and reads from environment variables or a `
 | `SIMILARITY_W_YES` | `1.0` | Weight for Yes-Yes agreement in similarity metric |
 | `SIMILARITY_W_NO` | `0.2` | Weight for No-No agreement in similarity metric |
 | `SIMILARITY_W_MISMATCH` | `0.5` | Penalty for disagreement in similarity metric |
-| `SIMILARITY_BAYESIAN_M` | `10` | Bayesian shrinkage strength (shared questions needed to trust pair data) |
+| `SIMILARITY_SHRINKAGE_M` | `10` | Shrinkage strength (shared questions needed to trust pair score over global mean) |
 
 The similarity parameters (`SIMILARITY_*`) serve as defaults for the batch computation CLI, which also accepts `--w-yes`, `--w-no`, `--w-mismatch`, and `--m` as command-line overrides.
 
@@ -301,7 +301,7 @@ The frontend reads:
 
 ### Phase 2 — Data ingestion & batch similarity computation
 - CSV/JSON import command for people, groups, questions, answers
-- Implement the weighted asymmetric similarity metric with Bayesian shrinkage and low-confidence flagging
+- Implement the weighted asymmetric similarity metric with additive shrinkage and low-confidence flagging
 - Build the batch pre-computation job (NumPy-vectorized)
 - Implement Classical MDS embedding computation (numpy only, no sklearn)
 - Store all similarity tables + embedding tables (with stress metric)

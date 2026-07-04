@@ -21,36 +21,24 @@ const hsvToRgb = (h: number, s: number, v: number): [number, number, number] => 
   return [255 * f(5), 255 * f(3), 255 * f(1)];
 }
 
-const customSigmoid = (val: number): number => {
-  return Math.min(Math.max(1.2 / (1 + Math.exp(-5 * (val - 0.5))) - 0.1, 0), 1);
-}
-
-const sigmoidInterpolator = (value: number, h1: number, s1: number, v1: number, h2: number, s2: number, v2: number, h3: number, s3: number, v3: number): number[] => {
-  let sigmoidedValue: number = customSigmoid(value);
-  if (sigmoidedValue <= 0.5) {
-    sigmoidedValue = sigmoidedValue * 2;
-    return [
-      h1 + (h2 - h1) * sigmoidedValue,
-      s1 + (s2 - s1) * sigmoidedValue,
-      v1 + (v2 - v1) * sigmoidedValue,
-    ];
-  } else {
-    sigmoidedValue = (sigmoidedValue - 0.5) * 2;
-    return [
-      h2 + (h3 - h2) * sigmoidedValue,
-      s2 + (s3 - s2) * sigmoidedValue,
-      v2 + (v3 - v2) * sigmoidedValue,
-    ];
-  }
-}
-
 const RED_HSV: readonly [number, number, number] = rgbToHsv(0xAD, 0x17, 0x17);
 const GREY_HSV: readonly [number, number, number] = rgbToHsv(0x80, 0x80, 0x80);
 const GREEN_HSV: readonly [number, number, number] = rgbToHsv(0x31, 0x8C, 0x34);
 
 export const redGreyGreenGradient = (value: number): string => {
   const clamped = Math.max(0, Math.min(1, value));
-  const [h, s, v] = sigmoidInterpolator(clamped, ...RED_HSV, ...GREY_HSV, ...GREEN_HSV);
+  let h: number, s: number, v: number;
+  if (clamped <= 0.5) {
+    const t = clamped * 2;
+    h = RED_HSV[0] + (GREY_HSV[0] - RED_HSV[0]) * t;
+    s = RED_HSV[1] + (GREY_HSV[1] - RED_HSV[1]) * t;
+    v = RED_HSV[2] + (GREY_HSV[2] - RED_HSV[2]) * t;
+  } else {
+    const t = (clamped - 0.5) * 2;
+    h = GREY_HSV[0] + (GREEN_HSV[0] - GREY_HSV[0]) * t;
+    s = GREY_HSV[1] + (GREEN_HSV[1] - GREY_HSV[1]) * t;
+    v = GREY_HSV[2] + (GREEN_HSV[2] - GREY_HSV[2]) * t;
+  }
   const [r, g, b] = hsvToRgb(h, s, v);
   return rgbToHex(Math.round(r), Math.round(g), Math.round(b));
 };

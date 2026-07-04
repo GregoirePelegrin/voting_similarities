@@ -118,7 +118,13 @@ def compute_pairwise(yes_mat, no_mat, mask_mat, config):
     return raw_sim, shared_count
 
 
-def apply_bayesian_shrinkage(raw_sim, shared_count, m):
+def apply_shrinkage(raw_sim, shared_count, m):
+    """Shrink each pair's raw similarity toward the global mean, weighted by shared count.
+    
+    This is additive smoothing (empirical Bayes with fixed prior strength m),
+    not a full Bayesian procedure. The parameter m controls how many shared
+    votes are needed before the pair's own score dominates the global mean.
+    """
     n = raw_sim.shape[0]
     if n < 2:
         return raw_sim.copy(), np.zeros_like(raw_sim, dtype=np.float64), 0.0
@@ -204,6 +210,12 @@ def compute_voter_group_records(data, similarity, cat_similarities, cat_shared_c
         for pid in data.voter_ids:
             p_idx = data.voter_id_to_idx[pid]
 
+            # Two-stage shrinkage: similarity[p_idx, other_indices] is already
+            # shrunk (additive smoothing toward global mean via apply_shrinkage).
+            # Averaging these already-shrunk scores and then applying a second
+            # overlap_weight (confidence = shared/(shared+m)) discounts further.
+            # The `m` parameter tuned for pairwise shrinkage may not be optimal
+            # for this second stage, but this is accepted for consistency.
             other_indices = member_indices[member_indices != p_idx]
             if len(other_indices) > 0:
                 avg_sim = float(np.mean(similarity[p_idx, other_indices]))
@@ -263,7 +275,7 @@ def compute_per_category_pairwise(data, config):
         cat_no = data.no_matrix[:, v_indices]
         cat_mask = data.mask_matrix[:, v_indices]
         cat_raw, cat_shared = compute_pairwise(cat_yes, cat_no, cat_mask, config)
-        cat_sim, _, _ = apply_bayesian_shrinkage(cat_raw, cat_shared, config.m)
+        cat_sim, _, _ = apply_shrinkage(cat_raw, cat_shared, config.m)
         cat_similarities[cat_id] = cat_sim
         cat_shared_counts[cat_id] = cat_shared
     return cat_similarities, cat_shared_counts
@@ -301,7 +313,7 @@ def compute_pairwise_for_combination(
     no = data.no_matrix[:, v_indices]
     mask = data.mask_matrix[:, v_indices]
     raw, shared = compute_pairwise(yes, no, mask, config)
-    sim, _, _ = apply_bayesian_shrinkage(raw, shared, config.m)
+    sim, _, _ = apply_shrinkage(raw, shared, config.m)
     return sim, shared
 
 
@@ -314,6 +326,8 @@ def compute_group_group_records(data, similarity, cat_similarities, config):
         for gid in group_ids
     }
 
+    mask = data.mask_matrix
+
     for i, ga_id in enumerate(group_ids):
         for j, gb_id in enumerate(group_ids):
             if i >= j:
@@ -323,9 +337,9 @@ def compute_group_group_records(data, similarity, cat_similarities, config):
                 similarity, group_indices[ga_id], group_indices[gb_id]
             )
 
-            n_a = len(group_indices[ga_id])
-            n_b = len(group_indices[gb_id])
-            shared_count = min(n_a, n_b)
+            group_a_mask = np.any(mask[group_indices[ga_id]], axis=0)
+            group_b_mask = np.any(mask[group_indices[gb_id]], axis=0)
+            shared_count = int(np.sum(group_a_mask & group_b_mask))
             confidence = shared_count / (shared_count + config.m) if shared_count > 0 else 0.0
 
             per_category = {}

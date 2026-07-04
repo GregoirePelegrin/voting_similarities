@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   ZAxis,
   Cell,
+  Label,
 } from "recharts";
 import {Box, Typography, Chip} from "@mui/material";
 import {useNavigate} from "react-router-dom";
@@ -70,12 +71,17 @@ const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycente
           </Typography>
         )}
       </Box>
-      <ResponsiveContainer width="100%" height={500}>
+      <Box sx={{aspectRatio: 3/2, mx: "auto"}}>
+        <ResponsiveContainer width="100%" height="100%">
         <ScatterChart margin={{top: 10, right: 20, bottom: 10, left: 20}}>
           <XAxis type="number" dataKey="x" name="x" tick={{fill: DATA_COLORS.neutral, fontSize: 11}}
-                 axisLine={{stroke: "rgba(255,255,255,0.1)"}} tickLine={false}/>
+                 axisLine={{stroke: "rgba(255,255,255,0.1)"}} tickLine={false}>
+            <Label value={VOTERS_SCATTER.X_LABEL} position="bottom" fill={DATA_COLORS.neutral} fontSize={11} offset={-5}/>
+          </XAxis>
           <YAxis type="number" dataKey="y" name="y" tick={{fill: DATA_COLORS.neutral, fontSize: 11}}
-                 axisLine={{stroke: "rgba(255,255,255,0.1)"}} tickLine={false}/>
+                 axisLine={{stroke: "rgba(255,255,255,0.1)"}} tickLine={false}>
+            <Label value={VOTERS_SCATTER.Y_LABEL} position="left" angle={-90} fill={DATA_COLORS.neutral} fontSize={11} offset={5} style={{textAnchor: "middle"}}/>
+          </YAxis>
           <ZAxis range={[40]}/>
           <Tooltip content={<UnifiedTooltip/>}/>
           <Scatter
@@ -105,6 +111,7 @@ const VotersScatter: React.FC<VotersScatterProps> = observer(({points, barycente
           </Scatter>
         </ScatterChart>
       </ResponsiveContainer>
+      </Box>
     </Box>
   );
 });

@@ -50,7 +50,7 @@ const GroupComparisonBars: React.FC<GroupComparisonBarsProps> = ({comparisons, s
         </Box>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
-            <XAxis type="number" tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
+            <XAxis type="number" domain={[0, 1]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
             <YAxis type="category" dataKey="group_name" width={90} tick={{fill: DATA_COLORS.neutral, fontSize: 12}}/>
             <RTooltip content={<CustomTooltip/>}/>
             <Bar dataKey="similarity" radius={[0, 4, 4, 0]} barSize={20}>

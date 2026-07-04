@@ -6,9 +6,10 @@ interface CohesivityGaugeProps {
   color: string;
   size?: number;
   label?: string;
+  sampleSize?: number;
 }
 
-const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 120, label = "Cohesivity"}) => {
+const CohesivityGauge: React.FC<CohesivityGaugeProps> = ({value, color, size = 120, label = "Cohesivity", sampleSize}) => {
   const pct = Math.max(0, Math.min(1, value)) * 100;
 
   return (

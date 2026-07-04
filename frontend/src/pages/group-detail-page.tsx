@@ -12,7 +12,7 @@ import DeterminantCategoriesCard from "../components/groups/determinant-categori
 import GroupComparisonBars from "../components/voters/group-comparison-bars";
 import {CardSkeleton} from "../components/shared/loading-skeleton";
 import MetricInfoCard from "../components/shared/metric-info-card";
-import {GROUP_DETAIL, SORT, METRICS, SIMILAR_GROUPS} from "../constants/fr";
+import {GROUP_DETAIL, SORT, METRICS, SIMILAR_GROUPS, filterAnnotation} from "../constants/fr";
 
 const GroupDetailPage: React.FC = observer(() => {
   const {id} = useParams<{ id: string }>();
@@ -38,12 +38,11 @@ const GroupDetailPage: React.FC = observer(() => {
   }, [groupId, uiStore.retryVersion]);
 
   const group = groupsStore.selectedGroup;
-  const categoriesLabel = (() => {
-    const names = uiStore.selectedCategories
+  const categoriesLabel = filterAnnotation(
+    uiStore.selectedCategories
       .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
-      .filter((n): n is string => !!n);
-    return names.length > 0 ? `Sur les questions ${names.join(" ET ")}` : undefined;
-  })();
+      .filter((n): n is string => !!n)
+  );
 
   if (!group) {
     return (
@@ -81,9 +80,9 @@ const GroupDetailPage: React.FC = observer(() => {
         <Grid size={{xs: 12, md: 4}}>
           <Card sx={{height: "100%"}}>
             <CardContent sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2}}>
-              <CohesivityGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION}/>
-              <CohesivityGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE}/>
-              <CohesivityGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE}/>
+              <CohesivityGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION} sampleSize={group.member_count}/>
+              <CohesivityGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE} sampleSize={group.present_count}/>
+              <CohesivityGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE} sampleSize={group.answered_count}/>
             </CardContent>
           </Card>
         </Grid>
@@ -106,7 +105,7 @@ const GroupDetailPage: React.FC = observer(() => {
           <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color} categoriesLabel={categoriesLabel}/>
         </Grid>
         <Grid size={{xs: 12}}>
-          <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode}/>
+          <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
         </Grid>
       </Grid>
       <Box sx={{mt: 3}}>

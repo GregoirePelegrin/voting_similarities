@@ -3,6 +3,7 @@ import asyncio
 import itertools
 import os
 import sys
+from datetime import UTC, datetime
 
 import numpy as np
 
@@ -14,6 +15,7 @@ from app.models import (
     Base,
     Category,
     CategoryDiscriminativeness,
+    ComputationMeta,
     GroupCohesivity,
     GroupEmbedding,
     GroupGroupSim,
@@ -23,7 +25,7 @@ from app.models import (
 )
 from app.similarity import (
     SimilarityConfig,
-    apply_bayesian_shrinkage,
+    apply_shrinkage,
     compute_cohesivity_records,
     compute_group_group_records,
     compute_pairwise,
@@ -113,7 +115,7 @@ async def run(config: SimilarityConfig):
         raw_sim, shared_count = compute_pairwise(
             data.yes_matrix, data.no_matrix, data.mask_matrix, config
         )
-        similarity, confidence, global_mean = apply_bayesian_shrinkage(
+        similarity, confidence, global_mean = apply_shrinkage(
             raw_sim, shared_count, config.m
         )
         print(f"  Global mean raw similarity: {global_mean:.4f}")
@@ -438,6 +440,26 @@ async def run(config: SimilarityConfig):
             await session.flush()
         print(f"  {len(cd_rows)} categories processed")
 
+        print("Storing computation metadata...")
+        await session.execute(delete(ComputationMeta))
+        session.add(ComputationMeta(
+            computed_at=datetime.now(UTC),
+            n_voters=len(data.voter_ids),
+            n_votes=len(data.vote_ids),
+            n_groups=len(data.group_members),
+            n_categories=len(data.category_votes),
+            global_mean_similarity=global_mean,
+            voter_voter_pairs=n_vv,
+            group_group_pairs=len(gg_records),
+            params={
+                "w_yes": config.w_yes,
+                "w_no": config.w_no,
+                "w_mismatch": config.w_mismatch,
+                "m": config.m,
+            },
+        ))
+        await session.flush()
+
         await session.commit()
         print("Done!")
 
@@ -461,8 +483,8 @@ def main():
         help="Penalty for disagreement"
     )
     parser.add_argument(
-        "--m", type=int, default=settings.SIMILARITY_BAYESIAN_M,
-        help="Bayesian shrinkage parameter"
+        "--m", type=int, default=settings.SIMILARITY_SHRINKAGE_M,
+        help="Shrinkage strength (shared votes needed to trust pair score over global mean)"
     )
     args = parser.parse_args()
 

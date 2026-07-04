@@ -41,6 +41,7 @@ export interface AnswerOut {
   present: boolean;
   vote_text: string | null;
   has_passed: boolean | null;
+  group_majority_yes: boolean | null;
 }
 
 export interface GroupSummaryOut {
@@ -100,6 +101,8 @@ export interface VoterDetailOut {
   answers: AnswerOut[];
   group_yes_rates: Record<string, number> | null;
   answer_rate: number;
+  answered_count: number;
+  present_count: number;
   group_avg_answer_rate: number;
   presence_rate: number;
   group_avg_presence_rate: number;
@@ -132,7 +135,9 @@ export interface GroupDetailOut {
   member_count: number;
   cohesivity: number;
   answer_rate: number;
+  answered_count: number;
   presence_rate: number;
+  present_count: number;
   per_category: Record<string, number> | null;
   similar_groups: SimilarGroupOut[];
 }

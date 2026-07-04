@@ -183,3 +183,18 @@ class CategoryDiscriminativeness(Base):
     normalized_ig = Column(Float, nullable=False)
     variance_score = Column(Float, nullable=False)
     per_group_breakdown = Column(JSON, nullable=True)
+
+
+class ComputationMeta(Base):
+    __tablename__ = "computation_meta"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    computed_at = Column(DateTime(timezone=True), nullable=False)
+    n_voters = Column(Integer, nullable=False)
+    n_votes = Column(Integer, nullable=False)
+    n_groups = Column(Integer, nullable=False)
+    n_categories = Column(Integer, nullable=False)
+    global_mean_similarity = Column(Float, nullable=True)
+    voter_voter_pairs = Column(Integer, nullable=False)
+    group_group_pairs = Column(Integer, nullable=False)
+    params = Column(JSON, nullable=True)
