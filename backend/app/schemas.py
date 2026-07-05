@@ -18,6 +18,7 @@ class VoteOut(BaseModel):
 class GroupAnswerStatsOut(BaseModel):
     group_id: int
     group_name: str
+    group_name_short: str | None = None
     group_color: str
     yes_count: int
     no_count: int
@@ -36,6 +37,7 @@ class VoteDetailOut(BaseModel):
     total_no: int
     total_missing: int
     group_stats: list[GroupAnswerStatsOut]
+    last_vote_date: str | None = None
 
 
 class AnswerOut(BaseModel):
@@ -61,6 +63,7 @@ class CommissionOut(BaseModel):
 class GroupSummaryOut(BaseModel):
     id: int
     name: str
+    name_short: str | None = None
     color: str
     member_count: int
 
@@ -68,6 +71,7 @@ class GroupSummaryOut(BaseModel):
 class GroupListOut(BaseModel):
     id: int
     name: str
+    name_short: str | None = None
     color: str
     member_count: int
     cohesivity: float | None = None
@@ -90,6 +94,7 @@ class SimilarVoterOut(BaseModel):
 class GroupComparisonOut(BaseModel):
     group_id: int
     group_name: str
+    group_name_short: str | None = None
     group_color: str
     similarity: float
     confidence: float
@@ -102,6 +107,7 @@ class VoterOut(BaseModel):
     lastname: str
     group_id: int
     group_name: str
+    group_name_short: str | None = None
     group_color: str
     role: str | None = None
     commission: str | None = None
@@ -140,6 +146,7 @@ class PaginatedVotersOut(BaseModel):
 class SimilarGroupOut(BaseModel):
     id: int
     name: str
+    name_short: str | None = None
     color: str
     similarity: float
     confidence: float = 0.0
@@ -150,6 +157,7 @@ class SimilarGroupOut(BaseModel):
 class GroupDetailOut(BaseModel):
     id: int
     name: str
+    name_short: str | None = None
     color: str
     member_count: int
     cohesivity: float
@@ -165,8 +173,10 @@ class GroupDetailOut(BaseModel):
 class EmbeddingPointOut(BaseModel):
     id: int
     name: str
+    name_short: str | None = None
     group_id: int | None = None
     group_name: str | None = None
+    group_name_short: str | None = None
     group_color: str | None = None
     color: str
     x: float
@@ -176,6 +186,7 @@ class EmbeddingPointOut(BaseModel):
 class BarycenterOut(BaseModel):
     group_id: int
     name: str
+    name_short: str | None = None
     color: str
     member_count: int
     x: float

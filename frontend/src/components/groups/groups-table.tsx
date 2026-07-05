@@ -24,6 +24,11 @@ const columns: GridColDef[] = [
       </Box>
     ),
   },
+  {
+    field: "name_short",
+    headerName: "Sigle",
+    width: 100,
+  },
   {field: "member_count", headerName: GROUPS_TABLE.MEMBERS, width: 100},
   {
     field: "cohesivity",
@@ -64,6 +69,7 @@ const GroupsTable: React.FC = observer(() => {
   const rows = groupsStore.groups.map((g) => ({
     id: g.id,
     name: g.name,
+    name_short: g.name_short,
     color: g.color,
     member_count: g.member_count,
     cohesivity: g.cohesivity,

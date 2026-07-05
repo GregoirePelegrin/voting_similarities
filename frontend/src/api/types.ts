@@ -14,6 +14,7 @@ export interface VoteOut {
 export interface GroupAnswerStatsOut {
   group_id: number;
   group_name: string;
+  group_name_short?: string | null;
   group_color: string;
   yes_count: number;
   no_count: number;
@@ -32,6 +33,7 @@ export interface VoteDetailOut {
   total_no: number;
   total_missing: number;
   group_stats: GroupAnswerStatsOut[];
+  last_vote_date: string | null;
 }
 
 export interface AnswerOut {
@@ -47,6 +49,7 @@ export interface AnswerOut {
 export interface GroupSummaryOut {
   id: number;
   name: string;
+  name_short?: string | null;
   color: string;
   member_count: number;
 }
@@ -54,6 +57,7 @@ export interface GroupSummaryOut {
 export interface GroupListOut {
   id: number;
   name: string;
+  name_short?: string | null;
   color: string;
   member_count: number;
   cohesivity: number | null;
@@ -76,6 +80,7 @@ export interface SimilarVoterOut {
 export interface GroupComparisonOut {
   group_id: number;
   group_name: string;
+  group_name_short?: string | null;
   group_color: string;
   similarity: number;
   confidence: number;
@@ -88,6 +93,7 @@ export interface VoterOut {
   lastname: string;
   group_id: number;
   group_name: string;
+  group_name_short?: string | null;
   group_color: string;
   role: string | null;
   commission: string | null;
@@ -126,6 +132,7 @@ export interface PaginatedVotersOut {
 export interface SimilarGroupOut {
   id: number;
   name: string;
+  name_short?: string | null;
   color: string;
   similarity: number;
   confidence?: number;
@@ -136,6 +143,7 @@ export interface SimilarGroupOut {
 export interface GroupDetailOut {
   id: number;
   name: string;
+  name_short?: string | null;
   color: string;
   member_count: number;
   cohesivity: number;
@@ -151,8 +159,10 @@ export interface GroupDetailOut {
 export interface EmbeddingPointOut {
   id: number;
   name: string;
+  name_short?: string | null;
   group_id?: number;
   group_name?: string;
+  group_name_short?: string | null;
   group_color?: string;
   color: string;
   x: number;
@@ -162,6 +172,7 @@ export interface EmbeddingPointOut {
 export interface BarycenterOut {
   group_id: number;
   name: string;
+  name_short?: string | null;
   color: string;
   member_count: number;
   x: number;

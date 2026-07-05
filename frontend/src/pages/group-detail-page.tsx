@@ -57,7 +57,14 @@ const GroupDetailPage: React.FC = observer(() => {
       <Box sx={{mb: 3}}>
         <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
           <Box sx={{width: 16, height: 16, borderRadius: "50%", bgcolor: group.color}}/>
-          <Typography variant="h4">{group.name}</Typography>
+          <Box>
+            <Typography variant="h4">{group.name_short || group.name}</Typography>
+            {group.name_short && (
+              <Typography variant="body2" color="text.secondary">
+                {group.name}
+              </Typography>
+            )}
+          </Box>
           <Typography variant="body2" color="text.secondary">
             {group.member_count} {GROUP_DETAIL.MEMBERS}
           </Typography>
@@ -91,6 +98,7 @@ const GroupDetailPage: React.FC = observer(() => {
             comparisons={group.similar_groups.map(g => ({
               group_id: g.id,
               group_name: g.name,
+              group_name_short: g.name_short,
               group_color: g.color,
               similarity: g.similarity,
               confidence: g.confidence ?? 0,

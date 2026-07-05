@@ -27,7 +27,7 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
           catSims[cat?.name ?? cid] = sim;
         }
       }
-      return {name: sg.name, color: sg.color, ...catSims};
+      return {name: sg.name_short || sg.name, color: sg.color, ...catSims};
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 

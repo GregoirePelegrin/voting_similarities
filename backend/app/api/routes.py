@@ -172,6 +172,7 @@ async def get_vote(
             GroupAnswerStatsOut(
                 group_id=g.id,
                 group_name=g.name,
+                group_name_short=g.name_short,
                 group_color=g.color,
                 yes_count=g_yes,
                 no_count=g_no,
@@ -179,6 +180,12 @@ async def get_vote(
                 yes_rate=yes_rate,
             )
         )
+
+    last_date_result = await db.execute(
+        select(func.max(Answer.answered_at)).where(Answer.vote_id == vote_id)
+    )
+    last_vote_date = last_date_result.scalar()
+    last_vote_date_str = last_vote_date.isoformat() if last_vote_date else None
 
     return VoteDetailOut(
         id=vote.id,
@@ -191,6 +198,7 @@ async def get_vote(
         total_no=total_no,
         total_missing=total_missing,
         group_stats=group_stats,
+        last_vote_date=last_vote_date_str,
     )
 
 
@@ -218,9 +226,9 @@ async def list_voters(
     comm_ids = {p.commission_id for p in voters if p.commission_id}
 
     g_result = await db.execute(
-        select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
+        select(Group.id, Group.name, Group.name_short, Group.color).where(Group.id.in_(group_ids))
     )
-    group_map = {r[0]: (r[1], r[2]) for r in g_result.all()}
+    group_map = {r[0]: (r[1], r[2], r[3]) for r in g_result.all()}
 
     role_map = {}
     if role_ids:
@@ -241,10 +249,11 @@ async def list_voters(
                 firstname=p.firstname,
                 lastname=p.lastname,
                 group_id=p.group_id,
-                group_name=group_map.get(p.group_id, ("Unknown", "#808080"))[0],
-                group_color=group_map.get(p.group_id, ("Unknown", "#808080"))[1],
-                role=role_map.get(p.role_id) if p.role_id else None,
-                commission=comm_map.get(p.commission_id) if p.commission_id else None,
+                group_name=group_map.get(p.group_id, ("Unknown", None, "#808080"))[0],
+                group_name_short=group_map.get(p.group_id, ("Unknown", None, "#808080"))[1],
+                group_color=group_map.get(p.group_id, ("Unknown", None, "#808080"))[2],
+                role=role_map.get(p.role_id),
+                commission=comm_map.get(p.commission_id),
                 circonscription=p.circonscription,
             )
             for p in voters
@@ -442,13 +451,15 @@ async def get_voter(
     # Batch fetch group names and colors
     pg_group_ids = {pg.group_id for pg in pg_rows}
     group_map = {}
+    group_short_map = {}
     group_color_map = {}
     if pg_group_ids:
         g_result = await db.execute(
-            select(Group.id, Group.name, Group.color).where(Group.id.in_(pg_group_ids))
+            select(Group.id, Group.name, Group.name_short, Group.color).where(Group.id.in_(pg_group_ids))
         )
-        for gid, gname, gcolor in g_result.all():
+        for gid, gname, gshort, gcolor in g_result.all():
             group_map[gid] = gname
+            group_short_map[gid] = gshort
             group_color_map[gid] = gcolor
 
     group_comparisons = []
@@ -464,6 +475,7 @@ async def get_voter(
             GroupComparisonOut(
                 group_id=pg.group_id,
                 group_name=group_map.get(pg.group_id, "Unknown"),
+                group_name_short=group_short_map.get(pg.group_id),
                 group_color=group_color_map.get(pg.group_id, "#808080"),
                 similarity=sim,
                 confidence=pg.confidence,
@@ -565,7 +577,7 @@ async def get_voter(
         firstname=voter.firstname,
         lastname=voter.lastname,
         group=GroupSummaryOut(
-            id=group.id, name=group.name, color=group.color, member_count=member_count
+            id=group.id, name=group.name, name_short=group.name_short, color=group.color, member_count=member_count
         ),
         role=role_name,
         commission=commission_name,
@@ -713,14 +725,18 @@ async def get_group(
             row.group_b_id if row.group_a_id == group_id else row.group_a_id
         )
     group_map = {}
+    group_short_map = {}
+    group_color_map = {}
     if other_gids:
         g_result = await db.execute(
-            select(Group.id, Group.name, Group.color).where(Group.id.in_(other_gids))
+            select(Group.id, Group.name, Group.name_short, Group.color).where(Group.id.in_(other_gids))
         )
         group_map = {}
+        group_short_map = {}
         group_color_map = {}
-        for gid, gname, gcolor in g_result.all():
+        for gid, gname, gshort, gcolor in g_result.all():
             group_map[gid] = gname
+            group_short_map[gid] = gshort
             group_color_map[gid] = gcolor
 
     similar_groups = []
@@ -874,9 +890,9 @@ async def get_voters_embeddings(
 
     group_ids = {v[2] for v in voter_map.values()}
     g_result = await db.execute(
-        select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
+        select(Group.id, Group.name, Group.name_short, Group.color).where(Group.id.in_(group_ids))
     )
-    group_map = {r[0]: (r[1], r[2]) for r in g_result.all()}
+    group_map = {r[0]: (r[1], r[2], r[3]) for r in g_result.all()}
 
     points = []
     bary_sum: dict[int, list[float]] = {}
@@ -888,9 +904,9 @@ async def get_voters_embeddings(
         )
         pname = f"{fname} {lname}".strip()
         if gid:
-            gname, gcolor = group_map.get(gid, ("Unknown", "#808080"))
+            gname, gshort, gcolor = group_map.get(gid, ("Unknown", None, "#808080"))
         else:
-            gname, gcolor = "Unknown", "#808080"
+            gname, gshort, gcolor = "Unknown", None, "#808080"
 
         points.append(
             EmbeddingPointOut(
@@ -898,6 +914,7 @@ async def get_voters_embeddings(
                 name=pname,
                 group_id=gid,
                 group_name=gname,
+                group_name_short=gshort,
                 group_color=gcolor,
                 color=gcolor,
                 x=e.x,
@@ -914,7 +931,7 @@ async def get_voters_embeddings(
     barycenters = []
     for gid, (sx, sy) in bary_sum.items():
         n = bary_count[gid]
-        gname, gcolor = group_map.get(gid, ("Unknown", "#808080"))
+        gname, gshort, gcolor = group_map.get(gid, ("Unknown", None, "#808080"))
         mc_result = await db.execute(
             select(func.count()).select_from(Voter).where(Voter.group_id == gid)
         )
@@ -923,6 +940,7 @@ async def get_voters_embeddings(
             BarycenterOut(
                 group_id=gid,
                 name=gname,
+                name_short=gshort,
                 color=gcolor,
                 member_count=mc,
                 x=sx / n,
@@ -977,17 +995,18 @@ async def get_groups_embeddings(
     group_ids = [e.group_id for e in emb_rows]
 
     g_result = await db.execute(
-        select(Group.id, Group.name, Group.color).where(Group.id.in_(group_ids))
+        select(Group.id, Group.name, Group.name_short, Group.color).where(Group.id.in_(group_ids))
     )
-    group_map = {r[0]: (r[1], r[2]) for r in g_result.all()}
+    group_map = {r[0]: (r[1], r[2], r[3]) for r in g_result.all()}
 
     points = []
     for e in emb_rows:
-        gname, gcolor = group_map.get(e.group_id, ("Unknown", "#808080"))
+        gname, gshort, gcolor = group_map.get(e.group_id, ("Unknown", None, "#808080"))
         points.append(
             EmbeddingPointOut(
                 id=e.group_id,
                 name=gname,
+                name_short=gshort,
                 color=gcolor,
                 x=e.x,
                 y=e.y,

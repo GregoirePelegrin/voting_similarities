@@ -20,7 +20,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
   const d = payload[0].payload;
   return (
     <Box sx={{bgcolor: "#2A3142", p: 1.5, borderRadius: 1, boxShadow: 2}}>
-      <Typography variant="body2" sx={{fontWeight: 500}}>{d.group_name}</Typography>
+      <Typography variant="body2" sx={{fontWeight: 500}}>{d.group_name_short || d.group_name}</Typography>
       <Typography variant="caption" color="text.secondary">
         {GROUP_COMPARISON.SIMILARITY}: {(d.similarity * 100).toFixed(1)}% · {GROUP_COMPARISON.CONFIDENCE}: {(d.confidence * 100).toFixed(0)}
       </Typography>

@@ -33,7 +33,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
     <Box sx={{bgcolor: "#2A3142", p: 1.5, borderRadius: 1, boxShadow: 2, border: "1px solid rgba(255,255,255,0.1)"}}>
       <Box sx={{display: "flex", alignItems: "center", gap: 0.5}}>
         <Box sx={{width: 10, height: 10, borderRadius: "50%", bgcolor: d.color}}/>
-        <Typography variant="body2" sx={{fontWeight: 500}}>{d.name}</Typography>
+        <Typography variant="body2" sx={{fontWeight: 500}}>{d.name_short || d.name}</Typography>
       </Box>
       {isBarycenter ? (
         <Typography variant="caption" color="text.secondary">
@@ -42,7 +42,7 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
       ) : (
         d.group_name && (
           <Typography variant="caption" sx={{color: d.group_color || d.color}}>
-            {d.group_name}
+            {d.group_name_short || d.group_name}
           </Typography>
         )
       )}

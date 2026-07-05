@@ -14,14 +14,14 @@ function SearchToolbar() {
   );
 }
 
-const columns: GridColDef[] = [
-  {field: "firstname", headerName: VOTERS_TABLE.FIRST_NAME, flex: 1},
-  {field: "lastname", headerName: VOTERS_TABLE.LAST_NAME, flex: 1},
-  {field: "group_name", headerName: VOTERS_TABLE.GROUP, flex: 1},
-  {field: "role", headerName: VOTERS_TABLE.ROLE, width: 130},
-  {field: "commission", headerName: VOTERS_TABLE.COMMISSION, width: 140},
-  {field: "circonscription", headerName: VOTERS_TABLE.CIRCONSCRIPTION, width: 160},
-];
+  const columns: GridColDef[] = [
+    {field: "firstname", headerName: VOTERS_TABLE.FIRST_NAME, flex: 1},
+    {field: "lastname", headerName: VOTERS_TABLE.LAST_NAME, flex: 1},
+    {field: "group_name_short", headerName: VOTERS_TABLE.GROUP, flex: 1},
+    {field: "role", headerName: VOTERS_TABLE.ROLE, width: 130},
+    {field: "commission", headerName: VOTERS_TABLE.COMMISSION, width: 140},
+    {field: "circonscription", headerName: VOTERS_TABLE.CIRCONSCRIPTION, width: 160},
+  ];
 
 const VotersTable: React.FC = observer(() => {
   const {votersStore, uiStore} = rootStore;
@@ -31,7 +31,7 @@ const VotersTable: React.FC = observer(() => {
     id: p.id,
     firstname: p.firstname,
     lastname: p.lastname,
-    group_name: p.group_name,
+    group_name_short: p.group_name_short || p.group_name,
     group_color: p.group_color,
     role: p.role,
     commission: p.commission,

@@ -133,7 +133,7 @@ async def seed_data():
         await session.flush()
 
         # --- Groups ---
-        groups = [Group(name=name, color=GROUP_COLORS[i]) for i, name in enumerate(GROUP_NAMES)]
+        groups = [Group(name=name, name_short=None, color=GROUP_COLORS[i]) for i, name in enumerate(GROUP_NAMES)]
         session.add_all(groups)
         await session.flush()
 

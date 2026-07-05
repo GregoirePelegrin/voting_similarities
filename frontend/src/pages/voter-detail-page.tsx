@@ -60,7 +60,7 @@ const VoterDetailPage: React.FC = observer(() => {
         <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
           <Typography variant="h4">{voter.firstname} {voter.lastname}</Typography>
           <Chip
-            label={voter.group.name}
+            label={voter.group.name_short || voter.group.name}
             size="small"
             sx={{bgcolor: voter.group.color + "30", color: voter.group.color, borderColor: voter.group.color + "60"}}
             variant="outlined"

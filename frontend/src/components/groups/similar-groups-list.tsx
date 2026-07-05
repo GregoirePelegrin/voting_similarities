@@ -34,7 +34,7 @@ const SimilarGroupsList: React.FC<SimilarGroupsListProps> = ({groups, sortMode =
               <Box key={g.id} sx={{mb: 1.5, cursor: "pointer"}} onClick={() => navigate(`/groups/${g.id}`)}>
                 <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 0.5}}>
                   <Box sx={{width: 10, height: 10, borderRadius: "50%", bgcolor: g.color}}/>
-                  <Typography variant="body2" sx={{flex: 1}}>{g.name}</Typography>
+                  <Typography variant="body2" sx={{flex: 1}}>{g.name_short || g.name}</Typography>
                   <Typography variant="caption" color="text.secondary">
                     {g.shared_count} {SIMILAR_GROUPS.SHARED} · {(g.confidence * 100).toFixed(0)}% {SIMILAR_GROUPS.CONFIDENCE}
                   </Typography>

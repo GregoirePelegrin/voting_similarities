@@ -31,7 +31,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
     <Box sx={{bgcolor: "#2A3142", p: 1.5, borderRadius: 1, boxShadow: 2, border: "1px solid rgba(255,255,255,0.1)"}}>
       <Box sx={{display: "flex", alignItems: "center", gap: 0.5}}>
         <Box sx={{width: 10, height: 10, borderRadius: "50%", bgcolor: d.color}}/>
-        <Typography variant="body2" sx={{fontWeight: 500}}>{d.name}</Typography>
+        <Typography variant="body2" sx={{fontWeight: 500}}>{d.name_short || d.name}</Typography>
       </Box>
     </Box>
   );
