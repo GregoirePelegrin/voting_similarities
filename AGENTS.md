@@ -24,6 +24,25 @@ podman exec voting-backend python3 /app/scripts/compute_similarities.py
 podman restart voting-backend
 ```
 
+#### Mise à jour de la base de données après un changement de schéma
+
+Si vous modifiez un modèle (ajout d'une colonne, etc.), vous devez supprimer les tables concernées et les laisser se recréer via `create_all`. Exemple pour les tables de similarité :
+
+```bash
+podman exec parliament_analysis_postgres psql -U postgres -d voting_similarities -c "
+DROP TABLE IF EXISTS voter_voter_similarity CASCADE;
+DROP TABLE IF EXISTS voter_group_similarity CASCADE;
+DROP TABLE IF EXISTS group_group_similarity CASCADE;
+DROP TABLE IF EXISTS group_cohesivity CASCADE;
+DROP TABLE IF EXISTS voter_embedding CASCADE;
+DROP TABLE IF EXISTS group_embedding CASCADE;
+DROP TABLE IF EXISTS category_discriminativeness CASCADE;
+DROP TABLE IF EXISTS computation_meta CASCADE;
+"
+```
+
+Ensuite, redémarrez l'API (`podman restart voting-backend`) et relancez le calcul des similarités.
+
 ## One-shot Python outside containers
 
 If you must run a backend script outside the container (never for the dev server), use the `comparaison_parlementaires` conda environment. **Do not install or modify packages** without explicit approval.
@@ -36,12 +55,13 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 ## Commands
 
 | What | How |
-|---|---|
+|---|---|---|
 | Backend lint | `ruff check backend/` (via conda) |
-| Frontend typecheck+build | `npm run build` in `frontend/` |
+| Full deploy (frontend + backend) | `bash deploy.sh` — this is the **only** way to build and run anything. Do NOT run `npm run build`, `uvicorn`, or any other dev command on the host. |
 | Seed DB (refuses if data exists) | `podman exec voting-backend python3 /app/scripts/seed.py` |
-| Compute similarities | `podman exec voting-backend python3 /app/scripts/compute_similarities.py` |
-| Compute with CLI overrides | `...compute_similarities.py --w-yes 1.0 --w-no 0.2 --w-mismatch 0.5 --m 10` |
+| Compute similarities | `podman exec voting-backend python3 /app/scripts/compute_similarities.py --name "Defaut"` |
+| Compute with CLI overrides | `...compute_similarities.py --name "Offensif" --w-yes 1.0 --w-no 0.0 --w-mismatch 1.0 --m 5` |
+| Compute multiple sets | Run with different `--name` values; each creates a coexisting config set |
 | Deploy (podman) | `bash deploy.sh` |
 | Rebuild + deploy with no cache | `podman build --no-cache ... && bash deploy.sh` |
 | Container logs (backend) | `podman logs voting-backend` |
@@ -70,6 +90,7 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 - **Nginx**: listens on port **8080** (not 80), SPA fallback via `try_files $uri /index.html`.
 - **Host networking** in production (podman), no internal DNS.
 - **`SIMILARITY_SHRINKAGE_M`** is the env var name (not `_BAYESIAN_` or `_M`). `.env.example` has it correct.
+- **Multi‑worker DDL race**: `main.py` catches `create_all` errors during startup — one of 4 workers creates tables, the others log a warning and continue.
 - **Git ignores**: `data/` (whole dir), `**/build`, `.env` files.
 - **One-shot Python**: use `conda run -n comparaison_parlementaires` if you must run backend scripts outside a container. Do not install or modify packages without asking.
 
