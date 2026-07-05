@@ -106,6 +106,8 @@ export const GROUPS_TABLE = {
   NAME: "Nom",
   MEMBERS: "Membres",
   COHESIVITY: "Cohésion",
+  ANSWER_RATE: "Taux réponse",
+  PRESENCE_RATE: "Taux présence",
 };
 
 export const CATEGORIES_TABLE = {

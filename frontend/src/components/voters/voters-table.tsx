@@ -1,10 +1,18 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
-import {DataGrid, GridColDef} from "@mui/x-data-grid";
+import {DataGrid, GridColDef, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid";
 import {Box} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import {VOTERS_TABLE} from "../../constants/fr";
+
+function SearchToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarQuickFilter />
+    </GridToolbarContainer>
+  );
+}
 
 const columns: GridColDef[] = [
   {field: "firstname", headerName: VOTERS_TABLE.FIRST_NAME, flex: 1},
@@ -40,6 +48,7 @@ const VotersTable: React.FC = observer(() => {
           pagination: {paginationModel: {page: 0, pageSize: 50}},
           sorting: {sortModel: [{field: "lastname", sort: "asc"}, {field: "firstname", sort: "asc"}]},
         }}
+        slots={{toolbar: SearchToolbar}}
         onRowClick={(params) => navigate(`/voters/${params.id}`)}
         sx={{
           cursor: "pointer",

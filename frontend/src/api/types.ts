@@ -57,6 +57,10 @@ export interface GroupListOut {
   color: string;
   member_count: number;
   cohesivity: number | null;
+  answer_rate: number;
+  answered_count: number;
+  presence_rate: number;
+  present_count: number;
 }
 
 export interface SimilarVoterOut {

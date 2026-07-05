@@ -609,6 +609,44 @@ async def list_groups(db: AsyncSession = Depends(get_db)):
         )
         coh_map = dict(coh_result.all())
 
+    total_votes = (
+        await db.execute(select(func.count()).select_from(Vote))
+    ).scalar() or 1
+
+    voter_stats = {}
+    if group_ids:
+        vs_result = await db.execute(
+            select(
+                Voter.group_id,
+                func.count().filter(Answer.answered).label("answered_count"),
+                func.count().filter(Answer.present).label("present_count"),
+            )
+            .join(Answer, Answer.voter_id == Voter.id)
+            .where(Voter.group_id.in_(group_ids))
+            .group_by(Voter.group_id, Voter.id)
+        )
+        for row in vs_result.all():
+            voter_stats.setdefault(row.group_id, []).append(row)
+
+    answer_rate_map = {}
+    answer_count_map = {}
+    presence_rate_map = {}
+    presence_count_map = {}
+    for g in groups:
+        gid = g.id
+        member_count = member_counts.get(gid, 0)
+        stats = voter_stats.get(gid, [])
+        rates = [s.answered_count / total_votes for s in stats]
+        presence_rates = [s.present_count / total_votes for s in stats]
+        no_answer = member_count - len(stats)
+        if no_answer > 0:
+            rates.extend([0.0] * no_answer)
+            presence_rates.extend([0.0] * no_answer)
+        answer_rate_map[gid] = sum(rates) / len(rates) if rates else 0.0
+        presence_rate_map[gid] = sum(presence_rates) / len(presence_rates) if presence_rates else 0.0
+        answer_count_map[gid] = sum(s.answered_count for s in stats)
+        presence_count_map[gid] = sum(s.present_count for s in stats)
+
     return [
         GroupListOut(
             id=g.id,
@@ -616,6 +654,10 @@ async def list_groups(db: AsyncSession = Depends(get_db)):
             color=g.color,
             member_count=member_counts.get(g.id, 0),
             cohesivity=coh_map.get(g.id),
+            answer_rate=answer_rate_map.get(g.id, 0.0),
+            answered_count=answer_count_map.get(g.id, 0),
+            presence_rate=presence_rate_map.get(g.id, 0.0),
+            present_count=presence_count_map.get(g.id, 0),
         )
         for g in groups
     ]

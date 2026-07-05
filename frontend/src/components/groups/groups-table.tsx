@@ -4,8 +4,12 @@ import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {Box, Typography,} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
-import PercentageBar from "../shared/percentage-bar";
 import {GROUPS_TABLE} from "../../constants/fr";
+
+function pct(value: number | null | undefined): string {
+  if (value == null) return "-";
+  return `${(value * 100).toFixed(0)}%`;
+}
 
 const columns: GridColDef[] = [
   {
@@ -20,20 +24,36 @@ const columns: GridColDef[] = [
       </Box>
     ),
   },
-  {field: "member_count", headerName: GROUPS_TABLE.MEMBERS, width: 120},
+  {field: "member_count", headerName: GROUPS_TABLE.MEMBERS, width: 100},
   {
     field: "cohesivity",
     headerName: GROUPS_TABLE.COHESIVITY,
-    minWidth: 200,
-    flex: 1,
-    renderCell: (params) =>
-      params.value != null ? (
-        <Box sx={{display: "flex", alignItems: "center", width: "100%", height: "100%"}}>
-          <PercentageBar value={params.value} color={params.row.color}/>
-        </Box>
-      ) : (
-        <Typography variant="body2" color="text.secondary">-</Typography>
-      ),
+    width: 100,
+    renderCell: (params) => (
+      <Box sx={{display: "flex", alignItems: "center", width: "100%", height: "100%"}}>
+        <Typography variant="body2">{pct(params.value)}</Typography>
+      </Box>
+    ),
+  },
+  {
+    field: "answer_rate",
+    headerName: GROUPS_TABLE.ANSWER_RATE,
+    width: 110,
+    renderCell: (params) => (
+      <Box sx={{display: "flex", alignItems: "center", width: "100%", height: "100%"}}>
+        <Typography variant="body2">{pct(params.value)}</Typography>
+      </Box>
+    ),
+  },
+  {
+    field: "presence_rate",
+    headerName: GROUPS_TABLE.PRESENCE_RATE,
+    width: 110,
+    renderCell: (params) => (
+      <Box sx={{display: "flex", alignItems: "center", width: "100%", height: "100%"}}>
+        <Typography variant="body2">{pct(params.value)}</Typography>
+      </Box>
+    ),
   },
 ];
 
@@ -47,6 +67,8 @@ const GroupsTable: React.FC = observer(() => {
     color: g.color,
     member_count: g.member_count,
     cohesivity: g.cohesivity,
+    answer_rate: g.answer_rate,
+    presence_rate: g.presence_rate,
   }));
 
   return (

@@ -71,6 +71,10 @@ class GroupListOut(BaseModel):
     color: str
     member_count: int
     cohesivity: float | None = None
+    answer_rate: float = 0.0
+    answered_count: int = 0
+    presence_rate: float = 0.0
+    present_count: int = 0
 
 
 class SimilarVoterOut(BaseModel):
