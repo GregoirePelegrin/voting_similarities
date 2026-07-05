@@ -17,6 +17,7 @@ import {EmbeddingPointOut} from "../../api/types";
 import {GROUPS_SCATTER} from "../../constants/fr";
 import {APP_CONFIG} from "../../constants/config";
 import {DATA_COLORS} from "../../theme";
+import rootStore from "../../stores/root-store";
 
 interface GroupsScatterProps {
   points: EmbeddingPointOut[];
@@ -39,6 +40,8 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
 
 const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress, categoriesLabel}) => {
   const navigate = useNavigate();
+  const {uiStore} = rootStore;
+  const configSetName = uiStore.activeConfigSet?.name;
 
   const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
 
@@ -54,7 +57,12 @@ const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress, c
         />
         {categoriesLabel && (
           <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
-            {categoriesLabel}
+            Sur les questions {categoriesLabel}{configSetName ? ` — Mode : ${configSetName}` : ""}
+          </Typography>
+        )}
+        {!categoriesLabel && configSetName && (
+          <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+            Mode : {configSetName}
           </Typography>
         )}
       </Box>

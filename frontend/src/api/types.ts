@@ -1,3 +1,19 @@
+export interface ConfigSetOut {
+  id: number;
+  name: string;
+  description: string | null;
+  w_yes: number;
+  w_no: number;
+  w_mismatch: number;
+  m: number;
+  created_at: string | null;
+}
+
+export interface ConfigResponse {
+  sets: ConfigSetOut[];
+  active_set_id: number | null;
+}
+
 export interface CategoryOut {
   id: number;
   name: string;

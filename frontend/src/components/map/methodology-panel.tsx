@@ -4,8 +4,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import {METHODOLOGY} from "../../constants/fr";
 import {APP_CONFIG} from "../../constants/config";
-import {SimilarityConfig} from "../../api/config";
+import type {ConfigSetOut} from "../../api/types";
 import {DATA_COLORS} from "../../theme";
+import rootStore from "../../stores/root-store";
 
 function boldSplit(text: string) {
   return text.split("**").map((part, i) =>
@@ -26,17 +27,17 @@ const fmtWeight = (n: number) => n.toFixed(1).replace(".", ",");
 const stressGoodPct = Math.round(APP_CONFIG.STRESS_THRESHOLD_GOOD * 100);
 const stressFairPct = Math.round(APP_CONFIG.STRESS_THRESHOLD_FAIR * 100);
 
-const MethodologyPanel: React.FC<{config: SimilarityConfig | null}> = ({config}) => {
+const MethodologyPanel: React.FC<{configSet: ConfigSetOut | null}> = ({configSet}) => {
   function interpolate(text: string): string {
     let result = text
       .replaceAll("{stress_good}", String(stressGoodPct))
       .replaceAll("{stress_fair}", String(stressFairPct));
-    if (config) {
+    if (configSet) {
       result = result
-        .replaceAll("{w_yes}", fmtWeight(config.w_yes))
-        .replaceAll("{w_no}", fmtWeight(config.w_no))
-        .replaceAll("{w_mismatch}", fmtWeight(config.w_mismatch))
-        .replaceAll("{m}", String(config.m));
+        .replaceAll("{w_yes}", fmtWeight(configSet.w_yes))
+        .replaceAll("{w_no}", fmtWeight(configSet.w_no))
+        .replaceAll("{w_mismatch}", fmtWeight(configSet.w_mismatch))
+        .replaceAll("{m}", String(configSet.m));
     }
     return result;
   }
@@ -123,6 +124,46 @@ const MethodologyPanel: React.FC<{config: SimilarityConfig | null}> = ({config})
             {interpolate(METHODOLOGY.DISAGREE_DESC)}
           </Box>
         </Box>
+
+        {configSet && (
+          <>
+            <Typography variant="h6">{METHODOLOGY.CONFIGS_HEADING}</Typography>
+            <Typography variant="body2" sx={{whiteSpace: "pre-line", mb: 1}}>
+              {boldSplit(METHODOLOGY.CONFIGS_INTRO)}
+            </Typography>
+            <Box sx={{pl: 2, mb: 1, "& table": {borderCollapse: "collapse", width: "100%", typography: "body2"},
+                      "& th, & td": {border: "1px solid rgba(255,255,255,0.15)", p: 0.75, textAlign: "center"}}}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>{METHODOLOGY.CONFIGS_TABLE_NAME}</th>
+                    <th>{METHODOLOGY.CONFIGS_TABLE_W_YES}</th>
+                    <th>{METHODOLOGY.CONFIGS_TABLE_W_NO}</th>
+                    <th>{METHODOLOGY.CONFIGS_TABLE_W_MISMATCH}</th>
+                    <th>{METHODOLOGY.CONFIGS_TABLE_M}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rootStore.uiStore.configSets.map((s) => (
+                    <tr key={s.id} style={{fontWeight: s.id === configSet?.id ? 700 : 400}}>
+                      <td>{s.name}</td>
+                      <td>{s.w_yes.toFixed(1)}</td>
+                      <td>{s.w_no.toFixed(1)}</td>
+                      <td>{s.w_mismatch.toFixed(1)}</td>
+                      <td>{s.m}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Box>
+            <Typography variant="body2" sx={{whiteSpace: "pre-line"}}>
+              {boldSplit(METHODOLOGY.CONFIGS_OUTRO)}
+            </Typography>
+            <Typography variant="body2" sx={{whiteSpace: "pre-line", mt: 1}}>
+              {boldSplit(interpolate(METHODOLOGY.CONFIGS_INTERPRETATION))}
+            </Typography>
+          </>
+        )}
 
         <Typography variant="h6">{METHODOLOGY.SHRINKAGE_HEADING}</Typography>
         <Typography variant="body2" sx={{whiteSpace: "pre-line"}}>

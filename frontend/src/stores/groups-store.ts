@@ -29,7 +29,7 @@ class GroupsStore {
 
   async fetchGroup(id: number, categories?: number[]) {
     try {
-      const data = await getGroup(id, categories);
+      const data = await getGroup(id, categories, this.ui.activeConfigSetId);
       runInAction(() => {
         this.selectedGroup = data;
         if (!categories || categories.length === 0) {
@@ -43,7 +43,7 @@ class GroupsStore {
 
   async fetchDeterminantCategories(groupId: number) {
     try {
-      const data = await getDeterminantCategories(groupId);
+      const data = await getDeterminantCategories(groupId, this.ui.activeConfigSetId);
       runInAction(() => {
         this.determinantCategories = data;
       });

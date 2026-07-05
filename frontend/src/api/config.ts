@@ -1,4 +1,5 @@
 import {apiFetch} from "./client";
+import type {ConfigResponse} from "./types";
 
 export interface SimilarityConfig {
   w_yes: number;
@@ -7,6 +8,10 @@ export interface SimilarityConfig {
   m: number;
 }
 
-export function fetchSimilarityConfig(): Promise<SimilarityConfig> {
-  return apiFetch<SimilarityConfig>("/config");
+export function fetchSimilarityConfig(): Promise<ConfigResponse> {
+  return apiFetch<ConfigResponse>("/config");
+}
+
+export function fetchConfigSets(): Promise<ConfigResponse["sets"]> {
+  return apiFetch<ConfigResponse["sets"]>("/config/sets");
 }

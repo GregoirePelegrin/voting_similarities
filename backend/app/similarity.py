@@ -194,7 +194,7 @@ def _avg_intra_group(sim_matrix, indices):
     return float(np.mean(sub[np.triu_indices(n, k=1)]))
 
 
-def compute_voter_group_records(data, similarity, cat_similarities, cat_shared_counts, config):
+def compute_voter_group_records(data, similarity, cat_similarities, cat_shared_counts, config, config_set_id=1):
     records = []
     group_ids = list(data.group_members.keys())
     cat_v_indices = {
@@ -252,6 +252,7 @@ def compute_voter_group_records(data, similarity, cat_similarities, cat_shared_c
 
             records.append(
                 {
+                    "config_set_id": config_set_id,
                     "voter_id": int(pid),
                     "group_id": int(gid),
                     "similarity": avg_sim,
@@ -317,7 +318,7 @@ def compute_pairwise_for_combination(
     return sim, shared
 
 
-def compute_group_group_records(data, similarity, cat_similarities, config):
+def compute_group_group_records(data, similarity, cat_similarities, config, config_set_id=1):
     group_ids = list(data.group_members.keys())
     records = []
 
@@ -351,6 +352,7 @@ def compute_group_group_records(data, similarity, cat_similarities, config):
 
             records.append(
                 {
+                    "config_set_id": config_set_id,
                     "group_a_id": int(ga_id),
                     "group_b_id": int(gb_id),
                     "similarity": avg_sim,
@@ -363,7 +365,7 @@ def compute_group_group_records(data, similarity, cat_similarities, config):
     return records
 
 
-def compute_cohesivity_records(data, similarity, cat_similarities):
+def compute_cohesivity_records(data, similarity, cat_similarities, config_set_id=1):
     group_ids = list(data.group_members.keys())
     records = []
 
@@ -382,6 +384,7 @@ def compute_cohesivity_records(data, similarity, cat_similarities):
 
         records.append(
             {
+                "config_set_id": config_set_id,
                 "group_id": int(gid),
                 "cohesivity": cohesivity,
                 "per_category": per_category if per_category else None,

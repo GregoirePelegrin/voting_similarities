@@ -108,9 +108,23 @@ class Answer(Base):
     vote = relationship("Vote", back_populates="answers")
 
 
+class ConfigSet(Base):
+    __tablename__ = "config_set"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text, nullable=True)
+    w_yes = Column(Float, nullable=False)
+    w_no = Column(Float, nullable=False)
+    w_mismatch = Column(Float, nullable=False)
+    m = Column(Integer, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
+
+
 class VoterVoterSim(Base):
     __tablename__ = "voter_voter_similarity"
 
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), primary_key=True)
     voter_a_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     voter_b_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     similarity = Column(Float, nullable=False)
@@ -124,6 +138,7 @@ class VoterVoterSim(Base):
 class VoterGroupSim(Base):
     __tablename__ = "voter_group_similarity"
 
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), primary_key=True)
     voter_id = Column(Integer, ForeignKey("voters.id"), primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     similarity = Column(Float, nullable=False)
@@ -136,6 +151,7 @@ class VoterGroupSim(Base):
 class GroupGroupSim(Base):
     __tablename__ = "group_group_similarity"
 
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), primary_key=True)
     group_a_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     group_b_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     similarity = Column(Float, nullable=False)
@@ -147,6 +163,7 @@ class GroupGroupSim(Base):
 class GroupCohesivity(Base):
     __tablename__ = "group_cohesivity"
 
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     cohesivity = Column(Float, nullable=False)
     per_category = Column(JSON, nullable=True)
@@ -156,6 +173,7 @@ class VoterEmbedding(Base):
     __tablename__ = "voter_embedding"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), nullable=False)
     voter_id = Column(Integer, ForeignKey("voters.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     categories_key = Column(String(50), nullable=True)
@@ -168,6 +186,7 @@ class GroupEmbedding(Base):
     __tablename__ = "group_embedding"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     categories_key = Column(String(50), nullable=True)
@@ -179,6 +198,7 @@ class GroupEmbedding(Base):
 class CategoryDiscriminativeness(Base):
     __tablename__ = "category_discriminativeness"
 
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), primary_key=True)
     category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True)
     info_gain = Column(Float, nullable=False)
     normalized_ig = Column(Float, nullable=False)
@@ -190,6 +210,7 @@ class ComputationMeta(Base):
     __tablename__ = "computation_meta"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), nullable=False)
     computed_at = Column(DateTime(timezone=True), nullable=False)
     n_voters = Column(Integer, nullable=False)
     n_votes = Column(Integer, nullable=False)

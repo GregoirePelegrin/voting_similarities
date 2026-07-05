@@ -27,7 +27,7 @@ const CustomTooltip: React.FC<any> = ({active, payload}) => {
         {CATEGORY_ALIGNMENT.OWN_GROUP}: {(d.own_group_similarity * 100).toFixed(1)}%
       </Typography>
       <Typography variant="caption" color="text.secondary" display="block">
-        {CATEGORY_ALIGNMENT.AVG_OTHERS}: {(d.avg_other_group_similarity * 100).toFixed(1)}%
+        {CATEGORY_ALIGNMENT.AVG_OTHERS}: {(d.avg_other_group_similarity * 100).toFixed(1)}% 
       </Typography>
     </Box>
   );
@@ -47,12 +47,14 @@ const CategoryAlignmentCard: React.FC<CategoryAlignmentCardProps> = ({alignments
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>{CATEGORY_ALIGNMENT.HEADING}</Typography>
-        {categoriesLabel && (
-          <Typography variant="caption" color="text.secondary" sx={{ml: 2, fontStyle: "italic"}}>
-            {categoriesLabel}
-          </Typography>
-        )}
+        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
+          <Typography variant="h6">{CATEGORY_ALIGNMENT.HEADING}</Typography>
+          {categoriesLabel && (
+            <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+              {categoriesLabel}
+            </Typography>
+          )}
+        </Box>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" tickFormatter={(v: number) => `${v.toFixed(0)}%`}/>

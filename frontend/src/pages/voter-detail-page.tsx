@@ -45,6 +45,11 @@ const VoterDetailPage: React.FC = observer(() => {
       .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
       .filter((n): n is string => !!n)
   );
+  const configSetName = uiStore.activeConfigSet?.name;
+  const modeSuffix = configSetName ? ` — Mode : ${configSetName}` : "";
+  const categoriesLabelWithMode = categoriesLabel
+    ? `${categoriesLabel}${modeSuffix}`
+    : modeSuffix ? modeSuffix.slice(3) : undefined;
 
   if (!voter) {
     return (
@@ -111,7 +116,7 @@ const VoterDetailPage: React.FC = observer(() => {
             title={VOTER_DETAIL.MOST_SIMILAR}
             voters={voter.similar_voters}
             color={DATA_COLORS.primary}
-            categoriesLabel={categoriesLabel}
+            categoriesLabel={categoriesLabelWithMode}
           />
         </Grid>
         <Grid size={{xs: 12, md: 6}}>
@@ -120,14 +125,14 @@ const VoterDetailPage: React.FC = observer(() => {
             voters={voter.dissimilar_voters}
             color={DATA_COLORS.negative}
             showSign
-            categoriesLabel={categoriesLabel}
+            categoriesLabel={categoriesLabelWithMode}
           />
         </Grid>
         <Grid size={{xs: 12}}>
-          <GroupComparisonBars comparisons={voter.group_comparisons} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
+          <GroupComparisonBars comparisons={voter.group_comparisons} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabelWithMode}/>
         </Grid>
         <Grid size={{xs: 12}}>
-          <CategoryAlignmentCard alignments={votersStore.categoryAlignment} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
+          <CategoryAlignmentCard alignments={votersStore.categoryAlignment} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabelWithMode}/>
         </Grid>
         <Grid size={{xs: 12}}>
           <AnswerGrid answers={voter.answers}/>

@@ -43,6 +43,11 @@ const GroupDetailPage: React.FC = observer(() => {
       .map(id => categoriesStore.categories.find(c => c.id === id)?.name)
       .filter((n): n is string => !!n)
   );
+  const configSetName = uiStore.activeConfigSet?.name;
+  const modeSuffix = configSetName ? ` — Mode : ${configSetName}` : "";
+  const categoriesLabelWithMode = categoriesLabel
+    ? `${categoriesLabel}${modeSuffix}`
+    : modeSuffix ? modeSuffix.slice(3) : undefined;
 
   if (!group) {
     return (
@@ -87,9 +92,9 @@ const GroupDetailPage: React.FC = observer(() => {
         <Grid size={{xs: 12, md: 4}}>
           <Card sx={{height: "100%"}}>
             <CardContent sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2}}>
-              <PercentageGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION} sampleSize={group.member_count} total={group.total_votes}/>
-              <PercentageGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE} sampleSize={group.present_count} total={group.total_votes}/>
-              <PercentageGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE} sampleSize={group.answered_count} total={group.total_votes}/>
+              <PercentageGauge value={group.cohesivity} color={group.color} label={GROUP_DETAIL.COHESION}/>
+              <PercentageGauge value={group.presence_rate} color={group.color} label={GROUP_DETAIL.PRESENCE_RATE}/>
+              <PercentageGauge value={group.answer_rate} color={group.color} label={GROUP_DETAIL.ANSWER_RATE}/>
             </CardContent>
           </Card>
         </Grid>
@@ -106,14 +111,14 @@ const GroupDetailPage: React.FC = observer(() => {
             }))}
             heading={SIMILAR_GROUPS.HEADING}
             sortMode={uiStore.sortMode}
-            categoriesLabel={categoriesLabel}
+            categoriesLabel={categoriesLabelWithMode}
           />
         </Grid>
         <Grid size={{xs: 12}}>
-          <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color} categoriesLabel={categoriesLabel}/>
+          <CategoryHeatmap similarGroups={groupsStore.heatmapSimilarGroups} groupColor={group.color} categoriesLabel={categoriesLabelWithMode}/>
         </Grid>
         <Grid size={{xs: 12}}>
-          <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabel}/>
+          <DeterminantCategoriesCard categories={groupsStore.determinantCategories} sortMode={uiStore.sortMode} categoriesLabel={categoriesLabelWithMode}/>
         </Grid>
       </Grid>
       <Box sx={{mt: 3}}>

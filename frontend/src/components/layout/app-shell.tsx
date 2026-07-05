@@ -23,6 +23,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import ErrorDialog from "../shared/error-dialog";
+import ConfigSetSelector from "../shared/config-set-selector";
 import {NAV} from "../../constants/fr";
 
 const DRAWER_WIDTH = 220;
@@ -99,6 +100,7 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) 
           <Typography variant="h6" sx={{fontWeight: 500, letterSpacing: "-0.01em"}}>
             {NAV.TITLE}
           </Typography>
+          <ConfigSetSelector/>
         </Toolbar>
       </AppBar>
 

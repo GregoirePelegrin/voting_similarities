@@ -17,6 +17,7 @@ import {EmbeddingPointOut, BarycenterOut} from "../../api/types";
 import {VOTERS_SCATTER} from "../../constants/fr";
 import {APP_CONFIG} from "../../constants/config";
 import {DATA_COLORS} from "../../theme";
+import rootStore from "../../stores/root-store";
 
 interface EmbeddingScatterProps {
   points: EmbeddingPointOut[];
@@ -52,6 +53,8 @@ const UnifiedTooltip: React.FC<any> = ({active, payload}) => {
 
 const EmbeddingScatter: React.FC<EmbeddingScatterProps> = observer(({points, barycenters, stress, categoriesLabel}) => {
   const navigate = useNavigate();
+  const {uiStore} = rootStore;
+  const configSetName = uiStore.activeConfigSet?.name;
 
   const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
 
@@ -67,7 +70,12 @@ const EmbeddingScatter: React.FC<EmbeddingScatterProps> = observer(({points, bar
         />
         {categoriesLabel && (
           <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
-            {categoriesLabel}
+            Sur les questions {categoriesLabel}{configSetName ? ` — Mode : ${configSetName}` : ""}
+          </Typography>
+        )}
+        {!categoriesLabel && configSetName && (
+          <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+            Mode : {configSetName}
           </Typography>
         )}
       </Box>

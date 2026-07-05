@@ -1,5 +1,24 @@
 
 from pydantic import BaseModel
+from datetime import datetime
+
+
+class ConfigSetOut(BaseModel):
+    model_config = {"from_attributes": True}
+
+    id: int
+    name: str
+    description: str | None = None
+    w_yes: float
+    w_no: float
+    w_mismatch: float
+    m: int
+    created_at: datetime | None = None
+
+
+class ConfigResponse(BaseModel):
+    sets: list[ConfigSetOut]
+    active_set_id: int | None = None
 
 
 class CategoryOut(BaseModel):

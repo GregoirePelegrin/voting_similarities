@@ -1,10 +1,11 @@
+import {makeAutoObservable} from "mobx";
 import UiStore from "./ui-store";
 import CategoriesStore from "./categories-store";
 import VotesStore from "./votes-store";
 import VotersStore from "./voters-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
-import {fetchSimilarityConfig, SimilarityConfig} from "../api/config";
+import {fetchSimilarityConfig} from "../api/config";
 import {ERROR_DIALOG} from "../constants/fr";
 
 class RootStore {
@@ -14,9 +15,9 @@ class RootStore {
   votersStore: VotersStore;
   groupsStore: GroupsStore;
   embeddingsStore: EmbeddingsStore;
-  similarityConfig: SimilarityConfig | null = null;
 
   constructor() {
+    makeAutoObservable(this);
     this.uiStore = new UiStore();
     this.categoriesStore = new CategoriesStore(this.uiStore);
     this.votesStore = new VotesStore(this.uiStore);
@@ -32,7 +33,7 @@ class RootStore {
         fetchSimilarityConfig(),
         this.categoriesStore.fetchCategories(),
       ]);
-      this.similarityConfig = cfg;
+      this.uiStore.setConfigSets(cfg.sets, cfg.active_set_id);
     } catch {
       this.uiStore.setError(ERROR_DIALOG.API_CONNECTION);
     } finally {

@@ -16,6 +16,7 @@ from app.models import (
     Category,
     CategoryDiscriminativeness,
     ComputationMeta,
+    ConfigSet,
     GroupCohesivity,
     GroupEmbedding,
     GroupGroupSim,
@@ -37,19 +38,20 @@ from app.similarity import (
     load_answer_data,
     make_categories_key,
 )
-from sqlalchemy import delete, insert, select
+from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 CHUNK_SIZE = 5000
 
 
-def _vv_data_to_rows(vv_data, offset, size):
+def _vv_data_to_rows(vv_data, offset, size, config_set_id):
     end = min(offset + size, len(vv_data.voter_a_ids))
     has_cats = bool(vv_data.cat_similarities)
     has_cat_shares = bool(vv_data.cat_shared_counts)
     rows = []
     for k in range(offset, end):
         row = {
+            "config_set_id": config_set_id,
             "voter_a_id": int(vv_data.voter_a_ids[k]),
             "voter_b_id": int(vv_data.voter_b_ids[k]),
             "similarity": float(vv_data.similarity[k]),
@@ -99,7 +101,7 @@ def enumerate_category_combinations(data) -> list[list[int]]:
     return combos
 
 
-async def run(config: SimilarityConfig):
+async def run(config: SimilarityConfig, name: str = "Default", description: str | None = None):
     engine = create_async_engine(settings.DATABASE_URL, echo=settings.DB_ECHO)
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
 
@@ -107,6 +109,20 @@ async def run(config: SimilarityConfig):
         await conn.run_sync(Base.metadata.create_all)
 
     async with session_factory() as session:
+        # Create config set
+        config_set = ConfigSet(
+            name=name,
+            description=description,
+            w_yes=config.w_yes,
+            w_no=config.w_no,
+            w_mismatch=config.w_mismatch,
+            m=config.m,
+        )
+        session.add(config_set)
+        await session.flush()
+        config_set_id = config_set.id
+        print(f"Config set #{config_set_id}: {name}")
+
         print("Loading answer data...")
         data = await load_answer_data(session)
         print(f"  {len(data.voter_ids)} voters, {len(data.vote_ids)} votes")
@@ -139,13 +155,6 @@ async def run(config: SimilarityConfig):
             combo_count += 1
         print(f"  {combo_count} multi-category combinations")
 
-        print("Clearing existing similarity data...")
-        await session.execute(delete(VoterVoterSim))
-        await session.execute(delete(VoterGroupSim))
-        await session.execute(delete(GroupGroupSim))
-        await session.execute(delete(GroupCohesivity))
-        await session.flush()
-
         print("Storing voter-voter similarity...")
         vv_data = compute_voter_voter_data(
             data, raw_sim, similarity, shared_count, confidence, cat_similarities,
@@ -154,36 +163,32 @@ async def run(config: SimilarityConfig):
         n_vv = len(vv_data.voter_a_ids)
         print(f"  {n_vv} pairs")
         for offset in range(0, n_vv, CHUNK_SIZE):
-            rows = _vv_data_to_rows(vv_data, offset, CHUNK_SIZE)
+            rows = _vv_data_to_rows(vv_data, offset, CHUNK_SIZE, config_set_id)
             await session.execute(insert(VoterVoterSim), rows)
         await session.flush()
 
         print("Storing voter-group similarity...")
-        vg_records = compute_voter_group_records(data, similarity, cat_similarities, cat_shared_counts, config)
+        vg_records = compute_voter_group_records(data, similarity, cat_similarities, cat_shared_counts, config, config_set_id)
         print(f"  {len(vg_records)} pairs")
         for i in range(0, len(vg_records), CHUNK_SIZE):
             await session.execute(insert(VoterGroupSim), vg_records[i : i + CHUNK_SIZE])
         await session.flush()
 
         print("Storing group-group similarity...")
-        gg_records = compute_group_group_records(data, similarity, cat_similarities, config)
+        gg_records = compute_group_group_records(data, similarity, cat_similarities, config, config_set_id)
         print(f"  {len(gg_records)} pairs")
         for i in range(0, len(gg_records), CHUNK_SIZE):
             await session.execute(insert(GroupGroupSim), gg_records[i : i + CHUNK_SIZE])
         await session.flush()
 
         print("Storing group cohesivity...")
-        gc_records = compute_cohesivity_records(data, similarity, cat_similarities)
+        gc_records = compute_cohesivity_records(data, similarity, cat_similarities, config_set_id)
         print(f"  {len(gc_records)} groups")
         for i in range(0, len(gc_records), CHUNK_SIZE):
             await session.execute(insert(GroupCohesivity), gc_records[i : i + CHUNK_SIZE])
         await session.flush()
 
         print("Computing MDS embeddings...")
-        await session.execute(delete(VoterEmbedding))
-        await session.execute(delete(GroupEmbedding))
-        await session.flush()
-
         group_ids = list(data.group_members.keys())
         voter_ids = data.voter_ids
 
@@ -192,6 +197,7 @@ async def run(config: SimilarityConfig):
         print(f"    stress: {global_stress:.4f}")
         ve_rows = [
             {
+                "config_set_id": config_set_id,
                 "voter_id": int(voter_ids[i]),
                 "category_id": None,
                 "x": float(global_coords[i, 0]),
@@ -222,6 +228,7 @@ async def run(config: SimilarityConfig):
             cat_barycenters[cat_key] = cat_bary
             cat_ve_rows = [
                 {
+                    "config_set_id": config_set_id,
                     "voter_id": int(voter_ids[i]),
                     "category_id": cat_key if not is_combo else None,
                     "categories_key": categories_key_val,
@@ -256,6 +263,7 @@ async def run(config: SimilarityConfig):
         g_coords = align_mds_to_reference(g_coords, group_barycenters)
         ge_rows = [
             {
+                "config_set_id": config_set_id,
                 "group_id": group_ids[i],
                 "category_id": None,
                 "x": float(g_coords[i, 0]),
@@ -288,6 +296,7 @@ async def run(config: SimilarityConfig):
             print(f"    stress: {cat_g_stress:.4f}")
             cat_ge_rows = [
                 {
+                    "config_set_id": config_set_id,
                     "group_id": group_ids[i],
                     "category_id": cat_key if not is_combo else None,
                     "categories_key": categories_key_val,
@@ -302,8 +311,6 @@ async def run(config: SimilarityConfig):
 
         # --- Category discriminativeness ---
         print("Computing category discriminativeness...")
-        await session.execute(delete(CategoryDiscriminativeness))
-        await session.flush()
 
         cat_names = {}
         cat_result = await session.execute(select(Category).order_by(Category.id))
@@ -428,6 +435,7 @@ async def run(config: SimilarityConfig):
                 }
 
             cd_rows.append({
+                "config_set_id": config_set_id,
                 "category_id": int(cat_id),
                 "info_gain": float(mi),
                 "normalized_ig": float(normalized_ig),
@@ -441,8 +449,8 @@ async def run(config: SimilarityConfig):
         print(f"  {len(cd_rows)} categories processed")
 
         print("Storing computation metadata...")
-        await session.execute(delete(ComputationMeta))
         session.add(ComputationMeta(
+            config_set_id=config_set_id,
             computed_at=datetime.now(UTC),
             n_voters=len(data.voter_ids),
             n_votes=len(data.vote_ids),
@@ -469,6 +477,14 @@ async def run(config: SimilarityConfig):
 def main():
     parser = argparse.ArgumentParser(
         description="Compute pairwise and group similarity scores"
+    )
+    parser.add_argument(
+        "--name", type=str, required=True,
+        help="Name for this config set (e.g. 'Defaut')"
+    )
+    parser.add_argument(
+        "--description", type=str, default=None,
+        help="Optional description of this config set"
     )
     parser.add_argument(
         "--w-yes", type=float, default=settings.SIMILARITY_W_YES,
@@ -500,7 +516,7 @@ def main():
         f"w_mismatch={config.w_mismatch}, m={config.m}"
     )
 
-    asyncio.run(run(config))
+    asyncio.run(run(config, name=args.name, description=args.description))
 
 
 if __name__ == "__main__":

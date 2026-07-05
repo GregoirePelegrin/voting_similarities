@@ -20,6 +20,9 @@ const PercentageGauge: React.FC<PercentageGaugeProps> = ({value, color, size = 1
       {sampleSize !== undefined && total !== undefined && (
         <Box>{sampleSize} / {total}</Box>
       )}
+      {sampleSize !== undefined && total === undefined && (
+        <Box>n = {sampleSize}</Box>
+      )}
     </>
   );
 

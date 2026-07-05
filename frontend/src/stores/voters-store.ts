@@ -20,7 +20,7 @@ class VotersStore {
   async fetchVoters(groupId?: number | null) {
     try {
       if (groupId !== undefined) this.groupId = groupId;
-      const data = await getVoters(1, 2000, this.groupId ?? undefined);
+      const data = await getVoters(1, 2000, this.groupId ?? undefined, this.ui.activeConfigSetId);
       runInAction(() => {
         this.voters = data.items;
         this.total = data.total;
@@ -32,7 +32,7 @@ class VotersStore {
 
   async fetchVoter(id: number, categories?: number[]) {
     try {
-      const data = await getVoter(id, categories);
+      const data = await getVoter(id, categories, this.ui.activeConfigSetId);
       runInAction(() => {
         this.selectedVoter = data;
       });
@@ -43,7 +43,7 @@ class VotersStore {
 
   async fetchCategoryAlignment(voterId: number) {
     try {
-      const data = await getCategoryAlignment(voterId);
+      const data = await getCategoryAlignment(voterId, this.ui.activeConfigSetId);
       runInAction(() => {
         this.categoryAlignment = data;
       });

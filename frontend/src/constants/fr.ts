@@ -281,6 +281,36 @@ export const METHODOLOGY = {
     "Lorsque vous sélectionnez une catégorie, un MDS distinct est calculé avec uniquement " +
     "les votes de cette catégorie. La disposition peut changer considérablement d'une " +
     "catégorie à l'autre — des votants proches sur un sujet peuvent s'éloigner sur un autre.",
+
+  CONFIGS_HEADING: "Configuration des similarités",
+  CONFIGS_INTRO:
+    "Dans le sélecteur en haut à droite, vous pouvez choisir parmi plusieurs **modes de calcul** " +
+    "de la similarité. Chaque mode pondère différemment les accords et désaccords :",
+  CONFIGS_W_YES: "poids des votes « Oui » communs",
+  CONFIGS_W_NO: "poids des votes « Non » communs",
+  CONFIGS_W_MISMATCH: "pénalité en cas de désaccord",
+  CONFIGS_M: "paramètre de lissage (m)",
+  CONFIGS_TABLE_NAME: "Nom",
+  CONFIGS_TABLE_W_YES: "Oui-Oui",
+  CONFIGS_TABLE_W_NO: "Non-Non",
+  CONFIGS_TABLE_W_MISMATCH: "Désaccord",
+  CONFIGS_TABLE_M: "m",
+  CONFIGS_OUTRO:
+    "Le mode **Defaut** correspond aux poids de base : il valorise les « Oui » communs et " +
+    "pénalise modérément les désaccords. Le mode **Bipartisan** traite les « Non » à égalité " +
+    "avec les « Oui », ce qui rapproche les groupes d'opposition. Le mode **Offensif** ignore les " +
+    "« Non » et ne retient que les « Oui » communs, révélant des affinités plus marquées.",
+  CONFIGS_INTERPRETATION:
+    "Changer de mode modifie ce que signifie « être proche » sur la carte. " +
+    "Plus le poids {w_yes} est élevé, plus l'analyse se concentre sur les votes « Oui » " +
+    "communs — deux votants qui partagent une même conviction affirmée se ressemblent davantage. " +
+    "Augmenter le poids {w_no} rend les « Non » communs aussi significatifs que les « Oui », " +
+    "ce qui peut rapprocher des groupes qui s'opposent sur les votes positifs mais " +
+    "s'accordent sur les refus. Une pénalité {w_mismatch} forte écarte davantage les votants " +
+    "dès qu'ils divergent, rendant les dissimilarités plus saillantes. " +
+    "Enfin, le paramètre de lissage {m} contrôle la fiabilité minimale : plus il est élevé, " +
+    "plus il faut de votes partagés pour qu'un score soit considéré comme fiable, ce qui " +
+    "réduit le bruit mais peut atténuer des signaux faibles.",
 };
 
 export const PAGE = {

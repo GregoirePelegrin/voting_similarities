@@ -8,6 +8,7 @@ from app.models import (
     Category,
     CategoryDiscriminativeness,
     Commission,
+    ConfigSet,
     Group,
     GroupCohesivity,
     GroupEmbedding,
@@ -51,6 +52,18 @@ def _build_categories_key(categories: list[int] | None) -> str | None:
     if not categories:
         return None
     return "_".join(str(c) for c in sorted(categories))
+
+
+async def _resolve_config_set_id(
+    config_set_id: int | None, db: AsyncSession
+) -> int:
+    if config_set_id is not None:
+        return config_set_id
+    result = await db.execute(
+        select(ConfigSet.id).order_by(ConfigSet.id.desc()).limit(1)
+    )
+    row = result.scalar_one_or_none()
+    return row if row is not None else 0
 
 
 @router.get("/categories", response_model=list[CategoryOut])
@@ -269,11 +282,14 @@ async def get_voter(
     voter_id: int,
     category: int | None = Query(None, deprecated=True),
     categories: list[int] | None = Query(None),
+    config_set_id: int | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     voter = await db.get(Voter, voter_id)
     if voter is None:
         raise HTTPException(status_code=404, detail="Voter not found")
+
+    csid = await _resolve_config_set_id(config_set_id, db)
 
     group = await db.get(Group, voter.group_id)
 
@@ -369,7 +385,8 @@ async def get_voter(
     sim_result = await db.execute(
         select(VoterVoterSim).where(
             (VoterVoterSim.voter_a_id == voter_id)
-            | (VoterVoterSim.voter_b_id == voter_id)
+            | (VoterVoterSim.voter_b_id == voter_id),
+            VoterVoterSim.config_set_id == csid,
         )
     )
     sim_rows = sim_result.scalars().all()
@@ -388,10 +405,9 @@ async def get_voter(
         other_ids.add(other_id)
 
     voter_sims.sort(key=lambda x: x[1], reverse=True)
-    similar_raw = [(oid, sim, conf, sc) for oid, sim, conf, sc in voter_sims if sim >= 0]
-    dissimilar_raw = [(oid, sim, conf, sc) for oid, sim, conf, sc in voter_sims if sim < 0]
-    similar = similar_raw[:5]
-    dissimilar = sorted(dissimilar_raw, key=lambda x: x[1])[:5]
+    similar = voter_sims[:5]
+    dissimilar = voter_sims[-5:]
+    dissimilar.reverse()
 
     # Batch fetch voter names and groups
     all_sim_ids = {s[0] for s in similar + dissimilar}
@@ -443,7 +459,10 @@ async def get_voter(
     # Group comparisons
     group_result = await db.execute(
         select(VoterGroupSim)
-        .where(VoterGroupSim.voter_id == voter_id)
+        .where(
+            VoterGroupSim.voter_id == voter_id,
+            VoterGroupSim.config_set_id == csid,
+        )
         .order_by(VoterGroupSim.group_id)
     )
     pg_rows = group_result.scalars().all()
@@ -526,7 +545,7 @@ async def get_voter(
                     func.count().filter(Answer.answered).label("answered_count"),
                     func.count().filter(Answer.present).label("present_count"),
                 )
-                .where(Answer.voter_id.in_(own_member_ids))
+                .where(Answer.voter_id.in_(own_member_ids), Answer.vote_id.in_(all_vids))
                 .group_by(Answer.voter_id)
             )
         ).all()
@@ -593,7 +612,7 @@ async def get_voter(
         similar_voters=similar_voters,
         dissimilar_voters=dissimilar_voters,
         group_comparisons=group_comparisons,
-        total_votes=db_total_votes,
+        total_votes=total_votes,
     )
 
 
@@ -680,11 +699,14 @@ async def get_group(
     group_id: int,
     category: int | None = Query(None, deprecated=True),
     categories: list[int] | None = Query(None),
+    config_set_id: int | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     group = await db.get(Group, group_id)
     if group is None:
         raise HTTPException(status_code=404, detail="Group not found")
+
+    csid = await _resolve_config_set_id(config_set_id, db)
 
     # Resolve categories (backward compat with old `category` param)
     if categories is None and category is not None:
@@ -698,7 +720,10 @@ async def get_group(
     ).scalar()
 
     coh_result = await db.execute(
-        select(GroupCohesivity).where(GroupCohesivity.group_id == group_id)
+        select(GroupCohesivity).where(
+            GroupCohesivity.group_id == group_id,
+            GroupCohesivity.config_set_id == csid,
+        )
     )
     cohesivity_row = coh_result.scalar_one_or_none()
 
@@ -712,8 +737,9 @@ async def get_group(
     # Similar groups
     gg_result = await db.execute(
         select(GroupGroupSim).where(
-            (GroupGroupSim.group_a_id == group_id)
-            | (GroupGroupSim.group_b_id == group_id)
+            ((GroupGroupSim.group_a_id == group_id)
+            | (GroupGroupSim.group_b_id == group_id)),
+            GroupGroupSim.config_set_id == csid,
         )
     )
     gg_rows = gg_result.scalars().all()
@@ -841,7 +867,7 @@ async def get_group(
         present_count=group_present,
         per_category=per_category,
         similar_groups=similar_groups,
-        total_votes=db_total_votes,
+        total_votes=total_votes,
     )
 
 
@@ -849,14 +875,19 @@ async def get_group(
 async def get_voters_embeddings(
     category: int | None = Query(None, deprecated=True),
     categories: list[int] | None = Query(None),
+    config_set_id: int | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     # Resolve categories (backward compat with old `category` param)
     if categories is None and category is not None:
         categories = [category]
     cat_key = _build_categories_key(categories)
+    csid = await _resolve_config_set_id(config_set_id, db)
 
-    emb_query = select(VoterEmbedding).where(VoterEmbedding.categories_key == cat_key)
+    emb_query = select(VoterEmbedding).where(
+        VoterEmbedding.categories_key == cat_key,
+        VoterEmbedding.config_set_id == csid,
+    )
     emb_result = await db.execute(emb_query.order_by(VoterEmbedding.voter_id))
     emb_rows = emb_result.scalars().all()
 
@@ -963,14 +994,19 @@ async def get_voters_embeddings(
 async def get_groups_embeddings(
     category: int | None = Query(None, deprecated=True),
     categories: list[int] | None = Query(None),
+    config_set_id: int | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     # Resolve categories (backward compat with old `category` param)
     if categories is None and category is not None:
         categories = [category]
     cat_key = _build_categories_key(categories)
+    csid = await _resolve_config_set_id(config_set_id, db)
 
-    emb_query = select(GroupEmbedding).where(GroupEmbedding.categories_key == cat_key)
+    emb_query = select(GroupEmbedding).where(
+        GroupEmbedding.categories_key == cat_key,
+        GroupEmbedding.config_set_id == csid,
+    )
     emb_result = await db.execute(emb_query.order_by(GroupEmbedding.group_id))
     emb_rows = emb_result.scalars().all()
 
@@ -1024,11 +1060,15 @@ async def get_groups_embeddings(
 
 
 @router.get("/categories/discriminativeness", response_model=list[CategoryDiscriminativenessOut])
-async def get_category_discriminativeness(db: AsyncSession = Depends(get_db)):
+async def get_category_discriminativeness(
+    config_set_id: int | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+):
+    csid = await _resolve_config_set_id(config_set_id, db)
     result = await db.execute(
-        select(CategoryDiscriminativeness).order_by(
-            CategoryDiscriminativeness.normalized_ig.desc()
-        )
+        select(CategoryDiscriminativeness)
+        .where(CategoryDiscriminativeness.config_set_id == csid)
+        .order_by(CategoryDiscriminativeness.normalized_ig.desc())
     )
     cd_rows = result.scalars().all()
 
@@ -1068,16 +1108,18 @@ async def get_category_discriminativeness(db: AsyncSession = Depends(get_db)):
 )
 async def get_group_determinant_categories(
     group_id: int,
+    config_set_id: int | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     group = await db.get(Group, group_id)
     if group is None:
         raise HTTPException(status_code=404, detail="Group not found")
 
+    csid = await _resolve_config_set_id(config_set_id, db)
     result = await db.execute(
-        select(CategoryDiscriminativeness).order_by(
-            CategoryDiscriminativeness.normalized_ig.desc()
-        )
+        select(CategoryDiscriminativeness)
+        .where(CategoryDiscriminativeness.config_set_id == csid)
+        .order_by(CategoryDiscriminativeness.normalized_ig.desc())
     )
     cd_rows = result.scalars().all()
 
@@ -1119,14 +1161,20 @@ async def get_group_determinant_categories(
 @router.get("/voters/{voter_id}/category-alignment", response_model=list[CategoryAlignmentOut])
 async def get_voter_category_alignment(
     voter_id: int,
+    config_set_id: int | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     voter = await db.get(Voter, voter_id)
     if voter is None:
         raise HTTPException(status_code=404, detail="Voter not found")
 
+    csid = await _resolve_config_set_id(config_set_id, db)
+
     pg_result = await db.execute(
-        select(VoterGroupSim).where(VoterGroupSim.voter_id == voter_id)
+        select(VoterGroupSim).where(
+            VoterGroupSim.voter_id == voter_id,
+            VoterGroupSim.config_set_id == csid,
+        )
     )
     pg_rows = pg_result.scalars().all()
 

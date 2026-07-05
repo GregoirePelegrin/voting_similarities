@@ -61,9 +61,13 @@ def _log_config():
 
 
 async def _create_tables():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables created/verified")
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables created/verified")
+    except Exception:
+        logger.warning("Table creation failed (race between workers), continuing")
+        # In multi-worker mode, another worker may have already created the tables
 
 
 async def _check_database():

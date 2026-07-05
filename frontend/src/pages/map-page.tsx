@@ -11,11 +11,11 @@ import MethodologyPanel from "../components/map/methodology-panel";
 import {filterAnnotation} from "../constants/fr";
 
 const MapPage: React.FC = observer(() => {
-  const {embeddingsStore, uiStore, categoriesStore, similarityConfig} = rootStore;
+  const {embeddingsStore, uiStore, categoriesStore} = rootStore;
 
   useEffect(() => {
-    embeddingsStore.fetchVotersEmbedding(uiStore.selectedCategories);
-    embeddingsStore.fetchGroupsEmbedding(uiStore.selectedCategories);
+    embeddingsStore.fetchVotersEmbeddings(uiStore.selectedCategories);
+    embeddingsStore.fetchGroupsEmbeddings(uiStore.selectedCategories);
   }, [uiStore.categoriesKey, uiStore.retryVersion]);
 
   const isLoading = !embeddingsStore.votersEmbedding && !embeddingsStore.groupsEmbedding;
@@ -30,7 +30,7 @@ const MapPage: React.FC = observer(() => {
       <Box sx={{mb: 2}}>
         <CategoryFilter/>
       </Box>
-      <MethodologyPanel config={similarityConfig}/>
+      <MethodologyPanel configSet={uiStore.activeConfigSet}/>
       {isLoading ? (
         <CardSkeleton/>
       ) : (

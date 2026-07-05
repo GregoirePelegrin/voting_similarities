@@ -54,12 +54,14 @@ const DeterminantCategoriesCard: React.FC<DeterminantCategoriesCardProps> = ({ca
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" sx={{mb: 2}}>{DETERMINANT_CATEGORIES.HEADING}</Typography>
-        {categoriesLabel && (
-          <Typography variant="caption" color="text.secondary" sx={{ml: 2, fontStyle: "italic"}}>
-            {categoriesLabel}
-          </Typography>
-        )}
+        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
+          <Typography variant="h6">{DETERMINANT_CATEGORIES.HEADING}</Typography>
+          {categoriesLabel && (
+            <Typography variant="caption" color="text.secondary" sx={{ml: "auto", fontStyle: "italic"}}>
+              {categoriesLabel}
+            </Typography>
+          )}
+        </Box>
         <ResponsiveContainer width="100%" height={Math.max(200, data.length * 36)}>
           <BarChart data={data} layout="vertical" margin={{left: 100, right: 40}}>
             <XAxis type="number" domain={[0, 1]} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}/>
