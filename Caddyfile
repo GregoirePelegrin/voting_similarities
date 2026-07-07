@@ -1,0 +1,20 @@
+similarites-votes.duckdns.org {
+    @api {                                                                                      
+        path /api/* /docs /openapi.json /health /config /embeddings* /categories* /votes* /voters* /groups*                                        
+    }                                                                                           
+    header @api Access-Control-Allow-Origin "*"                                                 
+    header @api Access-Control-Allow-Methods "GET, OPTIONS"                                     
+    header @api Access-Control-Allow-Headers "*"
+
+    reverse_proxy /api/* 127.0.0.1:8000
+    reverse_proxy /docs 127.0.0.1:8000
+    reverse_proxy /openapi.json 127.0.0.1:8000
+    reverse_proxy /health 127.0.0.1:8000
+    reverse_proxy /config 127.0.0.1:8000
+    reverse_proxy /embeddings* 127.0.0.1:8000
+    reverse_proxy /categories* 127.0.0.1:8000
+    reverse_proxy /votes* 127.0.0.1:8000
+    reverse_proxy /voters* 127.0.0.1:8000
+    reverse_proxy /groups* 127.0.0.1:8000
+    reverse_proxy 127.0.0.1:8080
+}

@@ -18,7 +18,6 @@ COPY backend/app/ app/
 COPY backend/migrations/ migrations/
 COPY backend/scripts/ scripts/
 COPY backend/alembic.ini .
-COPY data/ data/
 COPY pyproject.toml .
 
 EXPOSE 8000
