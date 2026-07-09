@@ -89,6 +89,7 @@ class Vote(Base):
     text = Column(Text, nullable=False)
     description = Column(Text, nullable=True)
     has_passed = Column(Boolean, nullable=False, default=False)
+    date = Column(DateTime(timezone=True), nullable=True)
 
     categories = relationship("Category", secondary=vote_category, back_populates="votes")
     answers = relationship("Answer", back_populates="vote")

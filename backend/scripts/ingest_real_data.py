@@ -20,7 +20,10 @@ from sqlalchemy import text, select, func, insert
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 BATCH_SIZE = 50_000
-PARLIAMENT_DB_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/parliament"
+PARLIAMENT_DB_URL = os.environ.get(
+    "PARLIAMENT_DB_URL",
+    "postgresql+asyncpg://postgres:postgres@localhost:5432/parliament",
+)
 INSERT_SQL = text("""INSERT INTO answers (voter_id, vote_id, value, answered, present)
                      VALUES (:voter_id, :vote_id, :value, :answered, :present)""")
 
@@ -129,7 +132,7 @@ async def ingest():
         print("Reading votes from parliament...")
         async with async_sessionmaker(parl_engine, expire_on_commit=False)() as parl_session:
             votes_data = (await parl_session.execute(
-                text("SELECT id, title, categories FROM votes ORDER BY id")
+                text("SELECT id, title, categories, description, date FROM votes ORDER BY id")
             )).fetchall()
 
         # --- Categories ---
@@ -153,8 +156,10 @@ async def ingest():
         for v_data in votes_data:
             title = v_data[1]
             cats = v_data[2] or []
+            description = v_data[3] or None
+            date = v_data[4] if v_data[4] else None
             cat_objs = [cat_map[normalize_cat(c)] for c in cats if normalize_cat(c) in cat_map]
-            vote_obj = Vote(text=title)
+            vote_obj = Vote(text=title, description=description, date=date)
             vote_obj.categories = cat_objs
             vote_objects.append(vote_obj)
         session.add_all(vote_objects)

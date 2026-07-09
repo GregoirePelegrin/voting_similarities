@@ -10,10 +10,15 @@ and answers with realistic correlated voting patterns.
 """
 
 import asyncio
+import os
+import sys
 from datetime import datetime, timedelta
 from random import Random
 
 import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
 from app.config import settings
 from app.models import (
     Answer,
