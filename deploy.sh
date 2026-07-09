@@ -44,7 +44,7 @@ podman run -d \
 
 echo "=== Waiting for backend health ==="
 for i in $(seq 1 30); do
-  if curl -s http://localhost:8000/health >/dev/null 2>&1; then
+  if curl -s http://localhost:8000/api/health >/dev/null 2>&1; then
     echo "Backend is healthy"
     break
   fi
