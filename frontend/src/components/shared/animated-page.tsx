@@ -18,7 +18,7 @@ const AnimatedPage: React.FC<AnimatedPageProps> = ({children}) => {
 
   return (
     <Fade in={show} timeout={400}>
-      <Box sx={{p: 3, maxWidth: 1400, mx: "auto"}}>{children}</Box>
+      <Box sx={{p: {xs: 1.5, md: 3}, maxWidth: 1400, mx: "auto"}}>{children}</Box>
     </Fade>
   );
 };

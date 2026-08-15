@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import {DataGrid, GridColDef, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid";
-import {Box} from "@mui/material";
+import {Box, useMediaQuery, useTheme} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import {VOTERS_TABLE} from "../../constants/fr";
@@ -26,6 +26,8 @@ function SearchToolbar() {
 const VotersTable: React.FC = observer(() => {
   const {votersStore, uiStore} = rootStore;
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("sm"));
 
   const rows = votersStore.voters.map((p) => ({
     id: p.id,
@@ -44,6 +46,7 @@ const VotersTable: React.FC = observer(() => {
         rows={rows}
         columns={columns}
         pageSizeOptions={[25, 50, 100]}
+        columnVisibilityModel={isNarrow ? {role: false, commission: false, circonscription: false} : undefined}
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
           sorting: {sortModel: [{field: "lastname", sort: "asc"}, {field: "firstname", sort: "asc"}]},

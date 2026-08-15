@@ -39,7 +39,7 @@ const VoteDetailPage: React.FC = observer(() => {
     <AnimatedPage>
       <Box sx={{mb: 3, display: "flex", alignItems: "flex-start", gap: 2}}>
         <Box sx={{flex: 1}}>
-          <Typography variant="h4" sx={{mb: 1}}>{q.text}</Typography>
+          <Typography variant="h4" sx={{mb: 1, fontSize: {xs: "1.5rem", sm: "2.125rem"}}}>{q.text}</Typography>
           {q.description && (
             <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
               {q.description}

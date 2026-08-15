@@ -27,11 +27,20 @@ PARLIAMENT_DB_URL = os.environ.get(
 INSERT_SQL = text("""INSERT INTO answers (voter_id, vote_id, value, answered, present)
                      VALUES (:voter_id, :vote_id, :value, :answered, :present)""")
 
-GROUP_COLORS = [
-    "#4E79A7", "#F28E2B", "#E15759", "#76B7B2",
-    "#59A14F", "#EDC948", "#B07AA1", "#FF9DA7",
-    "#9C755F", "#BAB0AC", "#86BCB6", "#8CD17D",
-]
+GROUPS: dict[str, tuple[str | None, str]] = {
+    "Rassemblement National": ("RN", "#9c755f"),
+    "Ensemble pour la République": ("Ens", "#edc948"),
+    "La France insoumise - Nouveau Front Populaire": ("LFI", "#7b13d6"),
+    "Socialistes et apparentés": ("Soc", "#ff8080"),
+    "Droite Républicaine": ("Rep", "#0066cc"),
+    "Les Démocrates": ("Dem", "#ff751f"),
+    "Écologiste et Social": ("Eco", "#4bb166"),
+    "Horizons & Indépendants": ("Hor", "#27348a"),
+    "Députés non inscrits": ("NI", "#999999"),
+    "Libertés, Indépendants, Outre-mer et Territoires": ("LIOT", "#2ed9c3"),
+    "Gauche Démocrate et Républicaine": ("GDR", "#830e21"),
+    "Union des Droites pour la République": ("UDR", "#064c8b"),
+}
 
 CATEGORY_NORMALIZE = {
     "Education & Recherche": "Éducation & Recherche",
@@ -78,10 +87,10 @@ async def ingest():
         group_names = sorted({m[3].strip() for m in members if m[3] and m[3].strip()})
         if not group_names:
             group_names = ["Non inscrits"]
-        groups = [
-            Group(name=name, color=GROUP_COLORS[i] if i < len(GROUP_COLORS) else "#999999")
-            for i, name in enumerate(group_names)
-        ]
+        groups = []
+        for name in group_names:
+            name_short, color = GROUPS.get(name, (None, "#999999"))
+            groups.append(Group(name=name, name_short=name_short, color=color))
         session.add_all(groups)
         await session.flush()
         group_map = {g.name: g.id for g in groups}

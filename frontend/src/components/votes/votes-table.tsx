@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
-import {Box, Chip} from "@mui/material";
+import {Box, Chip, useMediaQuery, useTheme} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import {VOTES_TABLE} from "../../constants/fr";
@@ -44,6 +44,8 @@ const columns: GridColDef[] = [
 const VotesTable: React.FC = observer(() => {
   const {votesStore, categoriesStore, uiStore} = rootStore;
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("sm"));
 
   const catMap = new Map(categoriesStore.categories.map((c) => [c.id, c.name]));
 
@@ -60,6 +62,7 @@ const VotesTable: React.FC = observer(() => {
         rows={rows}
         columns={columns}
         pageSizeOptions={[25, 50, 100]}
+        columnVisibilityModel={isNarrow ? {id: false} : undefined}
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
         }}

@@ -53,6 +53,51 @@ podman exec parliament_analysis_postgres psql -U postgres -d postgres \
 
 > The ingestion script drops and recreates all tables automatically using `Base.metadata.drop_all/create_all`, so no manual migration steps are needed.
 
+### Updating data after a new crawl (local → VPS)
+
+When new votes are crawled + parsed in `parliament_data_extractor`, push them to the VPS with a **full re-export** — there is no delta path. The ingest script drops and recreates all `voting_similarities` tables, so a full copy is the reliable option and the only real work is shipping the data. Only `members`, `votes`, and `bulletins` are consumed; the crawl cache tables (`raw_pages`/`failed_votes`) stay local.
+
+**Local (dev machine):**
+
+```bash
+# 1. Dump the parliament DB, excluding the crawl cache
+podman exec parliament_analysis_postgres pg_dump -U postgres -d fr_assemblee_nationale \
+  -T raw_pages -T failed_votes -f /tmp/parl.sql
+
+# 2. Copy to the VPS
+scp /tmp/parl.sql root@<VPS_IP>:/root/parl.sql
+```
+
+**On the VPS (from `/app/voting_similarities`):**
+
+```bash
+# 3. Recreate the parliament DB (name must match PARLIAMENT_DB_URL in step 5)
+podman exec parliament_analysis_postgres psql -U postgres -c "DROP DATABASE IF EXISTS fr_assemblee_nationale WITH (FORCE);"
+podman exec parliament_analysis_postgres psql -U postgres -c "CREATE DATABASE fr_assemblee_nationale;"
+
+# 4. Restore
+podman exec -i parliament_analysis_postgres psql -U postgres -d fr_assemblee_nationale < /root/parl.sql
+
+# 5. Re-ingest (full rebuild — destructive to voting_similarities tables)
+podman run --rm --network host \
+  --env-file .env.production \
+  -e PARLIAMENT_DB_URL="postgresql+asyncpg://postgres:<DB_PASSWORD>@localhost:5432/fr_assemblee_nationale" \
+  -e PYTHONPATH=/app \
+  -v $(pwd)/backend/scripts/ingest_real_data.py:/app/scripts/ingest_real_data.py:Z \
+  localhost/voting-backend \
+  python3 /app/scripts/ingest_real_data.py
+
+# 6. Recompute similarities for EVERY config set (Defaut, Bipartisan, Offensif, ...)
+podman run --rm --network host \
+  --env-file .env.production \
+  -e PYTHONPATH=/app \
+  localhost/voting-backend \
+  python3 /app/scripts/compute_similarities.py --name "Defaut"
+
+# 7. Restart so the backend serves cleanly
+podman restart voting-backend
+```
+
 ### Manual rebuild (without deploy.sh)
 
 ```bash

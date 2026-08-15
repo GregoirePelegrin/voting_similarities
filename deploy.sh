@@ -3,10 +3,13 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-# Use .env.production for deployment, fall back to .env for dev
-ENV_FILE=".env.production"
-if [ ! -f "$ENV_FILE" ]; then
-  ENV_FILE=".env"
+# Use an explicit env file if provided, else .env.production (fall back to .env for dev)
+ENV_FILE="${1:-}"
+if [ -z "$ENV_FILE" ]; then
+  ENV_FILE=".env.production"
+  if [ ! -f "$ENV_FILE" ]; then
+    ENV_FILE=".env"
+  fi
 fi
 echo "=== Using environment file: $ENV_FILE ==="
 

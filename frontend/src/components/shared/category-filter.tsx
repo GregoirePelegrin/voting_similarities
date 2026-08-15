@@ -13,7 +13,7 @@ const CategoryFilter: React.FC = observer(() => {
     <Autocomplete
       multiple
       size="small"
-      sx={{minWidth: 300, maxWidth: 500}}
+      sx={{minWidth: {xs: "100%", sm: 300}, maxWidth: {xs: "100%", sm: 500}}}
       options={options}
       value={options.filter(c => uiStore.selectedCategories.includes(c.id))}
       limitTags={3}

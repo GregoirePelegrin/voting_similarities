@@ -60,10 +60,10 @@ const GroupDetailPage: React.FC = observer(() => {
   return (
     <AnimatedPage>
       <Box sx={{mb: 3}}>
-        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
+        <Box sx={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2, mb: 2}}>
           <Box sx={{width: 16, height: 16, borderRadius: "50%", bgcolor: group.color}}/>
           <Box>
-            <Typography variant="h4">{group.name_short || group.name}</Typography>
+            <Typography variant="h4" sx={{fontSize: {xs: "1.5rem", sm: "2.125rem"}}}>{group.name_short || group.name}</Typography>
             {group.name_short && (
               <Typography variant="body2" color="text.secondary">
                 {group.name}
@@ -74,7 +74,7 @@ const GroupDetailPage: React.FC = observer(() => {
             {group.member_count} {GROUP_DETAIL.MEMBERS}
           </Typography>
         </Box>
-        <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
+        <Box sx={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2}}>
           <CategoryFilter/>
           <ToggleButtonGroup
             size="small"

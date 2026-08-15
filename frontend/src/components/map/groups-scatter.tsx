@@ -14,6 +14,7 @@ import {Box, Typography, Chip} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import {EmbeddingPointOut} from "../../api/types";
+import GroupLegend from "./group-legend";
 import {GROUPS_SCATTER} from "../../constants/fr";
 import {APP_CONFIG} from "../../constants/config";
 import {DATA_COLORS} from "../../theme";
@@ -66,7 +67,7 @@ const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress, c
           </Typography>
         )}
       </Box>
-      <Box sx={{aspectRatio: 3/2, mx: "auto"}}>
+      <Box sx={{aspectRatio: 3/2, mx: "auto", maxWidth: {xs: 360, sm: "100%"}}}>
         <ResponsiveContainer width="100%" height="100%">
         <ScatterChart margin={{top: 10, right: 20, bottom: 10, left: 20}}>
           <XAxis type="number" dataKey="x" name="x" tick={{fill: DATA_COLORS.neutral, fontSize: 11}}
@@ -93,6 +94,9 @@ const GroupsScatter: React.FC<GroupsScatterProps> = observer(({points, stress, c
         </ScatterChart>
       </ResponsiveContainer>
       </Box>
+      {points.length > 0 && (
+        <GroupLegend items={points.map(p => ({id: p.id, name: p.name, name_short: p.name_short, color: p.color}))}/>
+      )}
     </Box>
   );
 });
