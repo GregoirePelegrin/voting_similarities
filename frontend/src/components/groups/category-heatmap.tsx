@@ -98,7 +98,7 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
                               width: 28,
                               height: 28,
                               borderRadius: 1,
-                              bgcolor: val != null ? redGreyGreenGradient(val) : "rgba(255,255,255,0.03)",
+                              bgcolor: val != null ? redGreyGreenGradient((val + 1) / 2) : "rgba(255,255,255,0.03)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
