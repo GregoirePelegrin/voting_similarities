@@ -29,6 +29,7 @@ jobs:
 
             echo "==> Updating source..."
             cd "$DEPLOY_DIR"
+            git config --global --add safe.directory "$DEPLOY_DIR"
             git checkout main
             git pull --ff-only
             echo "==> Deploying..."
