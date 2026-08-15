@@ -4,6 +4,7 @@ import {observer} from "mobx-react-lite";
 import {SimilarGroupOut} from "../../api/types";
 import rootStore from "../../stores/root-store";
 import {CATEGORY_HEATMAP} from "../../constants/fr";
+import {sortGroupsByPoliticalOrder} from "../../constants/groups";
 import {DATA_COLORS} from "../../theme";
 import {redGreyGreenGradient} from "../../utils/colors";
 
@@ -16,8 +17,8 @@ interface CategoryHeatmapProps {
 const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups, groupColor, categoriesLabel}) => {
   const {categoriesStore} = rootStore;
 
-  const rows = similarGroups
-    .map((sg) => {
+  const rows = sortGroupsByPoliticalOrder(
+    similarGroups.map((sg) => {
       const catSims: Record<string, number> = {};
       if (sg.per_category) {
         for (const [cid, sim] of Object.entries(sg.per_category)) {
@@ -27,13 +28,13 @@ const CategoryHeatmap: React.FC<CategoryHeatmapProps> = observer(({similarGroups
           catSims[cat?.name ?? cid] = sim;
         }
       }
-      return {name: sg.name_short || sg.name, color: sg.color, ...catSims};
+      return {name_short: sg.name_short, name: sg.name_short || sg.name, color: sg.color, ...catSims};
     })
-    .sort((a, b) => a.name.localeCompare(b.name));
+  );
 
   if (rows.length === 0) return null;
 
-  const catNames = Object.keys(rows[0]).filter((k) => k !== "name" && k !== "color").sort();
+  const catNames = Object.keys(rows[0]).filter((k) => k !== "name" && k !== "color" && k !== "name_short").sort();
 
   return (
     <Card>
