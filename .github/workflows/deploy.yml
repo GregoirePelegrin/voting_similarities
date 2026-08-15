@@ -25,7 +25,7 @@ jobs:
           script: |
             set -e
 
-            DEPLOY_DIR="${{ secrets.DEPLOY_DIR || '/app/voting-similarities' }}"
+            DEPLOY_DIR="${{ secrets.DEPLOY_DIR || '/app/voting_similarities' }}"
 
             echo "==> Updating source..."
             cd "$DEPLOY_DIR"
