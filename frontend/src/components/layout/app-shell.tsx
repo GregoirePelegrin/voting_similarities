@@ -13,7 +13,9 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  useMediaQuery,
 } from "@mui/material";
+import {useTheme} from "@mui/material/styles";
 import MapIcon from "@mui/icons-material/Map";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PeopleIcon from "@mui/icons-material/People";
@@ -36,16 +38,20 @@ const navItems = [
   {label: NAV.VOTES, icon: <QuizIcon/>, path: "/votes"},
 ];
 
-const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({open, onClose}) => {
+const NavDrawer: React.FC<{ open: boolean; onClose: () => void; isDesktop: boolean }> = ({open, onClose, isDesktop}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
     <Drawer
-      variant="temporary"
-      open={open}
+      variant={isDesktop ? "permanent" : "temporary"}
+      open={isDesktop ? true : open}
       onClose={onClose}
-      sx={{"& .MuiDrawer-paper": {width: DRAWER_WIDTH, bgcolor: "#1E2433"}}}
+      sx={{
+        width: {md: DRAWER_WIDTH},
+        flexShrink: {md: 0},
+        "& .MuiDrawer-paper": {width: DRAWER_WIDTH, bgcolor: "#1E2433"},
+      }}
     >
       <Toolbar/>
       <List>
@@ -85,16 +91,23 @@ const NavDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({open, onCl
 const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const {uiStore} = rootStore;
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <Box sx={{display: "flex", minHeight: "100vh", bgcolor: "background.default"}}>
       <AppBar
         position="fixed"
         elevation={0}
-        sx={{bgcolor: "#1E2433", borderBottom: "1px solid rgba(255,255,255,0.08)"}}
+        sx={{
+          bgcolor: "#1E2433",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          width: {md: `calc(100% - ${DRAWER_WIDTH}px)`},
+          ml: {md: `${DRAWER_WIDTH}px`},
+        }}
       >
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)} sx={{mr: 2}}>
+          <IconButton edge="start" color="inherit" onClick={() => setDrawerOpen(true)} sx={{mr: 2, display: {md: "none"}}}>
             <MenuIcon/>
           </IconButton>
           <Typography variant="h6" sx={{fontWeight: 500, letterSpacing: "-0.01em"}}>
@@ -104,9 +117,9 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) 
         </Toolbar>
       </AppBar>
 
-      <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}/>
+      <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} isDesktop={isDesktop}/>
 
-      <Box component="main" sx={{flexGrow: 1, mt: 8}}>
+      <Box component="main" sx={{flexGrow: 1, minWidth: 0, mt: 8}}>
         {children}
       </Box>
 

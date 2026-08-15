@@ -62,8 +62,8 @@ const VoterDetailPage: React.FC = observer(() => {
   return (
     <AnimatedPage>
       <Box sx={{mb: 3}}>
-        <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 2}}>
-          <Typography variant="h4">{voter.firstname} {voter.lastname}</Typography>
+        <Box sx={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2, mb: 2}}>
+          <Typography variant="h4" sx={{fontSize: {xs: "1.5rem", sm: "2.125rem"}}}>{voter.firstname} {voter.lastname}</Typography>
           <Chip
             label={voter.group.name_short || voter.group.name}
             size="small"
@@ -74,7 +74,7 @@ const VoterDetailPage: React.FC = observer(() => {
             {voter.group.member_count} {VOTER_DETAIL.MEMBERS}
           </Typography>
         </Box>
-        <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
+        <Box sx={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2}}>
           <CategoryFilter/>
           <ToggleButtonGroup
             size="small"
@@ -89,24 +89,28 @@ const VoterDetailPage: React.FC = observer(() => {
       </Box>
 
       <Card sx={{mb: 3}}>
-        <CardContent sx={{display: "flex", gap: 3, alignItems: "center"}}>
-          <Box sx={{flex: 1, minWidth: 0}}>
-            <VoterInfoCard
-              role={voter.role}
-              commission={voter.commission}
-              circonscription={voter.circonscription}
-            />
-          </Box>
-          <Box sx={{display: "flex", gap: 2, alignItems: "center"}}>
-            <PercentageGauge value={voter.answer_rate} color={voter.group.color} size={80}
-                             label={VOTER_DETAIL.ANSWER_RATE} sampleSize={voter.answered_count} total={voter.total_votes}/>
-            <PercentageGauge value={voter.presence_rate} color={voter.group.color} size={80}
-                             label={VOTER_DETAIL.PRESENCE_RATE} sampleSize={voter.present_count} total={voter.total_votes}/>
-            <PercentageGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={80}
-                             label={VOTER_DETAIL.GROUP_AVG}/>
-            <PercentageGauge value={voter.group_avg_presence_rate} color={voter.group.color} size={80}
-                             label={VOTER_DETAIL.GROUP_AVG_PRESENCE}/>
-          </Box>
+        <CardContent>
+          <Grid container spacing={2} sx={{alignItems: "center"}}>
+            <Grid size={{xs: 12, md: 6}}>
+              <VoterInfoCard
+                role={voter.role}
+                commission={voter.commission}
+                circonscription={voter.circonscription}
+              />
+            </Grid>
+            <Grid size={{xs: 12, md: 6}}>
+              <Box sx={{display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center", justifyContent: {xs: "center", md: "flex-end"}}}>
+                <PercentageGauge value={voter.answer_rate} color={voter.group.color} size={80}
+                                 label={VOTER_DETAIL.ANSWER_RATE} sampleSize={voter.answered_count} total={voter.total_votes}/>
+                <PercentageGauge value={voter.presence_rate} color={voter.group.color} size={80}
+                                 label={VOTER_DETAIL.PRESENCE_RATE} sampleSize={voter.present_count} total={voter.total_votes}/>
+                <PercentageGauge value={voter.group_avg_answer_rate} color={voter.group.color} size={80}
+                                 label={VOTER_DETAIL.GROUP_AVG}/>
+                <PercentageGauge value={voter.group_avg_presence_rate} color={voter.group.color} size={80}
+                                 label={VOTER_DETAIL.GROUP_AVG_PRESENCE}/>
+              </Box>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
 

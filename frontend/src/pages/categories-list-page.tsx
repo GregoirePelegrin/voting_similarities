@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box} from "@mui/material";
+import {Box, useMediaQuery, useTheme} from "@mui/material";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {observer} from "mobx-react-lite";
 import rootStore from "../stores/root-store";
@@ -26,6 +26,8 @@ const columns: GridColDef[] = [
 
 const CategoriesListPage: React.FC = observer(() => {
   const {categoriesStore, uiStore} = rootStore;
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     categoriesStore.fetchDiscriminativeness();
@@ -53,6 +55,7 @@ const CategoriesListPage: React.FC = observer(() => {
           rows={rows}
           columns={columns}
           pageSizeOptions={[25, 50, 100]}
+          columnVisibilityModel={isNarrow ? {variance: false} : undefined}
           disableRowSelectionOnClick
           initialState={{
             pagination: {paginationModel: {page: 0, pageSize: 50}},

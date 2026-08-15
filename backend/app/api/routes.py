@@ -682,6 +682,7 @@ async def list_groups(db: AsyncSession = Depends(get_db)):
         GroupListOut(
             id=g.id,
             name=g.name,
+            name_short=g.name_short,
             color=g.color,
             member_count=member_counts.get(g.id, 0),
             cohesivity=coh_map.get(g.id),
@@ -780,6 +781,7 @@ async def get_group(
             SimilarGroupOut(
                 id=other_gid,
                 name=group_map.get(other_gid, "Unknown"),
+                name_short=group_short_map.get(other_gid),
                 color=group_color_map.get(other_gid, "#808080"),
                 similarity=sim,
                 confidence=row.confidence,

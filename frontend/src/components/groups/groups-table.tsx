@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
-import {Box, Typography,} from "@mui/material";
+import {Box, Typography, useMediaQuery, useTheme,} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import {GROUPS_TABLE} from "../../constants/fr";
@@ -65,6 +65,8 @@ const columns: GridColDef[] = [
 const GroupsTable: React.FC = observer(() => {
   const {groupsStore, uiStore} = rootStore;
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("sm"));
 
   const rows = groupsStore.groups.map((g) => ({
     id: g.id,
@@ -83,6 +85,7 @@ const GroupsTable: React.FC = observer(() => {
         rows={rows}
         columns={columns}
         pageSizeOptions={[25, 50, 100]}
+        columnVisibilityModel={isNarrow ? {name_short: false, presence_rate: false} : undefined}
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
           sorting: {sortModel: [{field: "name", sort: "asc"}]},

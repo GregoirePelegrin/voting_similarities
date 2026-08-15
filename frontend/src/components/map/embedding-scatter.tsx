@@ -14,6 +14,7 @@ import {Box, Typography, Chip} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import {EmbeddingPointOut, BarycenterOut} from "../../api/types";
+import GroupLegend from "./group-legend";
 import {VOTERS_SCATTER} from "../../constants/fr";
 import {APP_CONFIG} from "../../constants/config";
 import {DATA_COLORS} from "../../theme";
@@ -58,6 +59,15 @@ const EmbeddingScatter: React.FC<EmbeddingScatterProps> = observer(({points, bar
 
   const stressColor = stress < APP_CONFIG.STRESS_THRESHOLD_GOOD ? DATA_COLORS.positive : stress < APP_CONFIG.STRESS_THRESHOLD_FAIR ? DATA_COLORS.warning : DATA_COLORS.negative;
 
+  const legendItems = barycenters.length
+    ? barycenters.map(b => ({id: b.group_id, name: b.name, name_short: b.name_short, color: b.color}))
+    : points.reduce<{id?: number; name: string; name_short?: string | null; color: string}[]>((acc, p) => {
+        if (!p.group_color) return acc;
+        if (acc.some(item => item.color === p.group_color)) return acc;
+        acc.push({id: p.group_id, name: p.group_name || p.name, name_short: p.group_name_short, color: p.group_color});
+        return acc;
+      }, []);
+
   return (
     <Box>
       <Box sx={{display: "flex", alignItems: "center", gap: 2, mb: 1}}>
@@ -79,7 +89,7 @@ const EmbeddingScatter: React.FC<EmbeddingScatterProps> = observer(({points, bar
           </Typography>
         )}
       </Box>
-      <Box sx={{aspectRatio: 3/2, mx: "auto"}}>
+      <Box sx={{aspectRatio: 3/2, mx: "auto", maxWidth: {xs: 360, sm: "100%"}}}>
         <ResponsiveContainer width="100%" height="100%">
         <ScatterChart margin={{top: 10, right: 20, bottom: 10, left: 20}}>
           <XAxis type="number" dataKey="x" name="x" tick={{fill: DATA_COLORS.neutral, fontSize: 11}}
@@ -120,6 +130,7 @@ const EmbeddingScatter: React.FC<EmbeddingScatterProps> = observer(({points, bar
         </ScatterChart>
       </ResponsiveContainer>
       </Box>
+      {legendItems.length > 0 && <GroupLegend items={legendItems}/>}
     </Box>
   );
 });
