@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,10 +8,11 @@ from sqlalchemy import text
 
 from app.api.config import router as config_router
 from app.api.health import router as health_router
+from app.api.metrics import router as metrics_router
 from app.api.routes import router as api_router
 from app.config import settings
 from app.database import async_session, engine
-from app.models import Base
+from app.models import Base, RequestMetric
 
 logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO))
 logger = logging.getLogger(__name__)
@@ -27,7 +29,47 @@ app.add_middleware(
 
 app.include_router(config_router, prefix="/api")
 app.include_router(health_router, prefix="/api")
+app.include_router(metrics_router, prefix="/api")
 app.include_router(api_router, prefix="/api")
+
+METRICS_EXCLUDED_PATHS = {"/api/metrics", "/api/health"}
+
+
+@app.middleware("http")
+async def record_request_metrics(request: Request, call_next):
+    exception = None
+    try:
+        response = await call_next(request)
+    except Exception:
+        exception = sys.exc_info()[1]
+        response = None
+    try:
+        path = request.url.path
+        if path.startswith("/api/") and path not in METRICS_EXCLUDED_PATHS:
+            config_set_id = None
+            raw_cs = request.query_params.get("config_set_id")
+            if raw_cs and raw_cs.isdigit():
+                config_set_id = int(raw_cs)
+            async with async_session() as session:
+                session.add(
+                    RequestMetric(
+                        method=request.method,
+                        path=path,
+                        status=response.status_code if response is not None else 500,
+                        config_set_id=config_set_id,
+                    )
+                )
+                await session.commit()
+    except Exception:
+        logger.warning(
+            "Failed to record request metric for %s %s",
+            request.method,
+            request.url.path,
+            exc_info=True,
+        )
+    if response is not None:
+        return response
+    raise exception
 
 
 @app.on_event("startup")

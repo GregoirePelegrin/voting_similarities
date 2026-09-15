@@ -12,11 +12,10 @@ from app.models import (
     Commission,
     Group,
     Role,
-    Voter,
     Vote,
+    Voter,
 )
-from datetime import UTC, datetime
-from sqlalchemy import text, select, func, insert
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 BATCH_SIZE = 50_000
@@ -68,8 +67,12 @@ async def ingest():
     target_engine = create_async_engine(settings.DATABASE_URL, echo=False)
 
     print("Dropping and recreating tables...")
+    preserve = {"request_metric"}
+    drop_tables = [
+        t for t in Base.metadata.sorted_tables if t.name not in preserve
+    ]
     async with target_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all, tables=drop_tables)
         await conn.run_sync(Base.metadata.create_all)
 
     session_factory = async_sessionmaker(target_engine, expire_on_commit=False)

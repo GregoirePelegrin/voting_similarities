@@ -1,6 +1,7 @@
 
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
 
 
 class ConfigSetOut(BaseModel):
@@ -263,3 +264,13 @@ class CategoryAlignmentOut(BaseModel):
     own_group_similarity: float
     avg_other_group_similarity: float
     alignment: float
+
+
+class MetricsOut(BaseModel):
+    total: int
+    count: int
+    avg_per_day: float
+    today: int
+    period_days: int
+    per_day: dict[str, int]
+    per_endpoint: dict[str, int]
