@@ -7,6 +7,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Table,
@@ -221,3 +222,16 @@ class ComputationMeta(Base):
     voter_voter_pairs = Column(Integer, nullable=False)
     group_group_pairs = Column(Integer, nullable=False)
     params = Column(JSON, nullable=True)
+
+
+class RequestMetric(Base):
+    __tablename__ = "request_metric"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    method = Column(String(10), nullable=False)
+    path = Column(String(300), nullable=False)
+    status = Column(Integer, nullable=False)
+    config_set_id = Column(Integer, ForeignKey("config_set.id"), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
+
+    __table_args__ = (Index("ix_request_metric_created_at", "created_at"),)

@@ -196,6 +196,7 @@ The app opens at http://localhost:5173 and proxies API calls to `http://localhos
 | GET | `/embeddings/voters?category=` | MDS 2D coordinates + barycenters for voters |
 | GET | `/embeddings/groups?category=` | MDS 2D coordinates for groups |
 | GET | `/config` | Similarity metric configuration parameters |
+| GET | `/metrics?days=7` | Visit metrics: total, daily average, per-day and per-endpoint breakdown (needs `METRICS_API_KEY` if set) |
 
 ---
 
@@ -218,6 +219,7 @@ The app opens at http://localhost:5173 and proxies API calls to `http://localhos
 | `SIMILARITY_W_NO` | `0.2` | Weight for No-No agreement |
 | `SIMILARITY_W_MISMATCH` | `0.5` | Penalty for disagreement |
 | `SIMILARITY_SHRINKAGE_M` | `10` | Shrinkage strength (shared votes before pair score dominates global mean) |
+| `METRICS_API_KEY` | *(empty)* | Optional Bearer key protecting `GET /api/metrics` |
 
 ### Frontend
 

@@ -90,6 +90,7 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 - **Nginx**: listens on port **8080** (not 80), SPA fallback via `try_files $uri /index.html`.
 - **Host networking** in production (podman), no internal DNS.
 - **`SIMILARITY_SHRINKAGE_M`** is the env var name (not `_BAYESIAN_` or `_M`). `.env.example` has it correct.
+- **Request metrics**: every `/api/*` request (except `/metrics` and `/health`) is recorded in `request_metric`. `ingest_real_data.py` **preserves** that table across its destructive re-ingest. `GET /api/metrics?days=7` returns totals + per-day averages + per-endpoint breakdown; protected by Bearer `METRICS_API_KEY` when set.
 - **Multi‑worker DDL race**: `main.py` catches `create_all` errors during startup — one of 4 workers creates tables, the others log a warning and continue.
 - **Git ignores**: `data/` (whole dir), `**/build`, `.env` files.
 - **One-shot Python**: use `conda run -n comparaison_parlementaires` if you must run backend scripts outside a container. Do not install or modify packages without asking.
@@ -98,4 +99,5 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 
 - `Group` → `Voter` (FK group_id), `Vote`, `Answer` (composite PK: voter_id, vote_id)
 - Similarity tables: `VoterVoterSim`, `VoterGroupSim`, `GroupGroupSim`, `GroupCohesivity`, `VoterEmbedding`, `GroupEmbedding`, `CategoryDiscriminativeness`, `ComputationMeta`
+- `RequestMetric` records every API request (method, path, status, optional config_set_id, created_at)
 - Many-to-many `vote_category` table joins `Vote` ↔ `Category`
