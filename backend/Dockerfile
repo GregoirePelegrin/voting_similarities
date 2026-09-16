@@ -20,6 +20,10 @@ COPY backend/scripts/ scripts/
 COPY backend/alembic.ini .
 COPY pyproject.toml .
 
+# Vendored parliament_data_extractor (crawl/parse pipeline used by batch/update-data.sh)
+COPY backend/parliament_data_extractor/src/parliament_data_extractor/ /app/parliament_data_extractor/
+ENV PYTHONPATH=/app
+
 EXPOSE 8000
 
 CMD uvicorn app.main:app --host 0.0.0.0 --port ${API_PORT:-8000} --workers ${UVICORN_WORKERS:-4}

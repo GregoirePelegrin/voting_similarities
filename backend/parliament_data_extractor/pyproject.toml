@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parliament_data_extractor"
+version = "0.1.0"
+description = "Parliamentary voting data analysis with clustering"
+requires-python = ">=3.10"
+dependencies = [
+    "matplotlib",
+    "pandas",
+    "prince",
+    "scikit-learn",
+    "numpy",
+    "scipy",
+    "requests",
+    "beautifulsoup4",
+    "python-dotenv",
+    "psycopg2-binary",
+]
+
+[project.scripts]
+crawl = "parliament_data_extractor.scripts.crawl:main"
+parse = "parliament_data_extractor.scripts.parse:main"
+analyze = "parliament_data_extractor.scripts.analyze:main"
+init-db = "parliament_data_extractor.scripts.init_db:main"
+populate-members = "parliament_data_extractor.scripts.populate_members:main"
+enrich-members = "parliament_data_extractor.scripts.enrich_members:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

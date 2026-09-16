@@ -55,7 +55,14 @@ podman exec parliament_analysis_postgres psql -U postgres -d postgres \
 
 ### Updating data after a new crawl (local → VPS)
 
+> **Preferred: automated daily update via GitHub Actions** — see the section
+> below. The manual procedure here is the fallback / one-time bootstrap.
+
 When new votes are crawled + parsed in `parliament_data_extractor`, push them to the VPS with a **full re-export** — there is no delta path. The ingest script drops and recreates all `voting_similarities` tables, so a full copy is the reliable option and the only real work is shipping the data. Only `members`, `votes`, and `bulletins` are consumed; the crawl cache tables (`raw_pages`/`failed_votes`) stay local.
+
+> **The extractor is now vendored** at `backend/parliament_data_extractor/` and
+> shipped inside the backend image, so the daily cron runs crawl/parse directly
+> on the VPS — no `scp`/`pg_dump` needed.
 
 **Local (dev machine):**
 
@@ -88,6 +95,7 @@ podman run --rm --network host \
   python3 /app/scripts/ingest_real_data.py
 
 # 6. Recompute similarities for EVERY config set (Defaut, Bipartisan, Offensif, ...)
+#    list them, then run one per set (see batch/update-data.sh for the automated loop)
 podman run --rm --network host \
   --env-file .env.production \
   -e PYTHONPATH=/app \
@@ -97,6 +105,34 @@ podman run --rm --network host \
 # 7. Restart so the backend serves cleanly
 podman restart voting-backend
 ```
+
+---
+
+### Automated daily update (GitHub Actions cron)
+
+`.github/workflows/update-data.yml` runs `batch/update-data.sh` on the VPS every
+day at **00:00 UTC** (and on `workflow_dispatch`). The script:
+
+1. pulls the repo, then runs the vendored extractor **inside the backend
+   container**: `crawl → parse → parse --recategorize` into the
+   `fr_assemblee_nationale` database;
+2. compares vote/category counts before/after and, **only if something changed**
+   (`new_votes` or `recategorized`), re-ingests (`ingest_real_data.py`),
+   recomputes similarities for **every** existing config set (via
+   `backend/scripts/get_config_sets.py`), and restarts the backend;
+3. sends a Telegram postfix message to the shared bot on **every** run
+   (success with the count of new votes parsed, or failure with the failing step
+   + run link).
+
+Needed on the repo:
+- **Secrets**: `TELEGRAM_BOT_KEY`, `TELEGRAM_CHAT_ID` (shared bot, prefix
+  `[voting_similarities]` for context), plus the existing deploy secrets
+  (`DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`).
+- **Variable**: `LLM_API_KEY` (Groq free tier) — sent only to the SSH session.
+
+Static VPS-side config lives in `batch/.env.data` (copy of
+`batch/.env.data.example`, git-ignored): PostgreSQL creds for the extractor DB
+(`DB_FR_ASSEMBLEE_NATIONALE_NAME`) and LLM defaults.
 
 ### Manual rebuild (without deploy.sh)
 
@@ -235,9 +271,13 @@ The frontend is a Vite + React SPA with no runtime environment variables. The AP
 ├── deploy.sh              # Container build + deploy script
 ├── .gitignore
 ├── pyproject.toml         # Python project config + ruff settings
+├── batch/
+│   ├── update-data.sh     # Daily cron pipeline (crawl → parse → conditional ingest/compute)
+│   └── .env.data.example  # Static extractor config for update-data.sh (DB + LLM envs)
 ├── backend/
-│   ├── Dockerfile         # Multi-stage Python 3.12-slim image
+│   ├── Dockerfile         # Multi-stage Python 3.12-slim image (bundles vendored extractor)
 │   ├── alembic.ini        # Alembic migration config
+│   ├── parliament_data_extractor/  # Vendored extractor package (crawl/parse/analyze)
 │   ├── app/
 │   │   ├── main.py        # FastAPI app + lifecycle hooks
 │   │   ├── config.py      # pydantic-settings configuration
@@ -251,6 +291,8 @@ The frontend is a Vite + React SPA with no runtime environment variables. The AP
 │   │       └── routes.py  # All API endpoints
 │   ├── scripts/
 │   │   ├── seed.py               # Generate sample data (safe: refuses if data exists)
+│   │   ├── ingest_real_data.py   # Ingest from the parliament DB (PARLIAMENT_DB_URL)
+│   │   ├── get_config_sets.py    # List config sets as TSV (used by update-data.sh)
 │   │   └── compute_similarities.py # Batch computation + schema auto-creation
 │   ├── migrations/        # Alembic migration files
 │   └── database_handling.md  # Detailed DB operations guide

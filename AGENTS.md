@@ -67,6 +67,21 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 | Container logs (backend) | `podman logs voting-backend` |
 | Container shell | `podman exec -it voting-backend sh` |
 
+## Daily data update (cron)
+
+`.github/workflows/update-data.yml` runs `batch/update-data.sh` on the VPS every day at **00:00 UTC** (or via `workflow_dispatch`). The script uses the **vendored** `parliament_data_extractor` (shipped inside the backend image at `/app/parliament_data_extractor`, importable as `python3 -m parliament_data_extractor.scripts.<cmd>` — it is NOT a git clone of the other repo).
+
+Pipeline inside `update-data.sh`:
+
+1. `git` pull → count votes/categories in `fr_assemblee_nationale` (via `podman exec parliament_analysis_postgres psql -U postgres ...`) → `crawl` → `parse` → `parse --recategorize`.
+2. Count again; **if nothing changed** (`new_votes`/`regategorized` both 0) send success Telegram "aucun nouveau vote" and stop. Otherwise: `ingest_real_data.py` (`PARLIAMENT_DB_URL` built from `batch/.env.data`), recompute similarities for **every** config set (TSV list from `get_config_sets.py`, default set `Defaut 1.0 0.2 0.5 10` if none), restart backend, wait for `/api/health`.
+3. Telegram notifications **every** run: success with new-vote counts (or failure with failing step + last log lines + `RUN_URL`). Prefix label is `[voting_similarities]`.
+
+Repo config needed:
+- Secrets: `TELEGRAM_BOT_KEY`, `TELEGRAM_CHAT_ID` (+ existing `DEPLOY_HOST`/`DEPLOY_USER`/`DEPLOY_SSH_KEY`).
+- Variable: `LLM_API_KEY` (Groq free tier), forwarded only to the SSH session.
+- VPS-side static config: `batch/.env.data` (DB `DB_*` + LLM envs; git-ignored, copy of `batch/.env.data.example`).
+
 ## Architecture
 
 - **Backend**: FastAPI + SQLAlchemy async (`python -m backend` → `backend/__main__.py` → uvicorn)
@@ -94,6 +109,10 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 - **Multi‑worker DDL race**: `main.py` catches `create_all` errors during startup — one of 4 workers creates tables, the others log a warning and continue.
 - **Git ignores**: `data/` (whole dir), `**/build`, `.env` files.
 - **One-shot Python**: use `conda run -n comparaison_parlementaires` if you must run backend scripts outside a container. Do not install or modify packages without asking.
+- **Ruff baseline**: `ruff check backend/` currently reports **27 pre-existing errors** (mostly E501 in `app/`); work should not add new violations. The vendored `backend/parliament_data_extractor/` is kept lint-clean (ruff `-`run on it targets 0 errors).
+- **Vendored extractor**: edits to the pipeline code must be made **in `parliament_data_extractor` (the source repo) then re-synced** into `backend/parliament_data_extractor/` (rsync `src/` + README/AGENTS/.env.example). Keep the two copies in sync; the vendored copy lives in the Docker image.
+- **pydantic Settings**: `backend/app/config.py` reads `.env` from project root and now ignores unknown keys (`extra="ignore"`). Do not add secrets to it; VPS env vars come from `--env-file .env.production`.
+- **Extractor LLM envs**: `LLM_*` vars only affect the extractor (reads env at runtime, Groq `qwen/qwen3.8-27b` default) — passed via `podman exec -e` in `update-data.sh`, never placed in `voting_similarities/.env`.
 
 ## Data model
 
