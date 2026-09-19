@@ -4,7 +4,9 @@
 **node_modules**
 **.env
 .env.local
+.env.production
 data/
 **build**
 deployment-steps.md
-.env.production
+batch/.env.data
+batch/logs/

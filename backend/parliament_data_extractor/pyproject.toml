@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parliament_data_extractor"
+version = "0.1.0"
+description = "Crawl and parse French Assemblée Nationale voting data into PostgreSQL"
+requires-python = ">=3.11"
+dependencies = [
+    "requests",
+    "beautifulsoup4",
+    "psycopg2-binary",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+]
+
+[project.scripts]
+crawl = "parliament_data_extractor.scripts.crawl:main"
+parse = "parliament_data_extractor.scripts.parse:main"
+init-db = "parliament_data_extractor.scripts.init_db:main"
+populate-members = "parliament_data_extractor.scripts.populate_members:main"
+enrich-members = "parliament_data_extractor.scripts.enrich_members:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

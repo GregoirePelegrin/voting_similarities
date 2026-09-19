@@ -1,0 +1,4602 @@
+[
+    {
+        "firstname": "Marine",
+        "lastname": "Le Pen",
+        "group": "RN",
+        "role": "Présidente",
+        "commission": "Affaires étrangères",
+        "circonscription": "Pas-de-Calais 11e"
+    },
+    {
+        "firstname": "Franck",
+        "lastname": "Allisio",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Bouches-du-Rhône 12e"
+    },
+    {
+        "firstname": "Maxime",
+        "lastname": "Amblard",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Meuse 1re"
+    },
+    {
+        "firstname": "Bénédicte",
+        "lastname": "Auzanot",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Vaucluse 2e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Ballard",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Oise 2e"
+    },
+    {
+        "firstname": "Anchya",
+        "lastname": "Bamana",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Mayotte 2e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Barthès",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Aude 1re"
+    },
+    {
+        "firstname": "Romain",
+        "lastname": "Baubry",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Bouches-du-Rhône 15e"
+    },
+    {
+        "firstname": "José",
+        "lastname": "Beaurain",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Aisne 4e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Bentz",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Haute-Marne 1re"
+    },
+    {
+        "firstname": "Théo",
+        "lastname": "Bernhardt",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Bas-Rhin 8e"
+    },
+    {
+        "firstname": "Guillaume",
+        "lastname": "Bigot",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Territoire de Belfort 2e"
+    },
+    {
+        "firstname": "Bruno",
+        "lastname": "Bilde",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Pas-de-Calais 12e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Blairy",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Pas-de-Calais 1re"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Blanc",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Pyrénées-Orientales 1re"
+    },
+    {
+        "firstname": "Frédéric",
+        "lastname": "Boccaletti",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Var 7e"
+    },
+    {
+        "firstname": "Pascale",
+        "lastname": "Bordes",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Gard 3e"
+    },
+    {
+        "firstname": "Anthony",
+        "lastname": "Boulogne",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Meurthe-et-Moselle 6e"
+    },
+    {
+        "firstname": "Manon",
+        "lastname": "Bouquin",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Hérault 4e"
+    },
+    {
+        "firstname": "Jorys",
+        "lastname": "Bovet",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Allier 2e"
+    },
+    {
+        "firstname": "Jérôme",
+        "lastname": "Buisson",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Ain 4e"
+    },
+    {
+        "firstname": "Sébastien",
+        "lastname": "Chenu",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Nord 19e"
+    },
+    {
+        "firstname": "Roger",
+        "lastname": "Chudeau",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Loir-et-Cher 2e"
+    },
+    {
+        "firstname": "Bruno",
+        "lastname": "Clavet",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Pas-de-Calais 3e"
+    },
+    {
+        "firstname": "Caroline",
+        "lastname": "Colombier",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Charente 3e"
+    },
+    {
+        "firstname": "Nathalie",
+        "lastname": "Da Conceicao Carvalho",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Essonne 2e"
+    },
+    {
+        "firstname": "Sandra",
+        "lastname": "Delannoy",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Nord 3e"
+    },
+    {
+        "firstname": "Jocelyn",
+        "lastname": "Dessigny",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Aisne 5e"
+    },
+    {
+        "firstname": "Edwige",
+        "lastname": "Diaz",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Gironde 11e"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Dogor-Such",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Pyrénées-Orientales 3e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Dragon",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Aisne 1re"
+    },
+    {
+        "firstname": "Alexandre",
+        "lastname": "Dufosset",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nord 18e"
+    },
+    {
+        "firstname": "Gaëtan",
+        "lastname": "Dussausaye",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Vosges 2e"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Dutremble",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Saône-et-Loire 3e"
+    },
+    {
+        "firstname": "Auguste",
+        "lastname": "Evrard",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Pas-de-Calais 8e"
+    },
+    {
+        "firstname": "Frédéric",
+        "lastname": "Falcon",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Aude 2e"
+    },
+    {
+        "firstname": "Marc",
+        "lastname": "de Fleurian",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Pas-de-Calais 7e"
+    },
+    {
+        "firstname": "Guillaume",
+        "lastname": "Florquin",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Nord 20e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Fouquart",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Bouches-du-Rhône 13e"
+    },
+    {
+        "firstname": "Thierry",
+        "lastname": "Frappé",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Pas-de-Calais 10e"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Gabarron",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Hérault 6e"
+    },
+    {
+        "firstname": "Stéphanie",
+        "lastname": "Galzy",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Hérault 5e"
+    },
+    {
+        "firstname": "Jonathan",
+        "lastname": "Gery",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Rhône 8e"
+    },
+    {
+        "firstname": "Frank",
+        "lastname": "Giletti",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Var 6e"
+    },
+    {
+        "firstname": "Yoann",
+        "lastname": "Gillet",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Gard 1re"
+    },
+    {
+        "firstname": "Christian",
+        "lastname": "Girard",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Alpes-de-Haute-Provence 1re"
+    },
+    {
+        "firstname": "Antoine",
+        "lastname": "Golliot",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Pas-de-Calais 5e"
+    },
+    {
+        "firstname": "José",
+        "lastname": "Gonzalez",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Bouches-du-Rhône 10e"
+    },
+    {
+        "firstname": "Florence",
+        "lastname": "Goulet",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Meuse 2e"
+    },
+    {
+        "firstname": "Géraldine",
+        "lastname": "Grangier",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Doubs 4e"
+    },
+    {
+        "firstname": "Monique",
+        "lastname": "Griseti",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Bouches-du-Rhône 1re"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Guibert",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Nièvre 2e"
+    },
+    {
+        "firstname": "Michel",
+        "lastname": "Guiniot",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Oise 6e"
+    },
+    {
+        "firstname": "Jordan",
+        "lastname": "Guitton",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Aube 1re"
+    },
+    {
+        "firstname": "Marine",
+        "lastname": "Hamelet",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Tarn-et-Garonne 2e"
+    },
+    {
+        "firstname": "Timothée",
+        "lastname": "Houssin",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Eure 5e"
+    },
+    {
+        "firstname": "Sébastien",
+        "lastname": "Humbert",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Vosges 4e"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Jacobelli",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Moselle 8e"
+    },
+    {
+        "firstname": "Pascal",
+        "lastname": "Jenft",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Moselle 5e"
+    },
+    {
+        "firstname": "Alexis",
+        "lastname": "Jolly",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Isère 6e"
+    },
+    {
+        "firstname": "Tiffany",
+        "lastname": "Joncour",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Rhône 13e"
+    },
+    {
+        "firstname": "Sylvie",
+        "lastname": "Josserand",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Gard 6e"
+    },
+    {
+        "firstname": "Florence",
+        "lastname": "Joubert",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Dordogne 3e"
+    },
+    {
+        "firstname": "Hélène",
+        "lastname": "Laporte",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Lot-et-Garonne 2e"
+    },
+    {
+        "firstname": "Laure",
+        "lastname": "Lavalette",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Var 2e"
+    },
+    {
+        "firstname": "Robert",
+        "lastname": "Le Bourgeois",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Seine-Maritime 10e"
+    },
+    {
+        "firstname": "Julie",
+        "lastname": "Lechanteux",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Var 5e"
+    },
+    {
+        "firstname": "Nadine",
+        "lastname": "Lechon",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Dordogne 1re"
+    },
+    {
+        "firstname": "Gisèle",
+        "lastname": "Lelouis",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Bouches-du-Rhône 3e"
+    },
+    {
+        "firstname": "Hervé",
+        "lastname": "de Lépinau",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Vaucluse 3e"
+    },
+    {
+        "firstname": "Katiana",
+        "lastname": "Levavasseur",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Eure 2e"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Limongi",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Seine-et-Marne 4e"
+    },
+    {
+        "firstname": "René",
+        "lastname": "Lioret",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Côte-d'Or 5e"
+    },
+    {
+        "firstname": "Christine",
+        "lastname": "Loir",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Eure 1re"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Lopez-Liguori",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Hérault 7e"
+    },
+    {
+        "firstname": "Marie-France",
+        "lastname": "Lorho",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Vaucluse 4e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Lottiaux",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Var 4e"
+    },
+    {
+        "firstname": "Alexandre",
+        "lastname": "Loubet",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Moselle 7e"
+    },
+    {
+        "firstname": "David",
+        "lastname": "Magnier",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Oise 7e"
+    },
+    {
+        "firstname": "Claire",
+        "lastname": "Marais-Beuil",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Oise 1re"
+    },
+    {
+        "firstname": "Matthieu",
+        "lastname": "Marchio",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Nord 16e"
+    },
+    {
+        "firstname": "Pascal",
+        "lastname": "Markowsky",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Charente-Maritime 4e"
+    },
+    {
+        "firstname": "Patrice",
+        "lastname": "Martin",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Seine-Maritime 6e"
+    },
+    {
+        "firstname": "Michèle",
+        "lastname": "Martinez",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Pyrénées-Orientales 4e"
+    },
+    {
+        "firstname": "Alexandra",
+        "lastname": "Masson",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Alpes-Maritimes 4e"
+    },
+    {
+        "firstname": "Bryan",
+        "lastname": "Masson",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Alpes-Maritimes 6e"
+    },
+    {
+        "firstname": "Kévin",
+        "lastname": "Mauvieux",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Eure 3e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Meizonnet",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Gard 2e"
+    },
+    {
+        "firstname": "Joëlle",
+        "lastname": "Mélin",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Bouches-du-Rhône 9e"
+    },
+    {
+        "firstname": "Yaël",
+        "lastname": "Ménaché",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Somme 5e"
+    },
+    {
+        "firstname": "Thomas",
+        "lastname": "Ménagé",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Loiret 4e"
+    },
+    {
+        "firstname": "Pierre",
+        "lastname": "Meurin",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Gard 4e"
+    },
+    {
+        "firstname": "Serge",
+        "lastname": "Muller",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Dordogne 2e"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Odoul",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Yonne 3e"
+    },
+    {
+        "firstname": "Caroline",
+        "lastname": "Parmentier",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Pas-de-Calais 9e"
+    },
+    {
+        "firstname": "Thierry",
+        "lastname": "Perez",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Isère 10e"
+    },
+    {
+        "firstname": "Kévin",
+        "lastname": "Pfeffer",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Moselle 6e"
+    },
+    {
+        "firstname": "Lisette",
+        "lastname": "Pollet",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Drôme 2e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Rambaud",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Var 3e"
+    },
+    {
+        "firstname": "Angélique",
+        "lastname": "Ranc",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Aube 3e"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Rancoule",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Aude 3e"
+    },
+    {
+        "firstname": "Matthias",
+        "lastname": "Renault",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Somme 3e"
+    },
+    {
+        "firstname": "Catherine",
+        "lastname": "Rimbert",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Vaucluse 5e"
+    },
+    {
+        "firstname": "Joseph",
+        "lastname": "Rivière",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Réunion 3e"
+    },
+    {
+        "firstname": "Laurence",
+        "lastname": "Robert-Dehault",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Haute-Marne 2e"
+    },
+    {
+        "firstname": "Béatrice",
+        "lastname": "Roullaud",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Seine-et-Marne 6e"
+    },
+    {
+        "firstname": "Sophie-Laurence",
+        "lastname": "Roy",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Yonne 2e"
+    },
+    {
+        "firstname": "Anaïs",
+        "lastname": "Sabatini",
+        "group": "RN",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Pyrénées-Orientales 2e"
+    },
+    {
+        "firstname": "Alexandre",
+        "lastname": "Sabatou",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Oise 3e"
+    },
+    {
+        "firstname": "Emeric",
+        "lastname": "Salmon",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Haute-Saône 2e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Schreck",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Var 8e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Taché",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Bouches-du-Rhône 16e"
+    },
+    {
+        "firstname": "Jean-Philippe",
+        "lastname": "Tanguy",
+        "group": "RN",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Somme 4e"
+    },
+    {
+        "firstname": "Michaël",
+        "lastname": "Taverne",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Nord 12e"
+    },
+    {
+        "firstname": "Thierry",
+        "lastname": "Tesson",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Nord 17e"
+    },
+    {
+        "firstname": "Lionel",
+        "lastname": "Tivoli",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Alpes-Maritimes 2e"
+    },
+    {
+        "firstname": "Romain",
+        "lastname": "Tonussi",
+        "group": "RN",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Bouches-du-Rhône 8e"
+    },
+    {
+        "firstname": "Antoine",
+        "lastname": "Villedieu",
+        "group": "RN",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Haute-Saône 1re"
+    },
+    {
+        "firstname": "Frédéric-Pierre",
+        "lastname": "Vos",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Oise 5e"
+    },
+    {
+        "firstname": "Frédéric",
+        "lastname": "Weber",
+        "group": "RN",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Meurthe-et-Moselle 3e"
+    },
+    {
+        "firstname": "Eddy",
+        "lastname": "Casterman",
+        "group": "RN",
+        "role": "Apparenté",
+        "commission": "Finances",
+        "circonscription": "Aisne 3e"
+    },
+    {
+        "firstname": "Thibaut",
+        "lastname": "Monnier",
+        "group": "RN",
+        "role": "Apparenté",
+        "commission": "Défense",
+        "circonscription": "Drôme 4e"
+    },
+    {
+        "firstname": "Anne",
+        "lastname": "Sicard",
+        "group": "RN",
+        "role": "Apparentée",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Val-d'Oise 1re"
+    },
+    {
+        "firstname": "Gabriel",
+        "lastname": "Attal",
+        "group": "Ensemble pour la Republique",
+        "role": "Président",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Hauts-de-Seine 10e"
+    },
+    {
+        "firstname": "Pieyre-Alexandre",
+        "lastname": "Anglade",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Français établis hors de France 4e"
+    },
+    {
+        "firstname": "Antoine",
+        "lastname": "Armand",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Haute-Savoie 2e"
+    },
+    {
+        "firstname": "Hervé",
+        "lastname": "Berville",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Côtes-d'Armor 2e"
+    },
+    {
+        "firstname": "Élisabeth",
+        "lastname": "Borne",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Calvados 6e"
+    },
+    {
+        "firstname": "Florent",
+        "lastname": "Boudié",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Gironde 10e"
+    },
+    {
+        "firstname": "Yaël",
+        "lastname": "Braun-Pivet",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Yvelines 5e"
+    },
+    {
+        "firstname": "Anthony",
+        "lastname": "Brosse",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Loiret 5e"
+    },
+    {
+        "firstname": "Danielle",
+        "lastname": "Brulebois",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Jura 1re"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Buchou",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Vendée 3e"
+    },
+    {
+        "firstname": "Françoise",
+        "lastname": "Buffet",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Bas-Rhin 4e"
+    },
+    {
+        "firstname": "Céline",
+        "lastname": "Calvez",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Hauts-de-Seine 5e"
+    },
+    {
+        "firstname": "Vincent",
+        "lastname": "Caure",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Français établis hors de France 3e"
+    },
+    {
+        "firstname": "Thomas",
+        "lastname": "Cazenave",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Gironde 1re"
+    },
+    {
+        "firstname": "Jean-René",
+        "lastname": "Cazeneuve",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Gers 1re"
+    },
+    {
+        "firstname": "Pierre",
+        "lastname": "Cazeneuve",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Hauts-de-Seine 7e"
+    },
+    {
+        "firstname": "Nathalie",
+        "lastname": "Coggia",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Français établis hors de France 5e"
+    },
+    {
+        "firstname": "François",
+        "lastname": "Cormier-Bouligeon",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Cher 1re"
+    },
+    {
+        "firstname": "Julie",
+        "lastname": "Delpech",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Sarthe 1re"
+    },
+    {
+        "firstname": "Benjamin",
+        "lastname": "Dirx",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Saône-et-Loire 1re"
+    },
+    {
+        "firstname": "Nicole",
+        "lastname": "Dubré-Chirat",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Maine-et-Loire 6e"
+    },
+    {
+        "firstname": "Marc",
+        "lastname": "Ferracci",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Français établis hors de France 6e"
+    },
+    {
+        "firstname": "Jean-Marie",
+        "lastname": "Fiévet",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Deux-Sèvres 3e"
+    },
+    {
+        "firstname": "Moerani",
+        "lastname": "Frébault",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Polynésie Française 1re"
+    },
+    {
+        "firstname": "Jean-Luc",
+        "lastname": "Fugit",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Rhône 11e"
+    },
+    {
+        "firstname": "Camille",
+        "lastname": "Galliard-Minier",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Isère 1re"
+    },
+    {
+        "firstname": "Thomas",
+        "lastname": "Gassilloud",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Rhône 10e"
+    },
+    {
+        "firstname": "Anne",
+        "lastname": "Genetet",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Français établis hors de France 11e"
+    },
+    {
+        "firstname": "Olga",
+        "lastname": "Givernet",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Ain 3e"
+    },
+    {
+        "firstname": "Guillaume",
+        "lastname": "Gouffier Valente",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Val-de-Marne 6e"
+    },
+    {
+        "firstname": "Olivia",
+        "lastname": "Grégoire",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Paris 12e"
+    },
+    {
+        "firstname": "Catherine",
+        "lastname": "Ibled",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Paris 13e"
+    },
+    {
+        "firstname": "Jean-Michel",
+        "lastname": "Jacques",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Morbihan 6e"
+    },
+    {
+        "firstname": "Guillaume",
+        "lastname": "Kasbarian",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Eure-et-Loir 1re"
+    },
+    {
+        "firstname": "Brigitte",
+        "lastname": "Klinkert",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Haut-Rhin 1re"
+    },
+    {
+        "firstname": "Daniel",
+        "lastname": "Labaronne",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Indre-et-Loire 2e"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Lalanne",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Val-de-Marne 5e"
+    },
+    {
+        "firstname": "Benoît",
+        "lastname": "Larrouquis",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Français établis hors de France 2e"
+    },
+    {
+        "firstname": "Michel",
+        "lastname": "Lauzzana",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Lot-et-Garonne 1re"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Le Feur",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Finistère 4e"
+    },
+    {
+        "firstname": "Didier",
+        "lastname": "Le Gac",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Finistère 3e"
+    },
+    {
+        "firstname": "Annaïg",
+        "lastname": "Le Meur",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Finistère 1re"
+    },
+    {
+        "firstname": "Christine",
+        "lastname": "Le Nabour",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Ille-et-Vilaine 5e"
+    },
+    {
+        "firstname": "Nicole",
+        "lastname": "Le Peih",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Morbihan 3e"
+    },
+    {
+        "firstname": "Marie",
+        "lastname": "Lebec",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Yvelines 4e"
+    },
+    {
+        "firstname": "Vincent",
+        "lastname": "Ledoux",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Nord 10e"
+    },
+    {
+        "firstname": "Brigitte",
+        "lastname": "Liso",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Nord 4e"
+    },
+    {
+        "firstname": "Sylvain",
+        "lastname": "Maillard",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Paris 1re"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Marion",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Loir-et-Cher 3e"
+    },
+    {
+        "firstname": "Sandra",
+        "lastname": "Marsaud",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Charente 2e"
+    },
+    {
+        "firstname": "Denis",
+        "lastname": "Masséglia",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Maine-et-Loire 5e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Mazars",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Aveyron 1re"
+    },
+    {
+        "firstname": "Graziella",
+        "lastname": "Melchior",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Finistère 5e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Metzdorf",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nouvelle-Calédonie 1re"
+    },
+    {
+        "firstname": "Paul",
+        "lastname": "Midy",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Essonne 5e"
+    },
+    {
+        "firstname": "Laure",
+        "lastname": "Miller",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Marne 2e"
+    },
+    {
+        "firstname": "Joséphine",
+        "lastname": "Missoffe",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Paris 14e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Mongardien",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Hauts-de-Seine 13e"
+    },
+    {
+        "firstname": "Karl",
+        "lastname": "Olive",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Yvelines 12e"
+    },
+    {
+        "firstname": "Agnès",
+        "lastname": "Pannier-Runacher",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Pas-de-Calais 2e"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Panonacle",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Gironde 8e"
+    },
+    {
+        "firstname": "Astrid",
+        "lastname": "Panosyan-Bouvet",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Paris 4e"
+    },
+    {
+        "firstname": "Natalia",
+        "lastname": "Pouzyreff",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Yvelines 6e"
+    },
+    {
+        "firstname": "Franck",
+        "lastname": "Riester",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Seine-et-Marne 5e"
+    },
+    {
+        "firstname": "Véronique",
+        "lastname": "Riotton",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Haute-Savoie 1re"
+    },
+    {
+        "firstname": "Marie-Pierre",
+        "lastname": "Rixain",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Essonne 4e"
+    },
+    {
+        "firstname": "Charles",
+        "lastname": "Rodwell",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Yvelines 1re"
+    },
+    {
+        "firstname": "Jean-François",
+        "lastname": "Rousset",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Aveyron 3e"
+    },
+    {
+        "firstname": "Mikaele",
+        "lastname": "Seo",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Wallis-et-Futuna 1re"
+    },
+    {
+        "firstname": "Charles",
+        "lastname": "Sitzenstuhl",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Bas-Rhin 5e"
+    },
+    {
+        "firstname": "Bertrand",
+        "lastname": "Sorre",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Manche 2e"
+    },
+    {
+        "firstname": "Violette",
+        "lastname": "Spillebout",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Nord 9e"
+    },
+    {
+        "firstname": "Liliana",
+        "lastname": "Tanguy",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Finistère 7e"
+    },
+    {
+        "firstname": "Jean",
+        "lastname": "Terlier",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Tarn 3e"
+    },
+    {
+        "firstname": "Prisca",
+        "lastname": "Thevenot",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Hauts-de-Seine 8e"
+    },
+    {
+        "firstname": "Annie",
+        "lastname": "Vidal",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Seine-Maritime 2e"
+    },
+    {
+        "firstname": "Corinne",
+        "lastname": "Vignon",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Haute-Garonne 3e"
+    },
+    {
+        "firstname": "Christopher",
+        "lastname": "Weissberg",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Français établis hors de France 1re"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Woerth",
+        "group": "Ensemble pour la Republique",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Oise 4e"
+    },
+    {
+        "firstname": "Olivier",
+        "lastname": "Becht",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Développement durable",
+        "circonscription": "Haut-Rhin 5e"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Bothorel",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Côtes-d'Armor 5e"
+    },
+    {
+        "firstname": "Lionel",
+        "lastname": "Causse",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Développement durable",
+        "circonscription": "Landes 2e"
+    },
+    {
+        "firstname": "Yannick",
+        "lastname": "Chenevard",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Défense",
+        "circonscription": "Var 1re"
+    },
+    {
+        "firstname": "Sébastien",
+        "lastname": "Huyghe",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Lois",
+        "circonscription": "Nord 5e"
+    },
+    {
+        "firstname": "Amélia",
+        "lastname": "Lakrafi",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparentée",
+        "commission": "Affaires étrangères",
+        "circonscription": "Français établis hors de France 10e"
+    },
+    {
+        "firstname": "Constance",
+        "lastname": "Le Grip",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparentée",
+        "commission": "Affaires étrangères",
+        "circonscription": "Hauts-de-Seine 6e"
+    },
+    {
+        "firstname": "Bastien",
+        "lastname": "Marchive",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Affaires économiques",
+        "circonscription": "Deux-Sèvres 1re"
+    },
+    {
+        "firstname": "Ludovic",
+        "lastname": "Mendes",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Lois",
+        "circonscription": "Moselle 2e"
+    },
+    {
+        "firstname": "Anne-Sophie",
+        "lastname": "Ronceret",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparentée",
+        "commission": "Affaires économiques",
+        "circonscription": "Yvelines 10e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Travert",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparenté",
+        "commission": "Affaires économiques",
+        "circonscription": "Manche 3e"
+    },
+    {
+        "firstname": "Caroline",
+        "lastname": "Yadan",
+        "group": "Ensemble pour la Republique",
+        "role": "Apparentée",
+        "commission": "Lois",
+        "circonscription": "Français établis hors de France 8e"
+    },
+    {
+        "firstname": "Mathilde",
+        "lastname": "Panot",
+        "group": "La France Insoumise",
+        "role": "Présidente",
+        "commission": "Lois",
+        "circonscription": "Val-de-Marne 10e"
+    },
+    {
+        "firstname": "Nadège",
+        "lastname": "Abomangoli",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Seine-Saint-Denis 10e"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Alexandre",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Aveyron 2e"
+    },
+    {
+        "firstname": "Gabriel",
+        "lastname": "Amard",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Rhône 6e"
+    },
+    {
+        "firstname": "Ségolène",
+        "lastname": "Amiot",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Loire-Atlantique 3e"
+    },
+    {
+        "firstname": "Farida",
+        "lastname": "Amrani",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Essonne 1re"
+    },
+    {
+        "firstname": "Rodrigo",
+        "lastname": "Arenas",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Paris 10e"
+    },
+    {
+        "firstname": "Raphaël",
+        "lastname": "Arnault",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Vaucluse 1re"
+    },
+    {
+        "firstname": "Anaïs",
+        "lastname": "Belouassa-Cherifi",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Rhône 1re"
+    },
+    {
+        "firstname": "Ugo",
+        "lastname": "Bernalicis",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Nord 2e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Bex",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Haute-Garonne 7e"
+    },
+    {
+        "firstname": "Carlos",
+        "lastname": "Martens Bilongo",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Val-d'Oise 8e"
+    },
+    {
+        "firstname": "Manuel",
+        "lastname": "Bompard",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Bouches-du-Rhône 4e"
+    },
+    {
+        "firstname": "Idir",
+        "lastname": "Boumertit",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Rhône 14e"
+    },
+    {
+        "firstname": "Louis",
+        "lastname": "Boyard",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Val-de-Marne 3e"
+    },
+    {
+        "firstname": "Pierre-Yves",
+        "lastname": "Cadalen",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Finistère 2e"
+    },
+    {
+        "firstname": "Sylvain",
+        "lastname": "Carrière",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Hérault 8e"
+    },
+    {
+        "firstname": "Gabrielle",
+        "lastname": "Cathala",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Val-d'Oise 6e"
+    },
+    {
+        "firstname": "Bérenger",
+        "lastname": "Cernon",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Essonne 8e"
+    },
+    {
+        "firstname": "Sophia",
+        "lastname": "Chikirou",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Paris 6e"
+    },
+    {
+        "firstname": "Hadrien",
+        "lastname": "Clouet",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Haute-Garonne 1re"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Coquerel",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Seine-Saint-Denis 1re"
+    },
+    {
+        "firstname": "Jean-François",
+        "lastname": "Coulomme",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Savoie 4e"
+    },
+    {
+        "firstname": "Sébastien",
+        "lastname": "Delogu",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Bouches-du-Rhône 7e"
+    },
+    {
+        "firstname": "Aly",
+        "lastname": "Diouara",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Seine-Saint-Denis 5e"
+    },
+    {
+        "firstname": "Alma",
+        "lastname": "Dufour",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Seine-Maritime 4e"
+    },
+    {
+        "firstname": "Karen",
+        "lastname": "Erodi",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Tarn 2e"
+    },
+    {
+        "firstname": "Mathilde",
+        "lastname": "Feld",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Gironde 12e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Fernandes",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Bas-Rhin 2e"
+    },
+    {
+        "firstname": "Sylvie",
+        "lastname": "Ferrer",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Hautes-Pyrénées 1re"
+    },
+    {
+        "firstname": "Perceval",
+        "lastname": "Gaillard",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Réunion 7e"
+    },
+    {
+        "firstname": "Clémence",
+        "lastname": "Guetté",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Val-de-Marne 2e"
+    },
+    {
+        "firstname": "David",
+        "lastname": "Guiraud",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nord 8e"
+    },
+    {
+        "firstname": "Zahia",
+        "lastname": "Hamdane",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Somme 2e"
+    },
+    {
+        "firstname": "Mathilde",
+        "lastname": "Hignet",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Ille-et-Vilaine 4e"
+    },
+    {
+        "firstname": "Andy",
+        "lastname": "Kerbrat",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Loire-Atlantique 2e"
+    },
+    {
+        "firstname": "Bastien",
+        "lastname": "Lachaud",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Seine-Saint-Denis 6e"
+    },
+    {
+        "firstname": "Abdelkader",
+        "lastname": "Lahmar",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Rhône 7e"
+    },
+    {
+        "firstname": "Maxime",
+        "lastname": "Laisney",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Seine-et-Marne 10e"
+    },
+    {
+        "firstname": "Arnaud",
+        "lastname": "Le Gall",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Val-d'Oise 9e"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Le Coq",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nord 1re"
+    },
+    {
+        "firstname": "Antoine",
+        "lastname": "Léaument",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Essonne 10e"
+    },
+    {
+        "firstname": "Élise",
+        "lastname": "Leboucher",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Sarthe 4e"
+    },
+    {
+        "firstname": "Jérôme",
+        "lastname": "Legavre",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Seine-Saint-Denis 12e"
+    },
+    {
+        "firstname": "Sarah",
+        "lastname": "Legrain",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Paris 16e"
+    },
+    {
+        "firstname": "Claire",
+        "lastname": "Lejeune",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Essonne 7e"
+    },
+    {
+        "firstname": "Murielle",
+        "lastname": "Lepvraud",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Côtes-d'Armor 4e"
+    },
+    {
+        "firstname": "Élisa",
+        "lastname": "Martin",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Isère 3e"
+    },
+    {
+        "firstname": "Damien",
+        "lastname": "Maudet",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Haute-Vienne 1re"
+    },
+    {
+        "firstname": "Marianne",
+        "lastname": "Maximi",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Puy-de-Dôme 1re"
+    },
+    {
+        "firstname": "Marie",
+        "lastname": "Mesmeur",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Ille-et-Vilaine 1re"
+    },
+    {
+        "firstname": "Manon",
+        "lastname": "Meunier",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Haute-Vienne 3e"
+    },
+    {
+        "firstname": "Jean-Philippe",
+        "lastname": "Nilor",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Martinique 4e"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Nosbé",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Isère 9e"
+    },
+    {
+        "firstname": "Danièle",
+        "lastname": "Obono",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Paris 17e"
+    },
+    {
+        "firstname": "Nathalie",
+        "lastname": "Oziol",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Hérault 2e"
+    },
+    {
+        "firstname": "René",
+        "lastname": "Pilato",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Charente 1re"
+    },
+    {
+        "firstname": "François",
+        "lastname": "Piquemal",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Haute-Garonne 4e"
+    },
+    {
+        "firstname": "Thomas",
+        "lastname": "Portes",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Seine-Saint-Denis 3e"
+    },
+    {
+        "firstname": "Loïc",
+        "lastname": "Prud'homme",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Gironde 3e"
+    },
+    {
+        "firstname": "Jean-Hugues",
+        "lastname": "Ratenon",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Réunion 5e"
+    },
+    {
+        "firstname": "Arnaud",
+        "lastname": "Saint-Martin",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Seine-et-Marne 1re"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Saintoul",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Hauts-de-Seine 11e"
+    },
+    {
+        "firstname": "Ersilia",
+        "lastname": "Soudais",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Seine-et-Marne 7e"
+    },
+    {
+        "firstname": "Anne",
+        "lastname": "Stambach-Terrenoir",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Haute-Garonne 2e"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Taché",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Val-d'Oise 10e"
+    },
+    {
+        "firstname": "Andrée",
+        "lastname": "Taurinya",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Loire 2e"
+    },
+    {
+        "firstname": "Matthias",
+        "lastname": "Tavel",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Loire-Atlantique 8e"
+    },
+    {
+        "firstname": "Aurélie",
+        "lastname": "Trouvé",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Seine-Saint-Denis 9e"
+    },
+    {
+        "firstname": "Paul",
+        "lastname": "Vannier",
+        "group": "La France Insoumise",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Val-d'Oise 5e"
+    },
+    {
+        "firstname": "Aymeric",
+        "lastname": "Caron",
+        "group": "La France Insoumise",
+        "role": "Apparenté",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Paris 18e"
+    },
+    {
+        "firstname": "Boris",
+        "lastname": "Vallaud",
+        "group": "Socialistes",
+        "role": "Président",
+        "commission": "Défense",
+        "circonscription": "Landes 3e"
+    },
+    {
+        "firstname": "Marie-José",
+        "lastname": "Allemand",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Hautes-Alpes 1re"
+    },
+    {
+        "firstname": "Joël",
+        "lastname": "Aviragnet",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Haute-Garonne 8e"
+    },
+    {
+        "firstname": "Fabrice",
+        "lastname": "Barusseau",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Charente-Maritime 3e"
+    },
+    {
+        "firstname": "Marie-Noëlle",
+        "lastname": "Battistel",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Isère 4e"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Baumel",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Indre-et-Loire 4e"
+    },
+    {
+        "firstname": "Béatrice",
+        "lastname": "Bellay",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Martinique 3e"
+    },
+    {
+        "firstname": "Karim",
+        "lastname": "Benbrahim",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Loire-Atlantique 1re"
+    },
+    {
+        "firstname": "Mickaël",
+        "lastname": "Bouloux",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Ille-et-Vilaine 8e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Brun",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Eure 4e"
+    },
+    {
+        "firstname": "Colette",
+        "lastname": "Capdevielle",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Pyrénées-Atlantiques 5e"
+    },
+    {
+        "firstname": "Paul",
+        "lastname": "Christophle",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Drôme 1re"
+    },
+    {
+        "firstname": "Pierrick",
+        "lastname": "Courbon",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Loire 1re"
+    },
+    {
+        "firstname": "Alain",
+        "lastname": "David",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Gironde 4e"
+    },
+    {
+        "firstname": "Arthur",
+        "lastname": "Delaporte",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Calvados 2e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Delautrette",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Haute-Vienne 2e"
+    },
+    {
+        "firstname": "Dieynaba",
+        "lastname": "Diop",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Yvelines 9e"
+    },
+    {
+        "firstname": "Fanny",
+        "lastname": "Dombre Coste",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Hérault 3e"
+    },
+    {
+        "firstname": "Inaki",
+        "lastname": "Echaniz",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Pyrénées-Atlantiques 4e"
+    },
+    {
+        "firstname": "Romain",
+        "lastname": "Eskenazi",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Val-d'Oise 7e"
+    },
+    {
+        "firstname": "Olivier",
+        "lastname": "Faure",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Seine-et-Marne 11e"
+    },
+    {
+        "firstname": "Denis",
+        "lastname": "Fégné",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Hautes-Pyrénées 2e"
+    },
+    {
+        "firstname": "Guillaume",
+        "lastname": "Garot",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Mayenne 1re"
+    },
+    {
+        "firstname": "Océane",
+        "lastname": "Godard",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Côte-d'Or 1re"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Gokel",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Nord 13e"
+    },
+    {
+        "firstname": "Pascale",
+        "lastname": "Got",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Gironde 5e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Grégoire",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Paris 7e"
+    },
+    {
+        "firstname": "Jérôme",
+        "lastname": "Guedj",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Essonne 6e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Hablot",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Meurthe-et-Moselle 2e"
+    },
+    {
+        "firstname": "Ayda",
+        "lastname": "Hadizadeh",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Val-d'Oise 2e"
+    },
+    {
+        "firstname": "Florence",
+        "lastname": "Herouin-Léautey",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Seine-Maritime 1re"
+    },
+    {
+        "firstname": "Céline",
+        "lastname": "Hervieu",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Paris 11e"
+    },
+    {
+        "firstname": "François",
+        "lastname": "Hollande",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Corrèze 1re"
+    },
+    {
+        "firstname": "Chantal",
+        "lastname": "Jourdan",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Orne 1re"
+    },
+    {
+        "firstname": "Marietta",
+        "lastname": "Karamanli",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Sarthe 2e"
+    },
+    {
+        "firstname": "Fatiha",
+        "lastname": "Keloua Hachi",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Seine-Saint-Denis 8e"
+    },
+    {
+        "firstname": "Gérard",
+        "lastname": "Leseul",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Seine-Maritime 5e"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Lhardit",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Bouches-du-Rhône 2e"
+    },
+    {
+        "firstname": "Estelle",
+        "lastname": "Mercier",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Meurthe-et-Moselle 1re"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Naillet",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Réunion 1re"
+    },
+    {
+        "firstname": "Jacques",
+        "lastname": "Oberti",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Haute-Garonne 10e"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Pantel",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Lozère 1re"
+    },
+    {
+        "firstname": "Marc",
+        "lastname": "Pena",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Bouches-du-Rhône 11e"
+    },
+    {
+        "firstname": "Anna",
+        "lastname": "Pic",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Manche 4e"
+    },
+    {
+        "firstname": "Christine",
+        "lastname": "Pirès Beaune",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Puy-de-Dôme 2e"
+    },
+    {
+        "firstname": "Dominique",
+        "lastname": "Potier",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Meurthe-et-Moselle 5e"
+    },
+    {
+        "firstname": "Pierre",
+        "lastname": "Pribetich",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Côte-d'Or 3e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Proença",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Lot 2e"
+    },
+    {
+        "firstname": "Marie",
+        "lastname": "Récalde",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Gironde 6e"
+    },
+    {
+        "firstname": "Valérie",
+        "lastname": "Rossi",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Hautes-Alpes 2e"
+    },
+    {
+        "firstname": "Claudia",
+        "lastname": "Rouaux",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Ille-et-Vilaine 3e"
+    },
+    {
+        "firstname": "Fabrice",
+        "lastname": "Roussel",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Loire-Atlantique 5e"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Runel",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Rhône 4e"
+    },
+    {
+        "firstname": "Sébastien",
+        "lastname": "Saint-Pasteur",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Gironde 7e"
+    },
+    {
+        "firstname": "Isabelle",
+        "lastname": "Santiago",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Val-de-Marne 9e"
+    },
+    {
+        "firstname": "Hervé",
+        "lastname": "Saulignac",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Ardèche 1re"
+    },
+    {
+        "firstname": "Arnaud",
+        "lastname": "Simion",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Haute-Garonne 6e"
+    },
+    {
+        "firstname": "Thierry",
+        "lastname": "Sother",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Bas-Rhin 3e"
+    },
+    {
+        "firstname": "Céline",
+        "lastname": "Thiébault-Martinez",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Seine-et-Marne 9e"
+    },
+    {
+        "firstname": "Mélanie",
+        "lastname": "Thomin",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Finistère 6e"
+    },
+    {
+        "firstname": "Roger",
+        "lastname": "Vicot",
+        "group": "Socialistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Nord 11e"
+    },
+    {
+        "firstname": "Christian",
+        "lastname": "Baptiste",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Finances",
+        "circonscription": "Guadeloupe 2e"
+    },
+    {
+        "firstname": "Belkhir",
+        "lastname": "Belhaddad",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Moselle 1re"
+    },
+    {
+        "firstname": "Elie",
+        "lastname": "Califer",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Affaires sociales",
+        "circonscription": "Guadeloupe 4e"
+    },
+    {
+        "firstname": "Peio",
+        "lastname": "Dufau",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Développement durable",
+        "circonscription": "Pyrénées-Atlantiques 6e"
+    },
+    {
+        "firstname": "Martine",
+        "lastname": "Froger",
+        "group": "Socialistes",
+        "role": "Apparentée",
+        "commission": "Affaires sociales",
+        "circonscription": "Ariège 1re"
+    },
+    {
+        "firstname": "Sacha",
+        "lastname": "Houlié",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Affaires sociales",
+        "circonscription": "Vienne 2e"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Rousseau",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Défense",
+        "circonscription": "Yvelines 7e"
+    },
+    {
+        "firstname": "Jiovanny",
+        "lastname": "William",
+        "group": "Socialistes",
+        "role": "Apparenté",
+        "commission": "Lois",
+        "circonscription": "Martinique 1re"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Wauquiez",
+        "group": "Republicains",
+        "role": "Président",
+        "commission": "Affaires étrangères",
+        "circonscription": "Haute-Loire 1re"
+    },
+    {
+        "firstname": "Michel",
+        "lastname": "Barnier",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Paris 2e"
+    },
+    {
+        "firstname": "Thibault",
+        "lastname": "Bazin",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Meurthe-et-Moselle 4e"
+    },
+    {
+        "firstname": "Valérie",
+        "lastname": "Bazin-Malgras",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Aube 2e"
+    },
+    {
+        "firstname": "Jean-Didier",
+        "lastname": "Berger",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Hauts-de-Seine 12e"
+    },
+    {
+        "firstname": "Anne-Laure",
+        "lastname": "Blin",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Maine-et-Loire 3e"
+    },
+    {
+        "firstname": "Sylvie",
+        "lastname": "Bonnet",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Loire 4e"
+    },
+    {
+        "firstname": "Émilie",
+        "lastname": "Bonnivard",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Savoie 3e"
+    },
+    {
+        "firstname": "Jean-Yves",
+        "lastname": "Bony",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Cantal 2e"
+    },
+    {
+        "firstname": "Ian",
+        "lastname": "Boucard",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Territoire de Belfort 1re"
+    },
+    {
+        "firstname": "Xavier",
+        "lastname": "Breton",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Ain 1re"
+    },
+    {
+        "firstname": "Hubert",
+        "lastname": "Brigand",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Côte-d'Or 4e"
+    },
+    {
+        "firstname": "François-Xavier",
+        "lastname": "Ceccoli",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Haute-Corse 2e"
+    },
+    {
+        "firstname": "Josiane",
+        "lastname": "Corneloup",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Saône-et-Loire 2e"
+    },
+    {
+        "firstname": "Marie-Christine",
+        "lastname": "Dalloz",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Jura 2e"
+    },
+    {
+        "firstname": "Fabien",
+        "lastname": "Di Filippo",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Moselle 4e"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Dive",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Aisne 2e"
+    },
+    {
+        "firstname": "Lionel",
+        "lastname": "Duparay",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Saône-et-Loire 5e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Gosselin",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Manche 1re"
+    },
+    {
+        "firstname": "Justine",
+        "lastname": "Gruet",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Jura 3e"
+    },
+    {
+        "firstname": "Michel",
+        "lastname": "Herbillon",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Val-de-Marne 8e"
+    },
+    {
+        "firstname": "Patrick",
+        "lastname": "Hetzel",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Bas-Rhin 7e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Juvin",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Hauts-de-Seine 3e"
+    },
+    {
+        "firstname": "Corentin",
+        "lastname": "Le Fur",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Côtes-d'Armor 3e"
+    },
+    {
+        "firstname": "Eric",
+        "lastname": "Liégeon",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Doubs 5e"
+    },
+    {
+        "firstname": "Véronique",
+        "lastname": "Louwagie",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Orne 2e"
+    },
+    {
+        "firstname": "Élisabeth",
+        "lastname": "de Maistre",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Hauts-de-Seine 9e"
+    },
+    {
+        "firstname": "Alexandra",
+        "lastname": "Martin",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Alpes-Maritimes 8e"
+    },
+    {
+        "firstname": "Frédérique",
+        "lastname": "Meunier",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Corrèze 2e"
+    },
+    {
+        "firstname": "Christelle",
+        "lastname": "Minard",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Eure-et-Loir 2e"
+    },
+    {
+        "firstname": "Yannick",
+        "lastname": "Neuder",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Isère 7e"
+    },
+    {
+        "firstname": "Jérôme",
+        "lastname": "Nury",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Orne 3e"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Pauget",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Alpes-Maritimes 7e"
+    },
+    {
+        "firstname": "Alexandre",
+        "lastname": "Portier",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Rhône 9e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Ray",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Allier 3e"
+    },
+    {
+        "firstname": "Vincent",
+        "lastname": "Rolland",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Savoie 2e"
+    },
+    {
+        "firstname": "Michèle",
+        "lastname": "Tabarot",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Alpes-Maritimes 9e"
+    },
+    {
+        "firstname": "Jean-Pierre",
+        "lastname": "Taite",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Loire 6e"
+    },
+    {
+        "firstname": "Jean-Louis",
+        "lastname": "Thiériot",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Seine-et-Marne 3e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Tryzna",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Val-de-Marne 7e"
+    },
+    {
+        "firstname": "Antoine",
+        "lastname": "Vermorel-Marques",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Loire 5e"
+    },
+    {
+        "firstname": "Jean-Pierre",
+        "lastname": "Vigier",
+        "group": "Republicains",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Haute-Loire 2e"
+    },
+    {
+        "firstname": "Jean-Luc",
+        "lastname": "Bourgeaux",
+        "group": "Republicains",
+        "role": "Apparenté",
+        "commission": "Affaires économiques",
+        "circonscription": "Ille-et-Vilaine 7e"
+    },
+    {
+        "firstname": "Fabrice",
+        "lastname": "Brun",
+        "group": "Republicains",
+        "role": "Apparenté",
+        "commission": "Développement durable",
+        "circonscription": "Ardèche 3e"
+    },
+    {
+        "firstname": "Pierre",
+        "lastname": "Cordier",
+        "group": "Republicains",
+        "role": "Apparenté",
+        "commission": "Affaires étrangères",
+        "circonscription": "Ardennes 2e"
+    },
+    {
+        "firstname": "Vincent",
+        "lastname": "Descoeur",
+        "group": "Republicains",
+        "role": "Apparenté",
+        "commission": "Développement durable",
+        "circonscription": "Cantal 1re"
+    },
+    {
+        "firstname": "Virginie",
+        "lastname": "Duby-Muller",
+        "group": "Republicains",
+        "role": "Apparentée",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Haute-Savoie 4e"
+    },
+    {
+        "firstname": "Alix",
+        "lastname": "Fruchon",
+        "group": "Republicains",
+        "role": "Apparentée",
+        "commission": "Affaires étrangères",
+        "circonscription": "Indre 2e"
+    },
+    {
+        "firstname": "Guillaume",
+        "lastname": "Lepers",
+        "group": "Republicains",
+        "role": "Apparenté",
+        "commission": "Affaires économiques",
+        "circonscription": "Lot-et-Garonne 3e"
+    },
+    {
+        "firstname": "Cyrielle",
+        "lastname": "Chatelain",
+        "group": "Ecologistes",
+        "role": "Présidente",
+        "commission": "Défense",
+        "circonscription": "Isère 2e"
+    },
+    {
+        "firstname": "Pouria",
+        "lastname": "Amirshahi",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Paris 5e"
+    },
+    {
+        "firstname": "Christine",
+        "lastname": "Arrighi",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Haute-Garonne 9e"
+    },
+    {
+        "firstname": "Clémentine",
+        "lastname": "Autain",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Seine-Saint-Denis 11e"
+    },
+    {
+        "firstname": "Léa",
+        "lastname": "Balage El Mariky",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Paris 3e"
+    },
+    {
+        "firstname": "Delphine",
+        "lastname": "Batho",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Deux-Sèvres 2e"
+    },
+    {
+        "firstname": "Lisa",
+        "lastname": "Belluco",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Vienne 1re"
+    },
+    {
+        "firstname": "Karim",
+        "lastname": "Ben Cheikh",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Français établis hors de France 9e"
+    },
+    {
+        "firstname": "Benoît",
+        "lastname": "Biteau",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Charente-Maritime 2e"
+    },
+    {
+        "firstname": "Arnaud",
+        "lastname": "Bonnet",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Seine-et-Marne 8e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Bonnet",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Puy-de-Dôme 3e"
+    },
+    {
+        "firstname": "Alexis",
+        "lastname": "Corbière",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Seine-Saint-Denis 7e"
+    },
+    {
+        "firstname": "Hendrik",
+        "lastname": "Davi",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Bouches-du-Rhône 5e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Duplessy",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Loiret 2e"
+    },
+    {
+        "firstname": "Charles",
+        "lastname": "Fournier",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Indre-et-Loire 1re"
+    },
+    {
+        "firstname": "Marie-Charlotte",
+        "lastname": "Garin",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Rhône 3e"
+    },
+    {
+        "firstname": "Damien",
+        "lastname": "Girard",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Morbihan 5e"
+    },
+    {
+        "firstname": "Steevy",
+        "lastname": "Gustave",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Essonne 3e"
+    },
+    {
+        "firstname": "Catherine",
+        "lastname": "Hervieu",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Côte-d'Or 2e"
+    },
+    {
+        "firstname": "Jérémie",
+        "lastname": "Iordanoff",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Isère 5e"
+    },
+    {
+        "firstname": "Julie",
+        "lastname": "Laernoes",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Loire-Atlantique 4e"
+    },
+    {
+        "firstname": "Tristan",
+        "lastname": "Lahais",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Ille-et-Vilaine 2e"
+    },
+    {
+        "firstname": "Benjamin",
+        "lastname": "Lucas-Lundy",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Yvelines 8e"
+    },
+    {
+        "firstname": "Julie",
+        "lastname": "Ozenne",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Essonne 9e"
+    },
+    {
+        "firstname": "Sébastien",
+        "lastname": "Peytavie",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Dordogne 4e"
+    },
+    {
+        "firstname": "Marie",
+        "lastname": "Pochon",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Drôme 3e"
+    },
+    {
+        "firstname": "Jean-Claude",
+        "lastname": "Raux",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Loire-Atlantique 6e"
+    },
+    {
+        "firstname": "Sandra",
+        "lastname": "Regol",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Bas-Rhin 1re"
+    },
+    {
+        "firstname": "Jean-Louis",
+        "lastname": "Roumégas",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Hérault 1re"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Rousseau",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Paris 9e"
+    },
+    {
+        "firstname": "François",
+        "lastname": "Ruffin",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Somme 1re"
+    },
+    {
+        "firstname": "Eva",
+        "lastname": "Sas",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Paris 8e"
+    },
+    {
+        "firstname": "Sabrina",
+        "lastname": "Sebaihi",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Hauts-de-Seine 4e"
+    },
+    {
+        "firstname": "Danielle",
+        "lastname": "Simonnet",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Paris 15e"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Taillé-Polian",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Val-de-Marne 11e"
+    },
+    {
+        "firstname": "Boris",
+        "lastname": "Tavernier",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Rhône 2e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Thierry",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Gironde 2e"
+    },
+    {
+        "firstname": "Dominique",
+        "lastname": "Voynet",
+        "group": "Ecologistes",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Doubs 2e"
+    },
+    {
+        "firstname": "Marc",
+        "lastname": "Fesneau",
+        "group": "Democrates",
+        "role": "Président",
+        "commission": "Affaires étrangères",
+        "circonscription": "Loir-et-Cher 1re"
+    },
+    {
+        "firstname": "Erwan",
+        "lastname": "Balanant",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Finistère 8e"
+    },
+    {
+        "firstname": "Géraldine",
+        "lastname": "Bannier",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Mayenne 2e"
+    },
+    {
+        "firstname": "Anne",
+        "lastname": "Bergantz",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Yvelines 2e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Blanchet",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Calvados 4e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Bolo",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Maine-et-Loire 7e"
+    },
+    {
+        "firstname": "Blandine",
+        "lastname": "Brocard",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Rhône 5e"
+    },
+    {
+        "firstname": "Mickaël",
+        "lastname": "Cosson",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Côtes-d'Armor 1re"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Croizier",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Doubs 1re"
+    },
+    {
+        "firstname": "Geneviève",
+        "lastname": "Darrieussecq",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Landes 1re"
+    },
+    {
+        "firstname": "Olivier",
+        "lastname": "Falorni",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Charente-Maritime 1re"
+    },
+    {
+        "firstname": "Bruno",
+        "lastname": "Fuchs",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Haut-Rhin 6e"
+    },
+    {
+        "firstname": "Perrine",
+        "lastname": "Goulet",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nièvre 1re"
+    },
+    {
+        "firstname": "Jean-Carles",
+        "lastname": "Grelier",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Sarthe 5e"
+    },
+    {
+        "firstname": "Frantz",
+        "lastname": "Gumbs",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Saint-Barthélemy et Saint-Martin 1re"
+    },
+    {
+        "firstname": "Cyrille",
+        "lastname": "Isaac-Sibille",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Rhône 12e"
+    },
+    {
+        "firstname": "Sandrine",
+        "lastname": "Josso",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Loire-Atlantique 7e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Latombe",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Vendée 1re"
+    },
+    {
+        "firstname": "Pascal",
+        "lastname": "Lecamp",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Vienne 3e"
+    },
+    {
+        "firstname": "Delphine",
+        "lastname": "Lingemann",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Puy-de-Dôme 4e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Mandon",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Loire 3e"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Martineau",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Sarthe 3e"
+    },
+    {
+        "firstname": "Jean-Paul",
+        "lastname": "Mattei",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Pyrénées-Atlantiques 2e"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Mette",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Gironde 9e"
+    },
+    {
+        "firstname": "Louise",
+        "lastname": "Morel",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Bas-Rhin 6e"
+    },
+    {
+        "firstname": "Hubert",
+        "lastname": "Ott",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Haut-Rhin 2e"
+    },
+    {
+        "firstname": "Didier",
+        "lastname": "Padey",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Savoie 1re"
+    },
+    {
+        "firstname": "Jimmy",
+        "lastname": "Pahun",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Morbihan 2e"
+    },
+    {
+        "firstname": "Frédéric",
+        "lastname": "Petit",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Français établis hors de France 7e"
+    },
+    {
+        "firstname": "Maud",
+        "lastname": "Petit",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Val-de-Marne 4e"
+    },
+    {
+        "firstname": "Josy",
+        "lastname": "Poueyto",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Pyrénées-Atlantiques 1re"
+    },
+    {
+        "firstname": "Richard",
+        "lastname": "Ramos",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Loiret 6e"
+    },
+    {
+        "firstname": "Sabine",
+        "lastname": "Thillaye",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Indre-et-Loire 5e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Turquois",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Vienne 4e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Vigier",
+        "group": "Democrates",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Eure-et-Loir 4e"
+    },
+    {
+        "firstname": "Romain",
+        "lastname": "Daubié",
+        "group": "Democrates",
+        "role": "Apparenté",
+        "commission": "Affaires économiques",
+        "circonscription": "Ain 2e"
+    },
+    {
+        "firstname": "Paul",
+        "lastname": "Christophe",
+        "group": "Horizons",
+        "role": "Président",
+        "commission": "Affaires sociales",
+        "circonscription": "Nord 14e"
+    },
+    {
+        "firstname": "Xavier",
+        "lastname": "Albertini",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Marne 1re"
+    },
+    {
+        "firstname": "Henri",
+        "lastname": "Alfandari",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Indre-et-Loire 3e"
+    },
+    {
+        "firstname": "Béatrice",
+        "lastname": "Bellamy",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Vendée 2e"
+    },
+    {
+        "firstname": "Benoît",
+        "lastname": "Blanchard",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Val-d'Oise 4e"
+    },
+    {
+        "firstname": "Bertrand",
+        "lastname": "Bouyx",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Calvados 5e"
+    },
+    {
+        "firstname": "Michel",
+        "lastname": "Criaud",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Morbihan 1re"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Fait",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Pas-de-Calais 4e"
+    },
+    {
+        "firstname": "Agnès",
+        "lastname": "Firmin Le Bodo",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Seine-Maritime 7e"
+    },
+    {
+        "firstname": "Félicie",
+        "lastname": "Gérard",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nord 7e"
+    },
+    {
+        "firstname": "François",
+        "lastname": "Gernigon",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Maine-et-Loire 1re"
+    },
+    {
+        "firstname": "Pierre",
+        "lastname": "Henriet",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Vendée 5e"
+    },
+    {
+        "firstname": "François",
+        "lastname": "Jolivet",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Indre 1re"
+    },
+    {
+        "firstname": "Loïc",
+        "lastname": "Kervran",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Cher 3e"
+    },
+    {
+        "firstname": "Thomas",
+        "lastname": "Lam",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Hauts-de-Seine 2e"
+    },
+    {
+        "firstname": "Didier",
+        "lastname": "Lemaire",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Haut-Rhin 3e"
+    },
+    {
+        "firstname": "Lise",
+        "lastname": "Magnier",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Marne 4e"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Marcangeli",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Corse-du-Sud 1re"
+    },
+    {
+        "firstname": "Jean",
+        "lastname": "Moulliere",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Nord 6e"
+    },
+    {
+        "firstname": "Jérémie",
+        "lastname": "Patrier-Leitus",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Calvados 3e"
+    },
+    {
+        "firstname": "Béatrice",
+        "lastname": "Piron",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Yvelines 3e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Plassard",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Charente-Maritime 5e"
+    },
+    {
+        "firstname": "Marie-Agnès",
+        "lastname": "Poussier-Winsback",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Seine-Maritime 9e"
+    },
+    {
+        "firstname": "Isabelle",
+        "lastname": "Rauch",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Moselle 9e"
+    },
+    {
+        "firstname": "Xavier",
+        "lastname": "Roseren",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Haute-Savoie 6e"
+    },
+    {
+        "firstname": "Laetitia",
+        "lastname": "Saint-Paul",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Maine-et-Loire 4e"
+    },
+    {
+        "firstname": "Vincent",
+        "lastname": "Thiébaut",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Bas-Rhin 9e"
+    },
+    {
+        "firstname": "Frédéric",
+        "lastname": "Valletoux",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Seine-et-Marne 2e"
+    },
+    {
+        "firstname": "Anne-Cécile",
+        "lastname": "Violland",
+        "group": "Horizons",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Haute-Savoie 5e"
+    },
+    {
+        "firstname": "Thierry",
+        "lastname": "Benoit",
+        "group": "Horizons",
+        "role": "Apparenté",
+        "commission": "Affaires économiques",
+        "circonscription": "Ille-et-Vilaine 6e"
+    },
+    {
+        "firstname": "Sylvain",
+        "lastname": "Berrios",
+        "group": "Horizons",
+        "role": "Apparenté",
+        "commission": "Affaires étrangères",
+        "circonscription": "Val-de-Marne 1re"
+    },
+    {
+        "firstname": "Jean-Michel",
+        "lastname": "Brard",
+        "group": "Horizons",
+        "role": "Apparenté",
+        "commission": "Développement durable",
+        "circonscription": "Loire-Atlantique 9e"
+    },
+    {
+        "firstname": "Nathalie",
+        "lastname": "Colin-Oesterlé",
+        "group": "Horizons",
+        "role": "Apparentée",
+        "commission": "Affaires sociales",
+        "circonscription": "Moselle 3e"
+    },
+    {
+        "firstname": "Jean-François",
+        "lastname": "Portarrieu",
+        "group": "Horizons",
+        "role": "Apparenté",
+        "commission": "Affaires étrangères",
+        "circonscription": "Haute-Garonne 5e"
+    },
+    {
+        "firstname": "Christophe",
+        "lastname": "Naegelen",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "Président",
+        "commission": "Affaires étrangères",
+        "circonscription": "Vosges 3e"
+    },
+    {
+        "firstname": "Audrey",
+        "lastname": "Abadie-Amiel",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Ariège 2e"
+    },
+    {
+        "firstname": "Jean-Pierre",
+        "lastname": "Bataille",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nord 15e"
+    },
+    {
+        "firstname": "Joël",
+        "lastname": "Bruneau",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Calvados 1re"
+    },
+    {
+        "firstname": "Michel",
+        "lastname": "Castellani",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Haute-Corse 1re"
+    },
+    {
+        "firstname": "Paul-André",
+        "lastname": "Colombani",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Corse-du-Sud 2e"
+    },
+    {
+        "firstname": "Charles",
+        "lastname": "de Courson",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Marne 5e"
+    },
+    {
+        "firstname": "Yannick",
+        "lastname": "Favennec-Bécot",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Mayenne 3e"
+    },
+    {
+        "firstname": "David",
+        "lastname": "Habib",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Pyrénées-Atlantiques 3e"
+    },
+    {
+        "firstname": "Harold",
+        "lastname": "Huwart",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Eure-et-Loir 3e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Lenormand",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Saint-Pierre-et-Miquelon 1re"
+    },
+    {
+        "firstname": "Valérie",
+        "lastname": "Létard",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Nord 21e"
+    },
+    {
+        "firstname": "Max",
+        "lastname": "Mathiasin",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Guadeloupe 3e"
+    },
+    {
+        "firstname": "Laurent",
+        "lastname": "Mazaury",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Yvelines 11e"
+    },
+    {
+        "firstname": "Paul",
+        "lastname": "Molac",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Morbihan 4e"
+    },
+    {
+        "firstname": "Constance",
+        "lastname": "de Pélichy",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Loiret 3e"
+    },
+    {
+        "firstname": "Nicole",
+        "lastname": "Sanquer",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Polynésie Française 2e"
+    },
+    {
+        "firstname": "Olivier",
+        "lastname": "Serva",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Guadeloupe 1re"
+    },
+    {
+        "firstname": "David",
+        "lastname": "Taupiac",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Gers 2e"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Viry",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Vosges 1re"
+    },
+    {
+        "firstname": "Jean-Luc",
+        "lastname": "Warsmann",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Ardennes 3e"
+    },
+    {
+        "firstname": "Estelle",
+        "lastname": "Youssouffa",
+        "group": "Libertes Independants Outer-mer et Territoires",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Mayotte 1re"
+    },
+    {
+        "firstname": "Stéphane",
+        "lastname": "Peu",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "Président",
+        "commission": "Affaires économiques",
+        "circonscription": "Seine-Saint-Denis 2e"
+    },
+    {
+        "firstname": "Édouard",
+        "lastname": "Bénard",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Seine-Maritime 3e"
+    },
+    {
+        "firstname": "Soumya",
+        "lastname": "Bourouaha",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Seine-Saint-Denis 4e"
+    },
+    {
+        "firstname": "Julien",
+        "lastname": "Brugerolles",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Puy-de-Dôme 5e"
+    },
+    {
+        "firstname": "Jean-Victor",
+        "lastname": "Castor",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Guyane 1re"
+    },
+    {
+        "firstname": "Elsa",
+        "lastname": "Faucillon",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Hauts-de-Seine 1re"
+    },
+    {
+        "firstname": "Émeline",
+        "lastname": "K/Bidi",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Réunion 4e"
+    },
+    {
+        "firstname": "Karine",
+        "lastname": "Lebon",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Réunion 2e"
+    },
+    {
+        "firstname": "Jean-Paul",
+        "lastname": "Lecoq",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Seine-Maritime 8e"
+    },
+    {
+        "firstname": "Frédéric",
+        "lastname": "Maillot",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Réunion 6e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Maurel",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Val-d'Oise 3e"
+    },
+    {
+        "firstname": "Yannick",
+        "lastname": "Monnet",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Allier 1re"
+    },
+    {
+        "firstname": "Marcellin",
+        "lastname": "Nadeau",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Martinique 2e"
+    },
+    {
+        "firstname": "Mereana",
+        "lastname": "Reid Arbelot",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Polynésie Française 3e"
+    },
+    {
+        "firstname": "Davy",
+        "lastname": "Rimane",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Guyane 2e"
+    },
+    {
+        "firstname": "Nicolas",
+        "lastname": "Sansu",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Cher 2e"
+    },
+    {
+        "firstname": "Emmanuel",
+        "lastname": "Tjibaou",
+        "group": "Gauche Democrate et Republicaine",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Nouvelle-Calédonie 2e"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Ciotti",
+        "group": "Union des Droites pour la République",
+        "role": "Président",
+        "commission": "Affaires étrangères",
+        "circonscription": "Alpes-Maritimes 1re"
+    },
+    {
+        "firstname": "Alexandre",
+        "lastname": "Allegret-Pilot",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Gard 5e"
+    },
+    {
+        "firstname": "Charles",
+        "lastname": "Alloncle",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires économiques",
+        "circonscription": "Hérault 9e"
+    },
+    {
+        "firstname": "Matthieu",
+        "lastname": "Bloch",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Doubs 3e"
+    },
+    {
+        "firstname": "Pierre-Henri",
+        "lastname": "Carbonnel",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Tarn-et-Garonne 1re"
+    },
+    {
+        "firstname": "Bernard",
+        "lastname": "Chaix",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Alpes-Maritimes 3e"
+    },
+    {
+        "firstname": "Marc",
+        "lastname": "Chavent",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Ain 5e"
+    },
+    {
+        "firstname": "Christelle",
+        "lastname": "D'Intorni",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Alpes-Maritimes 5e"
+    },
+    {
+        "firstname": "Olivier",
+        "lastname": "Fayssat",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Bouches-du-Rhône 6e"
+    },
+    {
+        "firstname": "Bartolomé",
+        "lastname": "Lenoir",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Creuse 1re"
+    },
+    {
+        "firstname": "Hanane",
+        "lastname": "Mansouri",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Isère 8e"
+    },
+    {
+        "firstname": "Maxime",
+        "lastname": "Michelet",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires culturelles et éducation",
+        "circonscription": "Marne 3e"
+    },
+    {
+        "firstname": "Éric",
+        "lastname": "Michoux",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Saône-et-Loire 4e"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Ricourt Vaginay",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Alpes-de-Haute-Provence 2e"
+    },
+    {
+        "firstname": "Vincent",
+        "lastname": "Trébuchet",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Ardèche 2e"
+    },
+    {
+        "firstname": "Gérault",
+        "lastname": "Verny",
+        "group": "Union des Droites pour la République",
+        "role": "",
+        "commission": "Finances",
+        "circonscription": "Bouches-du-Rhône 14e"
+    },
+    {
+        "firstname": "Véronique",
+        "lastname": "Besse",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Vendée 4e"
+    },
+    {
+        "firstname": "Philippe",
+        "lastname": "Bonnecarrère",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Lois",
+        "circonscription": "Tarn 1re"
+    },
+    {
+        "firstname": "Stella",
+        "lastname": "Dupont",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Affaires sociales",
+        "circonscription": "Maine-et-Loire 2e"
+    },
+    {
+        "firstname": "Christine",
+        "lastname": "Engrand",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Pas-de-Calais 6e"
+    },
+    {
+        "firstname": "Sophie",
+        "lastname": "Errante",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Loire-Atlantique 10e"
+    },
+    {
+        "firstname": "Daniel",
+        "lastname": "Grenon",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Yonne 1re"
+    },
+    {
+        "firstname": "Aurélien",
+        "lastname": "Pradié",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Défense",
+        "circonscription": "Lot 1re"
+    },
+    {
+        "firstname": "Raphaël",
+        "lastname": "Schellenberger",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Développement durable",
+        "circonscription": "Haut-Rhin 4e"
+    },
+    {
+        "firstname": "Lionel",
+        "lastname": "Vuibert",
+        "group": "Non inscrits",
+        "role": "",
+        "commission": "Affaires étrangères",
+        "circonscription": "Ardennes 1re"
+    }
+]

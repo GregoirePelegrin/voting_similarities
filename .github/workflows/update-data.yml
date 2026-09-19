@@ -1,0 +1,43 @@
+name: Update votes data
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: update-votes-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Run data update via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          timeout: 60m
+          command_timeout: 60m
+          envs: LLM_API_KEY,TELEGRAM_BOT_KEY,TELEGRAM_CHAT_ID,RUN_URL,DEPLOY_DIR
+          script: |
+            set -e
+
+            echo "==> Updating source..."
+            cd "$DEPLOY_DIR"
+            git config --global --add safe.directory "$DEPLOY_DIR"
+            git checkout main
+            git pull --ff-only
+            echo "==> Running update-data.sh..."
+            bash batch/update-data.sh
+            echo "==> Done."
+        env:
+          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR || '/app/voting_similarities' }}
+          LLM_API_KEY: ${{ vars.LLM_API_KEY }}
+          TELEGRAM_BOT_KEY: ${{ secrets.TELEGRAM_BOT_KEY }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
