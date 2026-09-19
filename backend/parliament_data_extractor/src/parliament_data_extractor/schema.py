@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from contextlib import closing
-
 CREATE_MEMBERS = """
     CREATE TABLE IF NOT EXISTS members (
         id              SERIAL PRIMARY KEY,
@@ -55,7 +53,6 @@ CREATE_FAILED_VOTES = """
     );
 """
 
-# Migration: rename vote_id column → scrutin_id in raw_pages if needed
 MIGRATE_RAW_PAGES_VOTE_ID = """
     DO $$
     BEGIN
@@ -69,13 +66,11 @@ MIGRATE_RAW_PAGES_VOTE_ID = """
     $$;
 """
 
-# Migration: add processed column if missing
 MIGRATE_RAW_PAGES_PROCESSED = """
     ALTER TABLE raw_pages
     ADD COLUMN IF NOT EXISTS processed BOOLEAN NOT NULL DEFAULT FALSE;
 """
 
-# Migration: add deputy_id column if missing
 MIGRATE_MEMBERS_DEPUTY_ID = """
     ALTER TABLE members
     ADD COLUMN IF NOT EXISTS deputy_id TEXT;
@@ -86,7 +81,7 @@ MIGRATE_MEMBERS_DEPUTY_ID_UNIQUE = """
     ON members (deputy_id) WHERE deputy_id IS NOT NULL;
 """
 
-DDL_STATEMENTS: list[str] = [
+DDL_STATEMENTS: tuple[str, ...] = (
     CREATE_MEMBERS,
     CREATE_VOTES,
     CREATE_BULLETINS,
@@ -96,11 +91,4 @@ DDL_STATEMENTS: list[str] = [
     MIGRATE_RAW_PAGES_PROCESSED,
     MIGRATE_MEMBERS_DEPUTY_ID,
     MIGRATE_MEMBERS_DEPUTY_ID_UNIQUE,
-]
-
-
-def create_all_tables(database):
-    with closing(database.conn.cursor()) as cur:
-        for ddl in DDL_STATEMENTS:
-            cur.execute(ddl)
-    database.conn.commit()
+)

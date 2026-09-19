@@ -2,70 +2,60 @@ from __future__ import annotations
 
 import argparse
 import logging
-import os
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent))
+import re
 
 import psycopg2
-from dotenv import load_dotenv
+from psycopg2.sql import SQL, Identifier
 
-from parliament_data_extractor.common.schema import create_all_tables
-from parliament_data_extractor.common.services.database import Database
+from parliament_data_extractor.config import ExtractorSettings
+from parliament_data_extractor.database import ParliamentDatabase
+from parliament_data_extractor.logging_conf import setup_logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    force=True,
-)
 log = logging.getLogger(__name__)
 
-
-def create_database(source: str):
-    load_dotenv()
-    db_name = os.getenv(f"DB_{source.upper()}_NAME")
-    if not db_name:
-        log.error("DB_%s_NAME not set in .env", source.upper())
-        sys.exit(1)
-
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user=os.getenv("DB_USER", "postgres"),
-        password=os.getenv("DB_PASSWORD", "postgres"),
-        host=os.getenv("DB_HOST", "localhost"),
-        port=os.getenv("DB_PORT", "5432"),
-    )
-    conn.autocommit = True
-    with conn.cursor() as cur:
-        cur.execute(
-            f"SELECT 1 FROM pg_database WHERE datname = '{db_name}';"
-        )
-        exists = cur.fetchone()
-        if not exists:
-            cur.execute(f"CREATE DATABASE {db_name};")
-            log.info("Created database '%s'", db_name)
-        else:
-            log.info("Database '%s' already exists", db_name)
-    conn.close()
-
-    Database._instances.pop(source, None)
-    db = Database.get(source=source)
-    create_all_tables(db)
-    log.info("Schema created for source '%s'", source)
+_VALID_IDENTIFIER = re.compile(r"^[a-z_][a-z0-9_]*$")
 
 
-def main():
+def database_ready(source: str) -> None:
+    settings = ExtractorSettings()
+    db_name = settings.db_name(source)
+
+    admin_conn = psycopg2.connect(**settings.psycopg_connect_kwargs("postgres"))
+    admin_conn.autocommit = True
+    try:
+        with admin_conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT 1 FROM pg_database WHERE datname = %s", (db_name,)
+            )
+            if cursor.fetchone() is not None:
+                log.info("Database '%s' already exists", db_name)
+            else:
+                if not _VALID_IDENTIFIER.match(db_name):
+                    raise ValueError(f"invalid database name: {db_name!r}")
+                cursor.execute(
+                    SQL("CREATE DATABASE {}").format(Identifier(db_name))
+                )
+                log.info("Created database '%s'", db_name)
+    finally:
+        admin_conn.close()
+
+    db = ParliamentDatabase(source)
+    db.close()
+    log.info("Schema ensured for source '%s'", source)
+
+
+def main() -> None:
+    setup_logging()
     parser = argparse.ArgumentParser(
         description="Initialize a database for a parliamentary source"
     )
     parser.add_argument(
         "--source",
         required=True,
-        help="Source name (e.g. an, senat)",
+        help="Source name (e.g. an, fr_assemblee_nationale)",
     )
     args = parser.parse_args()
-    create_database(source=args.source)
+    database_ready(args.source)
 
 
 if __name__ == "__main__":

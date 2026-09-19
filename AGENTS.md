@@ -110,7 +110,7 @@ Repo config needed:
 - **Git ignores**: `data/` (whole dir), `**/build`, `.env` files.
 - **One-shot Python**: use `conda run -n comparaison_parlementaires` if you must run backend scripts outside a container. Do not install or modify packages without asking.
 - **Ruff baseline**: `ruff check backend/` currently reports **27 pre-existing errors** (mostly E501 in `app/`); work should not add new violations. The vendored `backend/parliament_data_extractor/` is kept lint-clean (ruff `-`run on it targets 0 errors).
-- **Vendored extractor**: edits to the pipeline code must be made **in `parliament_data_extractor` (the source repo) then re-synced** into `backend/parliament_data_extractor/` (rsync `src/` + README/AGENTS/.env.example). Keep the two copies in sync; the vendored copy lives in the Docker image.
+- **Vendored extractor**: `backend/parliament_data_extractor/` is now a **project-owned fork**, not an rsync mirror of the source repo (it diverges — analysis/MCA code was removed). Edit it in place. Keep its CLI entry points, DB schema, and `crawler.log`/`parser.log` stable because `batch/update-data.sh` depends on them.
 - **pydantic Settings**: `backend/app/config.py` reads `.env` from project root and now ignores unknown keys (`extra="ignore"`). Do not add secrets to it; VPS env vars come from `--env-file .env.production`.
 - **Extractor LLM envs**: `LLM_*` vars only affect the extractor (reads env at runtime, Groq `qwen/qwen3.8-27b` default) — passed via `podman exec -e` in `update-data.sh`, never placed in `voting_similarities/.env`.
 

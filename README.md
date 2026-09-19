@@ -62,7 +62,9 @@ When new votes are crawled + parsed in `parliament_data_extractor`, push them to
 
 > **The extractor is now vendored** at `backend/parliament_data_extractor/` and
 > shipped inside the backend image, so the daily cron runs crawl/parse directly
-> on the VPS — no `scp`/`pg_dump` needed.
+> on the VPS — no `scp`/`pg_dump` needed. The vendored copy is a project-owned
+> fork (kept lean: no analysis/MCA code); edit it in place, always keeping the
+> CLI entry points and DB schema stable.
 
 **Local (dev machine):**
 
@@ -277,7 +279,7 @@ The frontend is a Vite + React SPA with no runtime environment variables. The AP
 ├── backend/
 │   ├── Dockerfile         # Multi-stage Python 3.12-slim image (bundles vendored extractor)
 │   ├── alembic.ini        # Alembic migration config
-│   ├── parliament_data_extractor/  # Vendored extractor package (crawl/parse/analyze)
+│   ├── parliament_data_extractor/  # Vendored extractor package (crawl/parse/enrich)
 │   ├── app/
 │   │   ├── main.py        # FastAPI app + lifecycle hooks
 │   │   ├── config.py      # pydantic-settings configuration

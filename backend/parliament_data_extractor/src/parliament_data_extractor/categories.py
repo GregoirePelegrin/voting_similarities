@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-CATEGORIES: list[str] = [
+CATEGORIES: tuple[str, ...] = (
     "Éducation & Recherche",
     "Santé & Sécurité sociale",
     "Environnement & Développement durable",
@@ -15,4 +15,4 @@ CATEGORIES: list[str] = [
     "Digital & Technologies",
     "Agriculture & Agroalimentaire",
     "Urbanisme & Logement",
-]
+)
