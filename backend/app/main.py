@@ -8,6 +8,7 @@ from sqlalchemy import text
 
 from app.api.config import router as config_router
 from app.api.health import router as health_router
+from app.api.meta import router as meta_router
 from app.api.metrics import router as metrics_router
 from app.api.routes import router as api_router
 from app.config import settings
@@ -29,6 +30,7 @@ app.add_middleware(
 
 app.include_router(config_router, prefix="/api")
 app.include_router(health_router, prefix="/api")
+app.include_router(meta_router, prefix="/api")
 app.include_router(metrics_router, prefix="/api")
 app.include_router(api_router, prefix="/api")
 

@@ -21,6 +21,8 @@ class UiStore {
   sortMode: SortMode = loadJSON<SortMode>(LS_SORT_MODE, "value");
   configSets: ConfigSetOut[] = [];
   activeConfigSetId: number | null = loadJSON<number | null>(LS_CONFIG_SET, null);
+  lastVoteDate: string | null = null;
+  lastComputedAt: string | null = null;
   loading = false;
   error: string | null = null;
   retryVersion = 0;
@@ -51,6 +53,11 @@ class UiStore {
       this.activeConfigSetId = activeId;
       localStorage.setItem(LS_CONFIG_SET, JSON.stringify(activeId));
     }
+  }
+
+  setMeta(lastVoteDate: string | null, lastComputedAt: string | null) {
+    this.lastVoteDate = lastVoteDate;
+    this.lastComputedAt = lastComputedAt;
   }
 
   get activeConfigSet(): ConfigSetOut | undefined {

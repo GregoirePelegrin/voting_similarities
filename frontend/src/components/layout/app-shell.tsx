@@ -26,7 +26,7 @@ import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import ErrorDialog from "../shared/error-dialog";
 import ConfigSetSelector from "../shared/config-set-selector";
-import {NAV} from "../../constants/fr";
+import {HEADER, NAV} from "../../constants/fr";
 
 const DRAWER_WIDTH = 220;
 
@@ -113,7 +113,24 @@ const AppShell: React.FC<{ children: React.ReactNode }> = observer(({children}) 
           <Typography variant="h6" sx={{fontWeight: 500, letterSpacing: "-0.01em"}}>
             {NAV.TITLE}
           </Typography>
-          <ConfigSetSelector/>
+          <Box sx={{ml: "auto", mr: 1, display: "flex", alignItems: "center", gap: 2}}>
+            {(uiStore.lastVoteDate || uiStore.lastComputedAt) && (
+              <Box sx={{textAlign: "right", lineHeight: 1.3}}>
+                {uiStore.lastVoteDate && (
+                  <Typography variant="caption" color="text.secondary" sx={{display: "block", whiteSpace: "nowrap"}}>
+                    {HEADER.ANALYSIS_UP_TO}{" "}
+                    <strong>{new Date(uiStore.lastVoteDate).toLocaleDateString("fr-FR")}</strong>
+                  </Typography>
+                )}
+                {uiStore.lastComputedAt && (
+                  <Typography variant="caption" color="text.disabled" sx={{display: "block", whiteSpace: "nowrap"}}>
+                    {HEADER.LAST_COMPUTATION} : {new Date(uiStore.lastComputedAt).toLocaleString("fr-FR")}
+                  </Typography>
+                )}
+              </Box>
+            )}
+            <ConfigSetSelector/>
+          </Box>
         </Toolbar>
       </AppBar>
 

@@ -22,6 +22,11 @@ class ConfigResponse(BaseModel):
     active_set_id: int | None = None
 
 
+class MetaOut(BaseModel):
+    last_vote_date: str | None = None
+    last_computed_at: str | None = None
+
+
 class CategoryOut(BaseModel):
     id: int
     name: str
