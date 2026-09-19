@@ -6,6 +6,7 @@ import VotersStore from "./voters-store";
 import GroupsStore from "./groups-store";
 import EmbeddingsStore from "./embeddings-store";
 import {fetchSimilarityConfig} from "../api/config";
+import {fetchMeta} from "../api/meta";
 import {ERROR_DIALOG} from "../constants/fr";
 
 class RootStore {
@@ -29,11 +30,13 @@ class RootStore {
   async init() {
     this.uiStore.setLoading(true);
     try {
-      const [cfg] = await Promise.all([
+      const [cfg, meta] = await Promise.all([
         fetchSimilarityConfig(),
+        fetchMeta(),
         this.categoriesStore.fetchCategories(),
       ]);
       this.uiStore.setConfigSets(cfg.sets, cfg.active_set_id);
+      this.uiStore.setMeta(meta.last_vote_date, meta.last_computed_at);
     } catch {
       this.uiStore.setError(ERROR_DIALOG.API_CONNECTION);
     } finally {

@@ -7,6 +7,11 @@ export const NAV = {
   VOTES: "Votes",
 };
 
+export const HEADER = {
+  ANALYSIS_UP_TO: "Analyse sur les votes jusqu'au",
+  LAST_COMPUTATION: "Dernière analyse",
+};
+
 export const ERROR_DIALOG = {
   TITLE: "Erreur de connexion",
   DISMISS: "Ignorer",

@@ -14,6 +14,11 @@ export interface ConfigResponse {
   active_set_id: number | null;
 }
 
+export interface MetaOut {
+  last_vote_date: string | null;
+  last_computed_at: string | null;
+}
+
 export interface CategoryOut {
   id: number;
   name: string;

@@ -10,7 +10,7 @@ const ConfigSetSelector: React.FC = observer(() => {
   if (configSets.length <= 1) return null;
 
   return (
-    <Box sx={{ml: "auto", mr: 1}}>
+    <Box sx={{mr: 1}}>
       <Tooltip
         title={
           activeConfigSet
