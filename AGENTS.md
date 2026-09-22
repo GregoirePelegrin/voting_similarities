@@ -73,14 +73,17 @@ conda run -n comparaison_parlementaires python backend/scripts/compute_similarit
 
 Pipeline inside `update-data.sh`:
 
-1. `git` pull → count votes/categories in `fr_assemblee_nationale` (via `podman exec parliament_analysis_postgres psql -U postgres ...`) → `crawl` → `parse` → `parse --recategorize`.
-2. Count again; **if nothing changed** (`new_votes`/`regategorized` both 0) send success Telegram "aucun nouveau vote" and stop. Otherwise: `ingest_real_data.py` (`PARLIAMENT_DB_URL` built from `batch/.env.data`), recompute similarities for **every** config set (TSV list from `get_config_sets.py`, default set `Defaut 1.0 0.2 0.5 10` if none), restart backend, wait for `/api/health`.
-3. Telegram notifications **every** run: success with new-vote counts (or failure with failing step + last log lines + `RUN_URL`). Prefix label is `[voting_similarities]`.
+1. `git` pull → count votes/categories in `fr_assemblee_nationale` (via `podman exec parliament_analysis_postgres psql -U postgres ...`) → `crawl`.
+2. **Fast path**: right after `crawl`, re-count votes + unprocessed `raw_pages`; if nothing new crawled and nothing is pending, send "aucun nouveau vote" and stop **before** `parse`/`recategorize`.
+3. Otherwise: `parse` → `parse --recategorize` → count again; **if nothing changed** (`new_votes`/`regategorized` both 0) send "aucun nouveau vote" and stop. Else: `ingest_real_data.py` (`PARLIAMENT_DB_URL` built from `batch/.env.data`), recompute similarities for **every** config set (TSV list from `get_config_sets.py`, default set `Defaut 1.0 0.2 0.5 10` if none), restart backend, wait for `/api/health`.
+4. Telegram notifications **every** run: success with new-vote counts (or failure with failing step + last log lines + memory + `RUN_URL`). Prefix label is `[voting_similarities]`.
+
+**Executor**: extractor steps (`crawl`, `parse`, `parse --recategorize`) run in a **transient, memory-capped** container — `podman run --rm --network host --memory=1024m voting-backend:latest python3 -m parliament_data_extractor.scripts.<cmd>` — **never via `podman exec` into the live backend container**. This isolates the pipeline from the API's memory cgroup: on the 4 GB CX22 VPS a peak used to SIGKILL the run (`status 137`, OOM). The VPS needs a swap file (see `deployment-steps.md`) and `UVICORN_WORKERS=2` in `.env.production` to keep headroom.
 
 Repo config needed:
 - Secrets: `TELEGRAM_BOT_KEY`, `TELEGRAM_CHAT_ID` (+ existing `DEPLOY_HOST`/`DEPLOY_USER`/`DEPLOY_SSH_KEY`).
 - Variable: `LLM_API_KEY` (Groq free tier), forwarded only to the SSH session.
-- VPS-side static config: `batch/.env.data` (DB `DB_*` + LLM envs; git-ignored, copy of `batch/.env.data.example`).
+- VPS-side static config: `batch/.env.data` (DB `DB_*` + LLM envs; git-ignored, copy of `batch/.env.data.example`). **Auto-created** by `deploy-production.sh` from `.env.production` credentials if missing.
 
 ## Architecture
 

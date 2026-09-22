@@ -58,16 +58,26 @@ LLM_BASE_URL="${LLM_BASE_URL:-https://api.groq.com/openai/v1}"
 LLM_MODEL_BIG="${LLM_MODEL_BIG:-qwen/qwen3.8-27b}"
 LLM_API_KEY="${LLM_API_KEY:-}"
 BACKEND_DB="${BACKEND_DB:-voting_similarities}"
-PARLIAMENT_DB_URL="${PARLIAMENT_DB_URL:-postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${MAIN_DB}}"
+if [ -z "${DB_PASSWORD:-}" ]; then
+  echo "WARNING: DB_PASSWORD is empty (is batch/.env.data present?); connections may fail if postgres requires auth"
+fi
+DB_PASSWORD_URL="$(printf '%s' "${DB_PASSWORD}" | python3 -c 'import sys,urllib.parse; sys.stdout.write(urllib.parse.quote(sys.stdin.read(), safe=""))' 2>/dev/null || printf '%s' "${DB_PASSWORD}")"
+PARLIAMENT_DB_URL="${PARLIAMENT_DB_URL:-postgresql+asyncpg://${DB_USER}:${DB_PASSWORD_URL}@${DB_HOST}:${DB_PORT}/${MAIN_DB}}"
 RUN_URL="${RUN_URL:-}"
 
 # --- Step helpers (log + failure notification) --------------------------------
 CURRENT_STEP="setup"
 STEP_OUT="$LOG_DIR/step-setup.log"
 
+mem_summary() {
+  free -m 2>/dev/null | awk 'NR==2{printf "used=%dMB avail=%dMB", $3, $7}' || echo "mem n/a"
+}
+
 begin_step() {
   CURRENT_STEP="$1"
   STEP_OUT="$LOG_DIR/step-${CURRENT_STEP//\//_}.log"
+  : > "$STEP_OUT"
+  echo ">> Step: ${CURRENT_STEP} | $(date '+%H:%M:%S') | $(mem_summary)"
 }
 
 on_error() {
@@ -76,6 +86,7 @@ on_error() {
   tail_lines="$(tail -n 15 "$STEP_OUT" 2>/dev/null || true)"
   tg "🗳️ [voting_similarities] ❌ ÉCHEC — étape: ${CURRENT_STEP}
 ${tail_lines}
+mem: $(mem_summary)
 run: ${RUN_URL}"
   exit "$code"
 }
@@ -103,9 +114,15 @@ EXTRACTOR_ENV=( \
   -e "LLM_MAX_RETRIES=${LLM_MAX_RETRIES:-3}" \
 )
 
+# Run extractor steps in a *transient*, memory-capped container (never inside the
+# live backend container) so a peak can't OOM-kill the API. Logs go to stdout and
+# are appended to the current step log for the failure Telegram.
 run_extractor() {
-  podman exec "${EXTRACTOR_ENV[@]}" "$CONTAINER" \
-    python3 -m "parliament_data_extractor.scripts.$1" "${@:2}"
+  podman run --rm --network host --memory=1024m \
+    "${EXTRACTOR_ENV[@]}" \
+    voting-backend:latest \
+    python3 -m "parliament_data_extractor.scripts.$1" "${@:2}" \
+    2>&1 | tee -a "$STEP_OUT"
 }
 
 # --- 0. Update code -----------------------------------------------------------
@@ -125,6 +142,18 @@ echo "votes_before=$votes_before empty_before=$empty_before"
 # --- 2. Crawl + parse + recategorize ------------------------------------------
 begin_step "crawl"
 run_extractor crawl --source "$SOURCE"
+
+# --- 2b. Fast path: nothing new crawled & nothing pending → skip parse/LLM -----
+begin_step "fast-path-check"
+unprocessed="$(psql_count "SELECT COUNT(*) FROM raw_pages WHERE processed = FALSE")"
+votes_now="$(psql_count "SELECT COUNT(*) FROM votes")"
+echo "unprocessed=$unprocessed votes_now=$votes_now"
+if [ "$votes_now" -eq "$votes_before" ] && [ "$unprocessed" -eq 0 ] && [ "$empty_before" -eq 0 ]; then
+  DATE_LABEL="$(date '+%d/%m/%Y %H:%M')"
+  tg "🗳️ [voting_similarities] OK — ${DATE_LABEL} : aucun nouveau vote."
+  exit 0
+fi
+
 begin_step "parse"
 run_extractor parse --source "$SOURCE"
 begin_step "recategorize"

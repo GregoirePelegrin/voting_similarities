@@ -12,6 +12,17 @@ fi
 # shellcheck disable=SC1090
 source "$ENV_FILE"
 
+echo "=== 0. Ensure batch/.env.data for the daily cron ==="
+DATA_ENV="$PWD/batch/.env.data"
+if [ ! -f "$DATA_ENV" ]; then
+  printf 'DB_USER=%s\nDB_PASSWORD=%s\nDB_HOST=%s\nDB_PORT=%s\nDB_FR_ASSEMBLEE_NATIONALE_NAME=%s\n' \
+    "${DB_USER:-postgres}" "${DB_PASSWORD}" "${DB_HOST:-localhost}" "${DB_PORT:-5432}" "fr_assemblee_nationale" \
+    > "$DATA_ENV"
+  echo "Created $DATA_ENV from .env.production credentials"
+else
+  echo "$DATA_ENV already exists; keeping it (update manually if credentials change)"
+fi
+
 echo "=== 1. Ensure PostgreSQL container ==="
 if ! podman container exists parliament_analysis_postgres; then
   echo "Starting PostgreSQL..."
