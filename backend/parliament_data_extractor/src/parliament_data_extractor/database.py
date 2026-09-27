@@ -357,24 +357,24 @@ class ParliamentDatabase:
             row = cursor.fetchone()
         return row[0] if row else None
 
-    def get_unprocessed_raw_pages(self) -> list[RawPage]:
+    def get_unprocessed_scrutin_ids(self, limit: int) -> list[int]:
         with self.transaction() as cursor:
             cursor.execute(
-                f"{_RAW_PAGE_SELECT}"
-                " WHERE processed = FALSE ORDER BY scrutin_id"
+                "SELECT scrutin_id FROM raw_pages"
+                " WHERE processed = FALSE ORDER BY scrutin_id LIMIT %s",
+                (limit,),
             )
-            return [self._raw_page_from_row(row) for row in cursor.fetchall()]
+            return [row[0] for row in cursor.fetchall()]
 
-    def get_raw_pages_without_votes(self) -> list[RawPage]:
-        columns = ", ".join(f"rp.{column}" for column in RAW_PAGE_COLUMNS)
+    def get_scrutin_ids_without_votes(self, limit: int) -> list[int]:
         with self.transaction() as cursor:
             cursor.execute(
-                f"SELECT {columns} FROM raw_pages rp"
+                "SELECT rp.scrutin_id FROM raw_pages rp"
                 " LEFT JOIN votes v ON v.scrutin_id = rp.scrutin_id"
-                " WHERE v.id IS NULL"
-                " ORDER BY rp.scrutin_id"
+                " WHERE v.id IS NULL ORDER BY rp.scrutin_id LIMIT %s",
+                (limit,),
             )
-            return [self._raw_page_from_row(row) for row in cursor.fetchall()]
+            return [row[0] for row in cursor.fetchall()]
 
     # -- failed votes ---------------------------------------------------------
 

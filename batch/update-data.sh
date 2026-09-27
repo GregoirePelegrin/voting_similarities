@@ -28,13 +28,15 @@ fi
 # --- Telegram -----------------------------------------------------------------
 tg() {
   local text="$1"
-  if [ -z "$TELEGRAM_BOT_KEY" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+  local bot_key="${TELEGRAM_BOT_KEY:-}"
+  local chat_id="${TELEGRAM_CHAT_ID:-}"
+  if [ -z "$bot_key" ] || [ -z "$chat_id" ]; then
     echo "Telegram not configured; message skipped"
     return 0
   fi
   curl -s -o /dev/null -X POST \
-    "https://api.telegram.org/bot${TELEGRAM_BOT_KEY}/sendMessage" \
-    --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+    "https://api.telegram.org/bot${bot_key}/sendMessage" \
+    --data-urlencode "chat_id=${chat_id}" \
     --data-urlencode "text=${text}" || true
 }
 
@@ -118,7 +120,7 @@ EXTRACTOR_ENV=( \
 # live backend container) so a peak can't OOM-kill the API. Logs go to stdout and
 # are appended to the current step log for the failure Telegram.
 run_extractor() {
-  podman run --rm --network host --memory=1024m \
+  podman run --rm --network host --memory=2048m \
     "${EXTRACTOR_ENV[@]}" \
     voting-backend:latest \
     python3 -m "parliament_data_extractor.scripts.$1" "${@:2}" \
@@ -137,18 +139,28 @@ git pull --ff-only
 begin_step "counts-before"
 votes_before="$(psql_count "SELECT COUNT(*) FROM votes")"
 empty_before="$(psql_count "SELECT COUNT(*) FROM votes WHERE categories IS NULL OR categories = '{}'")"
-echo "votes_before=$votes_before empty_before=$empty_before"
+raw_max_before="$(psql_count "SELECT COALESCE(MAX(scrutin_id), 0) FROM raw_pages")"
+echo "votes_before=$votes_before empty_before=$empty_before raw_max_before=$raw_max_before"
 
 # --- 2. Crawl + parse + recategorize ------------------------------------------
 begin_step "crawl"
 run_extractor crawl --source "$SOURCE"
 
-# --- 2b. Fast path: nothing new crawled & nothing pending → skip parse/LLM -----
+# --- 2b. Reconcile legacy raw_pages: a page whose scrutin already has a vote
+#         is done — never let parse re-process (and re-LLM) the historical cache.
+begin_step "reconcile"
+reconciled="$(podman exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A \
+  -c "UPDATE raw_pages rp SET processed = TRUE FROM votes v WHERE v.scrutin_id = rp.scrutin_id AND NOT rp.processed" \
+  | awk '{print $2}')"
+echo "reconciled=$reconciled"
+
+# --- 2c. Fast path: nothing new crawled & nothing pending → skip parse/LLM -----
 begin_step "fast-path-check"
-unprocessed="$(psql_count "SELECT COUNT(*) FROM raw_pages WHERE processed = FALSE")"
+raw_max_after="$(psql_count "SELECT COALESCE(MAX(scrutin_id), 0) FROM raw_pages")"
 votes_now="$(psql_count "SELECT COUNT(*) FROM votes")"
-echo "unprocessed=$unprocessed votes_now=$votes_now"
-if [ "$votes_now" -eq "$votes_before" ] && [ "$unprocessed" -eq 0 ] && [ "$empty_before" -eq 0 ]; then
+unprocessed="$(psql_count "SELECT COUNT(*) FROM raw_pages WHERE processed = FALSE")"
+echo "raw_max_after=$raw_max_after votes_now=$votes_now unprocessed=$unprocessed"
+if [ "$votes_now" -eq "$votes_before" ] && [ "$raw_max_after" -eq "$raw_max_before" ] && [ "$unprocessed" -eq 0 ]; then
   DATE_LABEL="$(date '+%d/%m/%Y %H:%M')"
   tg "🗳️ [voting_similarities] OK — ${DATE_LABEL} : aucun nouveau vote."
   exit 0

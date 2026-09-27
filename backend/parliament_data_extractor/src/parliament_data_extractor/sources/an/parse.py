@@ -19,6 +19,8 @@ from parliament_data_extractor.text import build_normalized_map, match_category
 
 log = logging.getLogger(__name__)
 
+_BATCH_SIZE = 200
+
 _FRENCH_MONTHS: dict[str, int] = {
     "janvier": 1,
     "février": 2,
@@ -213,17 +215,30 @@ def process_raw_page(
 
 def parse_pending(source: str, llm: LLMService) -> None:
     db = ParliamentDatabase.get(source)
-    unprocessed = db.get_unprocessed_raw_pages()
-    if not unprocessed:
+    processed = 0
+    while True:
+        batch = db.get_unprocessed_scrutin_ids(limit=_BATCH_SIZE)
+        if not batch:
+            break
+        before = processed
+        for scrutin_id in batch:
+            log.info("[%d] Parsing scrutins %s", processed + 1, scrutin_id)
+            raw_page = db.get_raw_page(scrutin_id)
+            if raw_page is None:
+                continue
+            if process_raw_page(db, llm, raw_page):
+                processed += 1
+        log.info("Batch complete (%d page(s) processed so far)", processed)
+        if processed == before:
+            log.warning(
+                "No progress this batch (%d page(s) failed); stopping",
+                len(batch),
+            )
+            break
+    if processed == 0:
         log.info("No unprocessed raw pages to parse")
-        return
-
-    total = len(unprocessed)
-    log.info("Parsing %d unprocessed raw page(s)", total)
-    for position, raw_page in enumerate(unprocessed, start=1):
-        log.info("[%d/%d] Parsing scrutins %s", position, total, raw_page.scrutin_id)
-        process_raw_page(db, llm, raw_page)
-    log.info("Parsing complete")
+    else:
+        log.info("Parsing complete (%d page(s))", processed)
 
 
 def recategorize_votes(source: str, llm: LLMService) -> None:
@@ -247,21 +262,30 @@ def recategorize_votes(source: str, llm: LLMService) -> None:
 
 def fill_gap_votes(source: str, llm: LLMService) -> None:
     db = ParliamentDatabase.get(source)
-    orphans = db.get_raw_pages_without_votes()
-    if not orphans:
+    processed = 0
+    while True:
+        batch = db.get_scrutin_ids_without_votes(limit=_BATCH_SIZE)
+        if not batch:
+            break
+        before = processed
+        for scrutin_id in batch:
+            log.info("[%d] Re-processing scrutins %s", processed + 1, scrutin_id)
+            raw_page = db.get_raw_page(scrutin_id)
+            if raw_page is None:
+                continue
+            if process_raw_page(db, llm, raw_page):
+                processed += 1
+        log.info("Batch complete (%d page(s) processed so far)", processed)
+        if processed == before:
+            log.warning(
+                "No progress this batch (%d page(s) failed); stopping",
+                len(batch),
+            )
+            break
+    if processed == 0:
         log.info("No raw pages without a corresponding vote")
-        return
-
-    log.info("Filling %d gap(s) — raw pages without votes", len(orphans))
-    for position, raw_page in enumerate(orphans, start=1):
-        log.info(
-            "[%d/%d] Re-processing scrutins %s",
-            position,
-            len(orphans),
-            raw_page.scrutin_id,
-        )
-        process_raw_page(db, llm, raw_page)
-    log.info("Gap filling complete")
+    else:
+        log.info("Gap filling complete (%d page(s))", processed)
 
 
 def main(

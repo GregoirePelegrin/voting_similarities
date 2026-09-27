@@ -30,6 +30,11 @@ enrich-members --source fr_assemblee_nationale           # fetch role/commission
 
 Crawl writes to `crawler.log`, parse writes to `parser.log` (current directory).
 
+`parse` and `--fill-gaps` process raw pages in **bounded batches** (see `_BATCH_SIZE`
+in `sources/an/parse.py`): they stream scrutin ids (ids only, never the HTML payload)
+and load one raw page at a time, so peak memory stays independent of backlog size.
+Keep it that way — a full-snapshot `fetchall()` of raw page HTML OOMs the 4 GB VPS.
+
 ## Structure
 
 ```
