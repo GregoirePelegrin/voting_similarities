@@ -37,7 +37,7 @@ jobs:
             echo "==> Done."
         env:
           DEPLOY_DIR: ${{ secrets.DEPLOY_DIR || '/app/voting_similarities' }}
-          LLM_API_KEY: ${{ vars.LLM_API_KEY }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           TELEGRAM_BOT_KEY: ${{ secrets.TELEGRAM_BOT_KEY }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}

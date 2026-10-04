@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Daily vote-data update pipeline (run on the VPS by .github/workflows/update-data.yml)
-#   crawl -> parse -> recategorize -> (on changes) ingest + recompute + restart
+#   git -> llm-preflight -> crawl -> parse -> recategorize -> (on changes or drift) ingest + recompute -> restart
 # Telegram notifications (success every run, failure on error) use TELEGRAM_BOT_KEY /
 # TELEGRAM_CHAT_ID injected by the workflow; LLM_API_KEY also injected (Groq).
 
@@ -135,18 +135,49 @@ git fetch origin >/dev/null
 git checkout main
 git pull --ff-only
 
-# --- 1. Baseline counts -------------------------------------------------------
+# --- 1. LLM preflight ---------------------------------------------------------
+# Categories are the backbone of the whole similarity computation. If the LLM
+# key is missing/expired, parse() silently stores votes with empty categories
+# (see process_raw_page), which then poison category_discriminativeness and
+# every per-category table. Probe before crawling so we fail fast, before the
+# extractor mutates raw_pages/votes, and alert with an actionable message
+# instead of on_error's generic tail-of-log.
+begin_step "llm-preflight"
+if [ -z "$LLM_API_KEY" ]; then
+  tg "🗳️ [voting_similarities] ❌ Clé LLM absente — crawl/parse ignorés, données non mises à jour.
+Vérifier le secret LLM_API_KEY du dépôt (il doit être dans *secrets*, pas *variables*).
+run: ${RUN_URL}"
+  exit 1
+fi
+llm_http="$(curl -s -o /dev/null -w '%{http_code}' -m 20 \
+  -H "Authorization: Bearer ${LLM_API_KEY}" \
+  "${LLM_BASE_URL}/models" || true)"
+echo "llm_preflight_http=$llm_http"
+if [ "$llm_http" != "200" ]; then
+  tg "🗳️ [voting_similarities] ❌ Clé LLM invalide (HTTP ${llm_http:-000}) — crawl/parse ignorés, données non mises à jour.
+Vérifier/régénérer le secret LLM_API_KEY du dépôt.
+run: ${RUN_URL}"
+  exit 1
+fi
+
+# --- 2. Baseline counts -------------------------------------------------------
 begin_step "counts-before"
 votes_before="$(psql_count "SELECT COUNT(*) FROM votes")"
 empty_before="$(psql_count "SELECT COUNT(*) FROM votes WHERE categories IS NULL OR categories = '{}'")"
 raw_max_before="$(psql_count "SELECT COALESCE(MAX(scrutin_id), 0) FROM raw_pages")"
-echo "votes_before=$votes_before empty_before=$empty_before raw_max_before=$raw_max_before"
+count_raw="$(podman exec "$CONTAINER" python3 /app/scripts/ingest_real_data.py --count-votes 2>/dev/null || true)"
+app_votes_before="$(printf '%s' "$count_raw" | tr -cd '0-9')"
+if [ -z "$app_votes_before" ]; then
+  echo "WARNING: could not read the app DB vote count (stale voting-backend image?); assuming 0 -> forcing a re-ingest."
+  app_votes_before=0
+fi
+echo "votes_before=$votes_before empty_before=$empty_before raw_max_before=$raw_max_before app_votes_before=$app_votes_before"
 
-# --- 2. Crawl + parse + recategorize ------------------------------------------
+# --- 3. Crawl + parse + recategorize ------------------------------------------
 begin_step "crawl"
 run_extractor crawl --source "$SOURCE"
 
-# --- 2b. Reconcile legacy raw_pages: a page whose scrutin already has a vote
+# --- 3b. Reconcile legacy raw_pages: a page whose scrutin already has a vote
 #         is done — never let parse re-process (and re-LLM) the historical cache.
 begin_step "reconcile"
 reconciled="$(podman exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A \
@@ -154,16 +185,23 @@ reconciled="$(podman exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A \
   | awk '{print $2}')"
 echo "reconciled=$reconciled"
 
-# --- 2c. Fast path: nothing new crawled & nothing pending → skip parse/LLM -----
+# --- 3c. Fast path: nothing new crawled & nothing pending → skip parse/LLM -----
+# Also skip when the two DBs have drifted (a previous ingest failed), otherwise
+# the stranded votes would be reported as "aucun nouveau vote" forever.
 begin_step "fast-path-check"
 raw_max_after="$(psql_count "SELECT COALESCE(MAX(scrutin_id), 0) FROM raw_pages")"
 votes_now="$(psql_count "SELECT COUNT(*) FROM votes")"
 unprocessed="$(psql_count "SELECT COUNT(*) FROM raw_pages WHERE processed = FALSE")"
-echo "raw_max_after=$raw_max_after votes_now=$votes_now unprocessed=$unprocessed"
-if [ "$votes_now" -eq "$votes_before" ] && [ "$raw_max_after" -eq "$raw_max_before" ] && [ "$unprocessed" -eq 0 ]; then
+echo "raw_max_after=$raw_max_after votes_now=$votes_now unprocessed=$unprocessed app_votes_before=$app_votes_before"
+if [ "$votes_now" -eq "$votes_before" ] && [ "$raw_max_after" -eq "$raw_max_before" ] && [ "$unprocessed" -eq 0 ] \
+   && [ "$votes_now" -eq "$app_votes_before" ]; then
   DATE_LABEL="$(date '+%d/%m/%Y %H:%M')"
   tg "🗳️ [voting_similarities] OK — ${DATE_LABEL} : aucun nouveau vote."
   exit 0
+fi
+if [ "$votes_now" -ne "$app_votes_before" ]; then
+  DRIFT=1
+  echo "DRIFT detected: parliament has $votes_now vote(s), app DB has $app_votes_before — forcing ingest."
 fi
 
 begin_step "parse"
@@ -171,7 +209,7 @@ run_extractor parse --source "$SOURCE"
 begin_step "recategorize"
 run_extractor parse --source "$SOURCE" --recategorize
 
-# --- 3. After counts ----------------------------------------------------------
+# --- 4. After counts ----------------------------------------------------------
 begin_step "counts-after"
 votes_after="$(psql_count "SELECT COUNT(*) FROM votes")"
 empty_after="$(psql_count "SELECT COUNT(*) FROM votes WHERE categories IS NULL OR categories = '{}'")"
@@ -182,17 +220,17 @@ echo "new_votes=$new_votes recategorized=$recategorized"
 
 DATE_LABEL="$(date '+%d/%m/%Y %H:%M')"
 
-if [ "$new_votes" -eq 0 ] && [ "$recategorized" -le 0 ]; then
+if [ "$new_votes" -eq 0 ] && [ "$recategorized" -le 0 ] && [ -z "${DRIFT:-}" ]; then
   tg "🗳️ [voting_similarities] OK — ${DATE_LABEL} : aucun nouveau vote."
   exit 0
 fi
 
-# --- 4. Ingest into the voting_similarities DB --------------------------------
+# --- 5. Ingest into the voting_similarities DB --------------------------------
 begin_step "ingest"
 podman exec -e "PARLIAMENT_DB_URL=$PARLIAMENT_DB_URL" "$CONTAINER" \
   python3 /app/scripts/ingest_real_data.py
 
-# --- 5. Recompute every existing config set -----------------------------------
+# --- 6. Recompute every existing config set -----------------------------------
 begin_step "get-config-sets"
 cfg_list="$(podman exec "$CONTAINER" python3 /app/scripts/get_config_sets.py || true)"
 if [ -z "$cfg_list" ]; then
@@ -207,7 +245,7 @@ while IFS=$'\t' read -r cname w_yes w_no w_mismatch m; do
     --w-yes "$w_yes" --w-no "$w_no" --w-mismatch "$w_mismatch" --m "$m"
 done <<< "$cfg_list"
 
-# --- 6. Restart backend -------------------------------------------------------
+# --- 7. Restart backend -------------------------------------------------------
 begin_step "restart"
 podman restart "$CONTAINER"
 for _ in $(seq 1 30); do
@@ -218,5 +256,5 @@ for _ in $(seq 1 30); do
 done
 curl -fsS http://localhost:8000/api/health >/dev/null
 
-# --- 7. Success ---------------------------------------------------------------
+# --- 8. Success ---------------------------------------------------------------
 tg "🗳️ [voting_similarities] OK — ${DATE_LABEL} : ${new_votes} nouveau(x) vote(s) importé(s) (+${recategorized} recatégorisé(s)). Similarités recalculées, backend redémarré."

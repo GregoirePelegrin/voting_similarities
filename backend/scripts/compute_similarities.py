@@ -109,19 +109,36 @@ async def run(config: SimilarityConfig, name: str = "Default", description: str 
         await conn.run_sync(Base.metadata.create_all)
 
     async with session_factory() as session:
-        # Create config set
-        config_set = ConfigSet(
-            name=name,
-            description=description,
-            w_yes=config.w_yes,
-            w_no=config.w_no,
-            w_mismatch=config.w_mismatch,
-            m=config.m,
-        )
-        session.add(config_set)
-        await session.flush()
+        # Reuse the config set with the same name when it already exists.
+        # Inserting unconditionally would add a duplicate on every run, and
+        # get_config_sets.py lists *all* rows, so the daily pipeline would
+        # double its own work each time. Reusing also keeps ids stable, which
+        # api/config relies on to pick an active_set_id.
+        config_set = (await session.execute(
+            select(ConfigSet).where(ConfigSet.name == name)
+            .order_by(ConfigSet.id).limit(1)
+        )).scalars().first()
+        if config_set is None:
+            config_set = ConfigSet(
+                name=name,
+                description=description,
+                w_yes=config.w_yes,
+                w_no=config.w_no,
+                w_mismatch=config.w_mismatch,
+                m=config.m,
+            )
+            session.add(config_set)
+            await session.flush()
+            print(f"Config set #{config_set.id}: {name} (created)")
+        else:
+            config_set.description = description
+            config_set.w_yes = config.w_yes
+            config_set.w_no = config.w_no
+            config_set.w_mismatch = config.w_mismatch
+            config_set.m = config.m
+            await session.flush()
+            print(f"Config set #{config_set.id}: {name} (reused)")
         config_set_id = config_set.id
-        print(f"Config set #{config_set_id}: {name}")
 
         print("Loading answer data...")
         data = await load_answer_data(session)
