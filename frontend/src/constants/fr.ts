@@ -159,11 +159,14 @@ export const GROUP_DETAIL = {
 };
 
 export const VOTES_TABLE = {
+  DATE: "Date",
   ID: "ID",
   VOTE: "Vote",
+  QUESTION: "Titre",
   PASSED: "Adopté",
   NOT_PASSED: "Rejeté",
   CATEGORIES: "Catégories",
+  NO_DATE: "Date inconnue",
 };
 
 export const VOTE_DETAIL = {

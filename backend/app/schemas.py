@@ -37,6 +37,7 @@ class VoteOut(BaseModel):
     text: str
     description: str | None = None
     has_passed: bool
+    date: datetime | None = None
     category_ids: list[int]
 
 

@@ -1,13 +1,35 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
-import {DataGrid, GridColDef} from "@mui/x-data-grid";
-import {Box, Chip, useMediaQuery, useTheme} from "@mui/material";
+import {DataGrid, GridColDef, gridStringOrNumberComparator} from "@mui/x-data-grid";
+import {Box, Chip, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {observer} from "mobx-react-lite";
 import rootStore from "../../stores/root-store";
 import {VOTES_TABLE} from "../../constants/fr";
 import {DATA_COLORS} from "../../theme";
 
 const columns: GridColDef[] = [
+  {
+    field: "date",
+    headerName: VOTES_TABLE.DATE,
+    width: 140,
+    sortingOrder: ["desc", "asc", null],
+    getSortComparator: (sortDirection) => {
+      const modifier = sortDirection === "desc" ? -1 : 1;
+      return (value1, value2) => {
+        if (value1 === null) return 1;
+        if (value2 === null) return -1;
+        return modifier * gridStringOrNumberComparator(value1, value2);
+      };
+    },
+    renderCell: (params) =>
+      params.value == null ? (
+        <Typography variant="body2" sx={{color: "text.disabled"}}>
+          {VOTES_TABLE.NO_DATE}
+        </Typography>
+      ) : (
+        new Date(params.value as string).toLocaleDateString("fr-FR")
+      ),
+  },
   {field: "id", headerName: VOTES_TABLE.ID, width: 80},
   {field: "text", headerName: VOTES_TABLE.QUESTION, flex: 2},
   {
@@ -51,6 +73,7 @@ const VotesTable: React.FC = observer(() => {
 
   const rows = votesStore.votes.map((q) => ({
     id: q.id,
+    date: q.date,
     text: q.text,
     has_passed: q.has_passed,
     categories: q.category_ids.map((cid) => catMap.get(cid) ?? `Cat ${cid}`),
@@ -65,6 +88,7 @@ const VotesTable: React.FC = observer(() => {
         columnVisibilityModel={isNarrow ? {id: false} : undefined}
         initialState={{
           pagination: {paginationModel: {page: 0, pageSize: 50}},
+          sorting: {sortModel: [{field: "date", sort: "desc"}]},
         }}
         onRowClick={(params) => navigate(`/votes/${params.id}`)}
         sx={{

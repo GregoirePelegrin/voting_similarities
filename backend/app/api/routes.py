@@ -74,7 +74,9 @@ async def list_categories(db: AsyncSession = Depends(get_db)):
 
 @router.get("/votes", response_model=list[VoteOut])
 async def list_votes(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Vote).order_by(Vote.id))
+    result = await db.execute(
+        select(Vote).order_by(Vote.date.desc().nulls_last(), Vote.id.desc())
+    )
     votes = result.scalars().all()
 
     vc_result = await db.execute(
@@ -93,6 +95,7 @@ async def list_votes(db: AsyncSession = Depends(get_db)):
             text=v.text,
             description=v.description,
             has_passed=v.has_passed,
+            date=v.date,
             category_ids=vid_to_cats.get(v.id, []),
         )
         for v in votes

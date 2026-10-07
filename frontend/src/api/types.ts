@@ -29,6 +29,7 @@ export interface VoteOut {
   text: string;
   description: string | null;
   has_passed: boolean;
+  date: string | null;
   category_ids: number[];
 }
 
