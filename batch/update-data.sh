@@ -18,13 +18,6 @@ DB_ENV="DB_$(printf '%s' "$SOURCE" | tr '[:lower:]' '[:upper:]')_NAME"
 
 mkdir -p "$LOG_DIR"
 
-# --- Lock: never run two updates at once --------------------------------------
-exec 9>"$LOCKFILE"
-if ! flock -n 9; then
-  echo "Another update is already running; skipping."
-  exit 0
-fi
-
 # --- Telegram -----------------------------------------------------------------
 tg() {
   local text="$1"
@@ -39,6 +32,68 @@ tg() {
     --data-urlencode "chat_id=${chat_id}" \
     --data-urlencode "text=${text}" || true
 }
+
+# --- Container CLI -------------------------------------------------------------
+# The update lock is an inherited file descriptor (FD 9), so *every* child of this
+# script receives it. `podman run`/`restart` fork conmon, which lives as long as the
+# container — conmon then holds the flock indefinitely after we exit and every later
+# run reports "another update is running" forever. Closing FD 9 for podman keeps the
+# lock in this shell only. The first argument is a deadline so a stuck step cannot
+# hold the lock for days; use "-" for interactive/no-op calls.
+podq() {
+  local deadline="$1"
+  shift
+  if [ "$deadline" = "-" ]; then
+    podman "$@" 9>&-
+  else
+    timeout "$deadline" podman "$@" 9>&-
+  fi
+}
+
+# --- Lock: never run two updates at once --------------------------------------
+# The file starts with the holder's pid and acquisition epoch, so a later run can
+# distinguish "busy" from "abandoned". Contention is a hard failure: silently
+# skipping with exit 0 made the job go green for days while nothing ran.
+LOCK_STALE_SECONDS="${LOCK_STALE_SECONDS:-10800}"
+
+acquire_lock() {
+  # ">>" not ">": a failed attempt must not wipe the current holder's pid/stamp.
+  exec 9>>"$LOCKFILE"
+  flock -n 9 || return 1
+  printf '%s\n%s\n' "$$" "$(date +%s)" > "$LOCKFILE"
+}
+
+if ! acquire_lock; then
+  holder_pid="$(sed -n '1p' "$LOCKFILE" 2>/dev/null | tr -cd '0-9')" || true
+  holder_stamp="$(sed -n '2p' "$LOCKFILE" 2>/dev/null | tr -cd '0-9')" || true
+  age="unknown"
+  if [ -n "$holder_stamp" ]; then
+    age=$(( $(date +%s) - holder_stamp ))
+  fi
+
+  if [ "$age" = "unknown" ] || [ "$age" -ge "$LOCK_STALE_SECONDS" ]; then
+    tg "🗳️ [voting_similarities] ⚠️ Verrou obsolète (pid ${holder_pid:-?}, âge ${age}s) — prise de contrôle."
+    # Only terminate a holder we can positively identify as this script; anything
+    # else (an orphaned conmon) is left alone — unlinking the file is enough,
+    # because flock is tied to the inode, not to the path.
+    if [ -n "$holder_pid" ] && [ -r "/proc/${holder_pid}/cmdline" ] \
+       && tr '\0' ' ' < "/proc/${holder_pid}/cmdline" | grep -q "update-data.sh"; then
+      kill -TERM "$holder_pid" 2>/dev/null || true
+      sleep 2
+      kill -KILL "$holder_pid" 2>/dev/null || true
+    fi
+    rm -f "$LOCKFILE"
+    if ! acquire_lock; then
+      tg "🗳️ [voting_similarities] ❌ Verrou toujours occupé après nettoyage — abandon.
+run: ${RUN_URL:-}"
+      exit 1
+    fi
+  else
+    tg "🗳️ [voting_similarities] ❌ Une mise à jour est déjà en cours (pid ${holder_pid:-?}, âge ${age}s) — abandon.
+run: ${RUN_URL:-}"
+    exit 1
+  fi
+fi
 
 # --- Environment --------------------------------------------------------------
 if [ -f "$ENV_FILE" ]; then
@@ -94,8 +149,22 @@ run: ${RUN_URL}"
 }
 trap 'on_error' ERR
 
+# SSH disconnect / Ctrl-C / job timeout would otherwise kill this shell without a
+# word while the lock stays taken. The traps alert and then exit, which closes FD 9
+# and releases the flock. (A trapped signal is delivered to bash after the current
+# foreground command returns — the per-step deadlines in podq guarantee that
+# eventually happens.)
+on_signal() {
+  tg "🗳️ [voting_similarities] ⚠️ Exécution interrompue ($1) — étape: ${CURRENT_STEP}, verrou libéré.
+run: ${RUN_URL:-}"
+  exit 130
+}
+trap 'on_signal HUP' HUP
+trap 'on_signal INT' INT
+trap 'on_signal TERM' TERM
+
 psql_count() {
-  podman exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A -c "$1" \
+  podq - exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A -c "$1" \
     | tr -d ' '
 }
 
@@ -120,7 +189,7 @@ EXTRACTOR_ENV=( \
 # live backend container) so a peak can't OOM-kill the API. Logs go to stdout and
 # are appended to the current step log for the failure Telegram.
 run_extractor() {
-  podman run --rm --network host --memory=2048m \
+  podq 50m run --rm --network host --memory=2048m \
     "${EXTRACTOR_ENV[@]}" \
     voting-backend:latest \
     python3 -m "parliament_data_extractor.scripts.$1" "${@:2}" \
@@ -165,7 +234,7 @@ begin_step "counts-before"
 votes_before="$(psql_count "SELECT COUNT(*) FROM votes")"
 empty_before="$(psql_count "SELECT COUNT(*) FROM votes WHERE categories IS NULL OR categories = '{}'")"
 raw_max_before="$(psql_count "SELECT COALESCE(MAX(scrutin_id), 0) FROM raw_pages")"
-count_raw="$(podman exec "$CONTAINER" python3 /app/scripts/ingest_real_data.py --count-votes 2>/dev/null || true)"
+count_raw="$(podq 5m exec "$CONTAINER" python3 /app/scripts/ingest_real_data.py --count-votes 2>/dev/null || true)"
 app_votes_before="$(printf '%s' "$count_raw" | tr -cd '0-9')"
 if [ -z "$app_votes_before" ]; then
   echo "WARNING: could not read the app DB vote count (stale voting-backend image?); assuming 0 -> forcing a re-ingest."
@@ -180,7 +249,7 @@ run_extractor crawl --source "$SOURCE"
 # --- 3b. Reconcile legacy raw_pages: a page whose scrutin already has a vote
 #         is done — never let parse re-process (and re-LLM) the historical cache.
 begin_step "reconcile"
-reconciled="$(podman exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A \
+reconciled="$(podq 5m exec "$PG_CONTAINER" psql -U postgres -d "$MAIN_DB" -t -A \
   -c "UPDATE raw_pages rp SET processed = TRUE FROM votes v WHERE v.scrutin_id = rp.scrutin_id AND NOT rp.processed" \
   | awk '{print $2}')"
 echo "reconciled=$reconciled"
@@ -227,12 +296,12 @@ fi
 
 # --- 5. Ingest into the voting_similarities DB --------------------------------
 begin_step "ingest"
-podman exec -e "PARLIAMENT_DB_URL=$PARLIAMENT_DB_URL" "$CONTAINER" \
+podq 90m exec -e "PARLIAMENT_DB_URL=$PARLIAMENT_DB_URL" "$CONTAINER" \
   python3 /app/scripts/ingest_real_data.py
 
 # --- 6. Recompute every existing config set -----------------------------------
 begin_step "get-config-sets"
-cfg_list="$(podman exec "$CONTAINER" python3 /app/scripts/get_config_sets.py || true)"
+cfg_list="$(podq 5m exec "$CONTAINER" python3 /app/scripts/get_config_sets.py || true)"
 if [ -z "$cfg_list" ]; then
   cfg_list=$'Defaut\t1.0\t0.2\t0.5\t10'
 fi
@@ -240,14 +309,14 @@ fi
 while IFS=$'\t' read -r cname w_yes w_no w_mismatch m; do
   [ -n "$cname" ] || continue
   begin_step "compute:$cname"
-  podman exec "$CONTAINER" python3 /app/scripts/compute_similarities.py \
+  podq 30m exec "$CONTAINER" python3 /app/scripts/compute_similarities.py \
     --name "$cname" \
     --w-yes "$w_yes" --w-no "$w_no" --w-mismatch "$w_mismatch" --m "$m"
 done <<< "$cfg_list"
 
 # --- 7. Restart backend -------------------------------------------------------
 begin_step "restart"
-podman restart "$CONTAINER"
+podq 5m restart "$CONTAINER"
 for _ in $(seq 1 30); do
   if curl -fsS http://localhost:8000/api/health >/dev/null 2>&1; then
     break

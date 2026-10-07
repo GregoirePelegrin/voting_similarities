@@ -21,8 +21,11 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: 22
-          timeout: 60m
-          command_timeout: 60m
+          # Must cover the whole job: 120m of step timeouts (50m extractor +
+          # 90m ingest + 3x30m compute + restart) can exceed command_timeout's
+          # old 60m, which silently truncated runs.
+          timeout: 120m
+          command_timeout: 120m
           envs: LLM_API_KEY,TELEGRAM_BOT_KEY,TELEGRAM_CHAT_ID,RUN_URL,DEPLOY_DIR
           script: |
             set -e
@@ -41,3 +44,24 @@ jobs:
           TELEGRAM_BOT_KEY: ${{ secrets.TELEGRAM_BOT_KEY }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      # The pipeline's own trap cannot run if GitHub kills the job (timeout or
+      # cancel) — without this the run would just vanish from the feed.
+      - name: Notify on failure or timeout
+        if: ${{ failure() || cancelled() }}
+        env:
+          TELEGRAM_BOT_KEY: ${{ secrets.TELEGRAM_BOT_KEY }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "${TELEGRAM_BOT_KEY:-}" ] || [ -z "${TELEGRAM_CHAT_ID:-}" ]; then
+            echo "Telegram not configured; message skipped"
+            exit 0
+          fi
+          msg="🗳️ [voting_similarities] ❌ Job GitHub ${JOB_STATUS} — étape ou timeout non géré côté VPS."
+          msg="${msg}"$'\n'"run: ${RUN_URL}"
+          curl -s -o /dev/null -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_KEY}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${msg}" || true
